@@ -1,0 +1,21 @@
+# Visual Studio / .NET Core
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+*.user
+*.suo
+.vs/
+.vscode/
+*.swp
+*.*~
+project.lock.json
+project.assets.json
+artifacts/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# AppSettings (Ignored as requested)
+appsettings.json
+appsettings.*.json

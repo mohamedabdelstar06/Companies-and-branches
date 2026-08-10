@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using ZAD.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using ZAD.Domain.Entities.Branches;
 using ZAD.Domain.Interfaces;
 using ZAD.Persistence.Context;
-using Microsoft.EntityFrameworkCore;
 
 namespace ZAD.Persistence.Repositories
 {
@@ -20,7 +20,11 @@ namespace ZAD.Persistence.Repositories
 
         public override async Task<Branch?> GetByIdAsync(int id)
         {
-            return await _dbSet.Include(b => b.Company).FirstOrDefaultAsync(b => b.Id == id);
+            return await _dbSet
+                .Include(b => b.Contacts)
+                .Include(b => b.Documents)
+                .Include(b => b.Company)
+                .FirstOrDefaultAsync(b => b.Id == id);
         }
 
         public Task<(IEnumerable<TResult> Items, int TotalCount)> GetPageAsync<TResult>(
@@ -41,7 +45,7 @@ namespace ZAD.Persistence.Repositories
             public override async Task<(IEnumerable<TResult> Items, int TotalCount)> GetPageAsync<TResult>(
                 int pageIndex, int pageSize, string? searchTerm, string? sortColumn, string? sortDirection, bool? isActive)
             {
-                var query = _repo.FindAllNoTracking().Include(b => b.Company).AsQueryable();
+                IQueryable<Branch> query = _repo.FindAllNoTracking().Include(b => b.Company);
 
                 if (!string.IsNullOrEmpty(searchTerm))
                 {

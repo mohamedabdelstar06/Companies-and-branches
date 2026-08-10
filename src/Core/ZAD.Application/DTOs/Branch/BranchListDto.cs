@@ -4,11 +4,11 @@ namespace ZAD.Application.DTOs.Branch
     {
         public int Id { get; set; }
         public string Code { get; set; } = string.Empty;
-        public string? LogoPath { get; set; }
         public string Name { get; set; } = string.Empty;
+        public string CompanyName { get; set; } = string.Empty;
         public string? Address { get; set; }
         public string? Phone { get; set; }
-        public string CompanyName { get; set; } = string.Empty;
+        public string? Logo { get; set; }
         public bool IsActive { get; set; }
     }
 }

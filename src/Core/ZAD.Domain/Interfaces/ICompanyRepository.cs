@@ -1,4 +1,5 @@
-using ZAD.Domain.Entities;
+using ZAD.Domain.Entities.Companies;
+using ZAD.Domain.SeedWork;
 
 namespace ZAD.Domain.Interfaces
 {

@@ -1,10 +1,10 @@
 using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using ZAD.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using ZAD.Domain.Interfaces;
 using ZAD.Persistence.Context;
-using Microsoft.EntityFrameworkCore;
+using ZAD.Domain.SeedWork;
 
 namespace ZAD.Persistence.Repositories
 {
@@ -13,34 +13,39 @@ namespace ZAD.Persistence.Repositories
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         
-        private ICompanyRepository? _companies;
-        private IBranchRepository? _branches;
+        public ICompanyRepository Companies { get; }
+        public IBranchRepository Branches { get; }
+        public IGenericRepository<ZAD.Domain.Entities.Lookups.Lookup> Lookups { get; }
 
         public UnitOfWork(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
+            Companies = new CompanyRepository(_context, _mapper);
+            Branches = new BranchRepository(_context, _mapper);
+            Lookups = new GenericRepository<ZAD.Domain.Entities.Lookups.Lookup>(_context);
         }
-
-        public ICompanyRepository Companies => _companies ??= new CompanyRepository(_context, _mapper);
-        public IBranchRepository Branches => _branches ??= new BranchRepository(_context, _mapper);
 
         public async Task<int> SaveChangesAsync()
         {
-            foreach (var entry in _context.ChangeTracker.Entries<BaseEntity>())
+            foreach (var entry in _context.ChangeTracker.Entries<Entity>())
             {
-                switch (entry.State)
+                if (entry.State == EntityState.Added)
                 {
-                    case EntityState.Added:
-                        entry.Entity.CreatedAt = DateTime.UtcNow;
-                        break;
-                    case EntityState.Modified:
-                        entry.Entity.UpdatedAt = DateTime.UtcNow;
-                        break;
+                    entry.Entity.SetCreatedAt(DateTime.UtcNow);
+                }
+                else if (entry.State == EntityState.Modified)
+                {
+                    entry.Entity.SetUpdatedAt(DateTime.UtcNow);
                 }
             }
 
             return await _context.SaveChangesAsync();
+        }
+
+        public void Dispose()
+        {
+            _context.Dispose();
         }
     }
 }

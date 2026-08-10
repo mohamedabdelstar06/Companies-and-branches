@@ -1,14 +1,14 @@
-using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ZAD.Domain.Entities;
-using ZAD.Domain.Interfaces;
-using ZAD.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
+using ZAD.Domain.Interfaces;
+using ZAD.Domain.SeedWork;
+using ZAD.Persistence.Context;
 
 namespace ZAD.Persistence.Repositories
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
+    public class GenericRepository<T> : IGenericRepository<T> where T : Entity
     {
         protected readonly ApplicationDbContext _context;
         protected readonly DbSet<T> _dbSet;
@@ -19,17 +19,17 @@ namespace ZAD.Persistence.Repositories
             _dbSet = context.Set<T>();
         }
 
-        public async Task AddAsync(T entity)
+        public virtual async Task AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
         }
 
-        public void Update(T entity)
+        public virtual void Update(T entity)
         {
             _dbSet.Update(entity);
         }
 
-        public async Task DeleteAsync(int id)
+        public virtual async Task DeleteAsync(int id)
         {
             var entity = await GetByIdAsync(id);
             if (entity != null)
@@ -51,6 +51,21 @@ namespace ZAD.Persistence.Repositories
         public IQueryable<T> FindAllNoTracking()
         {
             return _dbSet.AsNoTracking();
+        }
+
+        public async Task<IEnumerable<T>> FindAsync(Specification<T> specification)
+        {
+            return await _dbSet.Where(specification.ToExpression()).ToListAsync();
+        }
+
+        public async Task<T?> FirstOrDefaultAsync(Specification<T> specification)
+        {
+            return await _dbSet.Where(specification.ToExpression()).FirstOrDefaultAsync();
+        }
+
+        public async Task<IReadOnlyList<T>> GetAsync(System.Linq.Expressions.Expression<System.Func<T, bool>> predicate)
+        {
+            return await _dbSet.Where(predicate).ToListAsync();
         }
     }
 }

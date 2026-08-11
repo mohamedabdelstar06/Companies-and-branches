@@ -57,19 +57,21 @@ namespace ZAD.Application.Services
 
             var company = new Company(code, dto.NameAr, dto.NameEn, address, email, dto.Phone, dto.Website, dto.Nationality, dto.Language, logoPath);
 
-            int contactsCount = System.Math.Min(System.Math.Min(dto.ContactTypes?.Count ?? 0, dto.ContactValues?.Count ?? 0), dto.ContactNames?.Count ?? 0);
-            for (int i = 0; i < contactsCount; i++)
+            if (dto.Contacts != null)
             {
-                company.AddContact(new Contact(dto.ContactTypes![i], dto.ContactValues![i], dto.ContactNames![i]));
+                foreach (var contactDto in dto.Contacts)
+                {
+                    company.AddContact(new Contact(contactDto.Type, contactDto.Value, contactDto.Name));
+                }
             }
 
-            int docsCount = System.Math.Min(System.Math.Min(dto.DocumentTypes?.Count ?? 0, dto.DocumentNumbers?.Count ?? 0), dto.DocumentFiles?.Count ?? 0);
-            for (int i = 0; i < docsCount; i++)
+            if (dto.Documents != null)
             {
-                var docFile = dto.DocumentFiles![i];
-                string? docPath = await _fileUploadService.UploadFileAsync(docFile, "documents");
-                System.DateTime? expiryDate = dto.DocumentExpiryDates != null && dto.DocumentExpiryDates.Count > i ? dto.DocumentExpiryDates[i] : null;
-                company.AddDocument(new Document(dto.DocumentTypes![i], dto.DocumentNumbers![i], docPath ?? "", expiryDate));
+                foreach (var docDto in dto.Documents)
+                {
+                    string? docPath = docDto.AttachFile != null ? await _fileUploadService.UploadFileAsync(docDto.AttachFile, "documents") : null;
+                    company.AddDocument(new Document(docDto.Type, docDto.DocumentNumber, docPath ?? "", docDto.ExpiryDate));
+                }
             }
 
             company.AddDomainEvent(new CompanyCreatedEvent(company.Id));
@@ -111,20 +113,22 @@ namespace ZAD.Application.Services
             company.Update(dto.NameAr, dto.NameEn, address, email, dto.Phone, dto.Website, dto.Nationality, dto.Language, logoPath, dto.IsActive);
 
             company.ClearContacts();
-            int contactsCount = System.Math.Min(System.Math.Min(dto.ContactTypes?.Count ?? 0, dto.ContactValues?.Count ?? 0), dto.ContactNames?.Count ?? 0);
-            for (int i = 0; i < contactsCount; i++)
+            if (dto.Contacts != null)
             {
-                company.AddContact(new Contact(dto.ContactTypes![i], dto.ContactValues![i], dto.ContactNames![i]));
+                foreach (var contactDto in dto.Contacts)
+                {
+                    company.AddContact(new Contact(contactDto.Type, contactDto.Value, contactDto.Name));
+                }
             }
 
             company.ClearDocuments();
-            int docsCount = System.Math.Min(System.Math.Min(dto.DocumentTypes?.Count ?? 0, dto.DocumentNumbers?.Count ?? 0), dto.DocumentFiles?.Count ?? 0);
-            for (int i = 0; i < docsCount; i++)
+            if (dto.Documents != null)
             {
-                var docFile = dto.DocumentFiles![i];
-                string? docPath = await _fileUploadService.UploadFileAsync(docFile, "documents");
-                System.DateTime? expiryDate = dto.DocumentExpiryDates != null && dto.DocumentExpiryDates.Count > i ? dto.DocumentExpiryDates[i] : null;
-                company.AddDocument(new Document(dto.DocumentTypes![i], dto.DocumentNumbers![i], docPath ?? "", expiryDate));
+                foreach (var docDto in dto.Documents)
+                {
+                    string? docPath = docDto.AttachFile != null ? await _fileUploadService.UploadFileAsync(docDto.AttachFile, "documents") : null;
+                    company.AddDocument(new Document(docDto.Type, docDto.DocumentNumber, docPath ?? "", docDto.ExpiryDate));
+                }
             }
 
             _unitOfWork.Companies.Update(company);

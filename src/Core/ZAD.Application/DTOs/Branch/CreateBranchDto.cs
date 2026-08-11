@@ -24,15 +24,7 @@ namespace ZAD.Application.DTOs.Branch
 
         public IFormFile? Logo { get; set; }
 
-        // Contacts
-        public List<ZAD.Domain.Enums.ContactType>? ContactTypes { get; set; }
-        public List<string>? ContactValues { get; set; }
-        public List<string>? ContactNames { get; set; }
-
-        // Documents
-        public List<ZAD.Domain.Enums.DocumentType>? DocumentTypes { get; set; }
-        public List<string>? DocumentNumbers { get; set; }
-        public List<IFormFile>? DocumentFiles { get; set; }
-        public List<System.DateTime?>? DocumentExpiryDates { get; set; }
+        public List<CreateContactDto>? Contacts { get; set; }
+        public List<CreateDocumentDto>? Documents { get; set; }
     }
 }

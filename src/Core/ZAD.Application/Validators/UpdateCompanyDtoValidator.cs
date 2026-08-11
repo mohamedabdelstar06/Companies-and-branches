@@ -10,8 +10,8 @@ namespace ZAD.Application.Validators
             RuleFor(x => x.Id).GreaterThan(0);
             RuleFor(x => x.NameAr).NotEmpty();
             RuleFor(x => x.NameEn).NotEmpty();
-            RuleFor(x => x.Email).EmailAddress().When(x => !string.IsNullOrEmpty(x.Email));
-            RuleFor(x => x.Logo).Must(x => x == null || x.ContentType.StartsWith("image/")).WithMessage("Logo must be an image.");
+            RuleForEach(x => x.Contacts).SetValidator(new CreateContactDtoValidator()).When(x => x.Contacts != null);
+            RuleForEach(x => x.Documents).SetValidator(new CreateDocumentDtoValidator()).When(x => x.Documents != null);
         }
     }
 }

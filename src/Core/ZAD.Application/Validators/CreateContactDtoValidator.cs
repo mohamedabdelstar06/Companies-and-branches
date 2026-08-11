@@ -8,8 +8,12 @@ namespace ZAD.Application.Validators
         public CreateContactDtoValidator()
         {
             RuleFor(x => x.Type).IsInEnum();
-            RuleFor(x => x.Value).NotEmpty();
             RuleFor(x => x.Name).NotEmpty();
+            RuleFor(x => x).Must(x => 
+            {
+                var strategy = Strategies.ContactValidationStrategyFactory.GetStrategy(x.Type);
+                return strategy.IsValid(x.Value);
+            }).WithMessage("Invalid contact value for the selected contact type.");
         }
     }
 }

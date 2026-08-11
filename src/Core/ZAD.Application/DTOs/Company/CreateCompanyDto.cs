@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using ZAD.Application.DTOs.Common;
+using ZAD.Domain.Enums;
 
 namespace ZAD.Application.DTOs.Company
 {
@@ -24,15 +25,7 @@ namespace ZAD.Application.DTOs.Company
 
         public IFormFile? Logo { get; set; }
 
-        // Contacts
-        public List<ZAD.Domain.Enums.ContactType>? ContactTypes { get; set; }
-        public List<string>? ContactValues { get; set; }
-        public List<string>? ContactNames { get; set; }
-
-        // Documents
-        public List<ZAD.Domain.Enums.DocumentType>? DocumentTypes { get; set; }
-        public List<string>? DocumentNumbers { get; set; }
-        public List<IFormFile>? DocumentFiles { get; set; }
-        public List<System.DateTime?>? DocumentExpiryDates { get; set; }
+        public List<CreateContactDto>? Contacts { get; set; }
+        public List<CreateDocumentDto>? Documents { get; set; }
     }
 }

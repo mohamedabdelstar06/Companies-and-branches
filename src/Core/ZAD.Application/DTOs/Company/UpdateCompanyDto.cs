@@ -15,9 +15,9 @@ namespace ZAD.Application.DTOs.Company
         public string? AddressAr { get; set; }
         public string? AddressEn { get; set; }
 
-        public string? Email { get; set; }
-        public string? Phone { get; set; }
-        public string? Website { get; set; }
+
+
+
 
         public string? Nationality { get; set; }
         public string? Language { get; set; }

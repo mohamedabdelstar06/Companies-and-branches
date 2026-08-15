@@ -16,10 +16,6 @@ namespace ZAD.Domain.Entities.Branches
         
         public Address? Address { get; private set; }
         
-        public EmailAddress? Email { get; private set; }
-        
-        public string? Phone { get; private set; }
-        
         public string? CostCenter { get; private set; }
         
         public bool IsMainBranch { get; private set; }
@@ -42,28 +38,24 @@ namespace ZAD.Domain.Entities.Branches
 
         private Branch() { } // EF Core
 
-        public Branch(string code, string nameAr, string nameEn, int companyId, Address? address, EmailAddress? email, string? phone, string? costCenter, bool isMainBranch, string? logoPath)
+        public Branch(string code, string nameAr, string nameEn, int companyId, Address? address, string? costCenter, bool isMainBranch, string? logoPath)
         {
             Code = code;
             NameAr = nameAr;
             NameEn = nameEn;
             CompanyId = companyId;
             Address = address;
-            Email = email;
-            Phone = phone;
             CostCenter = costCenter;
             IsMainBranch = isMainBranch;
             LogoPath = logoPath;
         }
 
-        public void Update(string nameAr, string nameEn, int companyId, Address? address, EmailAddress? email, string? phone, string? costCenter, bool isMainBranch, string? logoPath, bool isActive)
+        public void Update(string nameAr, string nameEn, int companyId, Address? address, string? costCenter, bool isMainBranch, string? logoPath, bool isActive)
         {
             NameAr = nameAr;
             NameEn = nameEn;
             CompanyId = companyId;
             Address = address;
-            Email = email;
-            Phone = phone;
             CostCenter = costCenter;
             IsMainBranch = isMainBranch;
             LogoPath = logoPath ?? LogoPath;

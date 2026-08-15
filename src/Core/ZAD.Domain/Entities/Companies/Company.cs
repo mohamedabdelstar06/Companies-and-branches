@@ -12,9 +12,6 @@ namespace ZAD.Domain.Entities.Companies
         public string NameAr { get; private set; } = string.Empty;
         public string NameEn { get; private set; } = string.Empty;
         public Address? Address { get; private set; }
-        public EmailAddress? Email { get; private set; }
-        public string? Phone { get; private set; }
-        public string? Website { get; private set; }
         public string? Nationality { get; private set; }
         public string? Language { get; private set; }
         public string? LogoPath { get; private set; }
@@ -28,28 +25,22 @@ namespace ZAD.Domain.Entities.Companies
 
         private Company() { } // EF Core
 
-        public Company(string code, string nameAr, string nameEn, Address? address, EmailAddress? email, string? phone, string? website, string? nationality, string? language, string? logoPath)
+        public Company(string code, string nameAr, string nameEn, Address? address, string? nationality, string? language, string? logoPath)
         {
             Code = code;
             NameAr = nameAr;
             NameEn = nameEn;
             Address = address;
-            Email = email;
-            Phone = phone;
-            Website = website;
             Nationality = nationality;
             Language = language;
             LogoPath = logoPath;
         }
 
-        public void Update(string nameAr, string nameEn, Address? address, EmailAddress? email, string? phone, string? website, string? nationality, string? language, string? logoPath, bool isActive)
+        public void Update(string nameAr, string nameEn, Address? address, string? nationality, string? language, string? logoPath, bool isActive)
         {
             NameAr = nameAr;
             NameEn = nameEn;
             Address = address;
-            Email = email;
-            Phone = phone;
-            Website = website;
             Nationality = nationality;
             Language = language;
             LogoPath = logoPath ?? LogoPath;

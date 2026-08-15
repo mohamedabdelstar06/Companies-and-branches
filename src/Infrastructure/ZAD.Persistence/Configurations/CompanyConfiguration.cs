@@ -23,10 +23,6 @@ namespace ZAD.Persistence.Configurations
                 a.Property(p => p.AddressEn).HasColumnName("AddressEn").HasMaxLength(500);
             });
 
-            builder.OwnsOne(x => x.Email, e =>
-            {
-                e.Property(p => p.Value).HasColumnName("Email").HasMaxLength(255);
-            });
 
             builder.OwnsMany(x => x.Contacts, c =>
             {

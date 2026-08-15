@@ -15,7 +15,7 @@ namespace ZAD.Persistence.Configurations
             builder.Property(x => x.NameAr).IsRequired().HasMaxLength(200);
             builder.Property(x => x.NameEn).IsRequired().HasMaxLength(200);
 
-            builder.HasOne<ZAD.Domain.Entities.Companies.Company>()
+            builder.HasOne(b => b.Company)
                    .WithMany()
                    .HasForeignKey(b => b.CompanyId)
                    .OnDelete(DeleteBehavior.Restrict);
@@ -28,10 +28,6 @@ namespace ZAD.Persistence.Configurations
                 a.Property(p => p.AddressEn).HasColumnName("AddressEn").HasMaxLength(500);
             });
 
-            builder.OwnsOne(x => x.Email, e =>
-            {
-                e.Property(p => p.Value).HasColumnName("Email").HasMaxLength(255);
-            });
 
             builder.OwnsMany(x => x.Contacts, c =>
             {

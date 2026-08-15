@@ -16,8 +16,8 @@ namespace ZAD.Persistence.Context
         {
         }
 
-        public DbSet<Company> Companies { get; set; }
-        public DbSet<Branch> Branches { get; set; }
+        public DbSet<Company> Companies { get; set; } = null!;
+        public DbSet<Branch> Branches { get; set; } = null!;
         public DbSet<Lookup> Lookups { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -32,9 +32,6 @@ namespace ZAD.Persistence.Context
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            // Dispatch Domain Events here if an IDomainEventDispatcher is injected
-            // For now, we just clear them to prevent memory leaks or multiple dispatches
-
             var entitiesWithEvents = ChangeTracker.Entries<Entity>()
                 .Select(e => e.Entity)
                 .Where(e => e.DomainEvents != null && e.DomainEvents.Any())

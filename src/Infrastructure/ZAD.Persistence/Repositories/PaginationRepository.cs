@@ -56,7 +56,20 @@ namespace ZAD.Persistence.Repositories
         private IQueryable<TEntity> OrderByDynamic(IQueryable<TEntity> query, string sortColumn, bool isDescending)
         {
             var parameter = Expression.Parameter(typeof(TEntity), "p");
-            var property = Expression.Property(parameter, sortColumn);
+            Expression property = parameter;
+            
+            foreach (var member in sortColumn.Split('.'))
+            {
+                var propInfo = property.Type.GetProperty(member, System.Reflection.BindingFlags.IgnoreCase | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                if (propInfo == null)
+                {
+                    // Fallback to Code if property is not found (e.g., trying to sort by non-existent property)
+                    propInfo = property.Type.GetProperty("Code", System.Reflection.BindingFlags.IgnoreCase | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                    if (propInfo == null) return query; // If even Code is not found, return original query
+                }
+                property = Expression.Property(property, propInfo);
+            }
+
             var lambda = Expression.Lambda(property, parameter);
 
             var method = isDescending ? "OrderByDescending" : "OrderBy";

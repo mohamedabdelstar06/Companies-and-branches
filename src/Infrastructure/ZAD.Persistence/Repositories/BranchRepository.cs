@@ -52,13 +52,29 @@ namespace ZAD.Persistence.Repositories
                     query = query.Where(b => 
                         b.Code.Contains(searchTerm) || 
                         b.NameAr.Contains(searchTerm) || 
-                        b.NameEn.Contains(searchTerm) || 
-                        (b.Phone != null && b.Phone.Contains(searchTerm)));
+                        b.NameEn.Contains(searchTerm));
                 }
 
                 if (isActive.HasValue)
                 {
                     query = query.Where(b => b.IsActive == isActive.Value);
+                }
+
+                if (string.Equals(sortColumn, "phone", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    bool isDesc = sortDirection?.ToLower() == "desc";
+                    query = isDesc 
+                        ? query.OrderByDescending(c => c.Contacts.FirstOrDefault() != null ? c.Contacts.FirstOrDefault()!.Value : "") 
+                        : query.OrderBy(c => c.Contacts.FirstOrDefault() != null ? c.Contacts.FirstOrDefault()!.Value : "");
+                    sortColumn = null; // Prevent dynamic sorting
+                }
+                else if (string.Equals(sortColumn, "address", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    bool isDesc = sortDirection?.ToLower() == "desc";
+                    query = isDesc 
+                        ? query.OrderByDescending(c => c.Address != null ? c.Address.AddressEn : "") 
+                        : query.OrderBy(c => c.Address != null ? c.Address.AddressEn : "");
+                    sortColumn = null; // Prevent dynamic sorting
                 }
 
                 return await GetPageInternalAsync<TResult>(query, pageIndex, pageSize, sortColumn, sortDirection);

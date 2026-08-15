@@ -1,0 +1,186 @@
+<div class="container-fluid py-4" *ngIf="branch">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center text-teal fw-bold">
+      <a routerLink="/settings/branches" class="text-teal text-decoration-none">
+        <i class="fas fa-chevron-left me-2"></i>
+        <span>Settings / Branches</span>
+      </a>
+      <span class="ms-2 text-muted fw-normal">/ View Branch</span>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="d-flex justify-content-between mb-4">
+    <div>
+      <button class="btn btn-icon text-teal me-2"><i class="fas fa-file-alt"></i></button>
+      <button class="btn btn-icon text-teal me-2" [routerLink]="['/settings/branches/edit', branch.id]"><i class="fas fa-edit"></i></button>
+      <button class="btn btn-icon text-success me-2"><i class="fas fa-copy"></i></button>
+      <button class="btn btn-danger-icon"><i class="fas fa-trash-alt"></i></button>
+    </div>
+    <button class="btn btn-light border btn-sm px-3 py-2" routerLink="/settings/branches">
+      <i class="fas fa-sign-out-alt"></i>
+    </button>
+  </div>
+
+  <div class="row">
+    <!-- Left Panel: Logo & Info -->
+    <div class="col-md-4 col-lg-3 mb-4">
+      <div class="card bg-light border-0 h-100">
+        <div class="card-body text-center">
+          <div class="mb-3 d-flex justify-content-center">
+            <div class="border bg-white d-flex align-items-center justify-content-center p-2" style="width: 150px; height: 120px;">
+              <img *ngIf="branch.logoPath" [src]="getLogoUrl(branch.logoPath)" class="w-100 h-100 object-fit-contain">
+              <i *ngIf="!branch.logoPath" class="far fa-image fa-3x text-muted"></i>
+            </div>
+          </div>
+          <h5 class="fw-bold mb-4">{{ branch.nameAr || branch.nameEn }}</h5>
+          
+          <div class="text-start mt-4">
+            <p class="text-muted small mb-0">Email</p>
+            <p class="mb-3">{{ branchEmail }}</p>
+            
+            <p class="text-muted small mb-0">Phone</p>
+            <p class="mb-3">{{ branchPhone }}</p>
+
+            <p class="text-muted small mb-0">Company</p>
+            <p class="mb-3">{{ branch.companyName }}</p>
+            
+            <p class="text-muted small mb-0">Address</p>
+            <p class="mb-0">{{ branch.addressEn || branch.addressAr || '-' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel: Form Fields -->
+    <div class="col-md-8 col-lg-9">
+      
+      <div class="mb-3">
+        <label class="form-label text-muted fw-bold small">Code</label>
+        <div class="form-control bg-light">{{ branch.code }}</div>
+      </div>
+
+      <!-- Basic Names -->
+      <div class="row mb-4">
+        <div class="col-md-6 mb-3 mb-md-0">
+          <label class="form-label text-muted fw-bold small">Arabic Name</label>
+          <div class="form-control bg-light">{{ branch.nameAr }}</div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label text-muted fw-bold small">English Name</label>
+          <div class="form-control bg-light">{{ branch.nameEn }}</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <ul class="nav nav-tabs mb-4 w-100 d-flex" style="border-radius: 0.25rem; overflow: hidden; border: 1px solid #dee2e6;">
+        <li class="nav-item flex-fill text-center m-0">
+          <button class="nav-link w-100 rounded-0 border-0 m-0 py-2" [class.active]="activeTab === 'branchData'" (click)="activeTab = 'branchData'">
+            Branch Data
+          </button>
+        </li>
+        <li class="nav-item flex-fill text-center m-0 border-start border-end">
+          <button class="nav-link w-100 rounded-0 border-0 m-0 py-2" [class.active]="activeTab === 'contacts'" (click)="activeTab = 'contacts'">
+            Contacts
+          </button>
+        </li>
+        <li class="nav-item flex-fill text-center m-0">
+          <button class="nav-link w-100 rounded-0 border-0 m-0 py-2" [class.active]="activeTab === 'documents'" (click)="activeTab = 'documents'">
+            Documents
+          </button>
+        </li>
+      </ul>
+
+      <!-- Tab Content: Branch Data -->
+      <div *ngIf="activeTab === 'branchData'">
+        <div class="row mb-3">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <label class="form-label text-muted fw-bold small">Company</label>
+            <div class="form-control bg-light">{{ branch.companyName }}</div>
+          </div>
+          <div class="col-md-6 d-flex align-items-center mt-4">
+            <span class="badge" [class.bg-success]="branch.isMainBranch" [class.bg-secondary]="!branch.isMainBranch">
+              {{ branch.isMainBranch ? 'Main Branch' : 'Sub Branch' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <label class="form-label text-muted fw-bold small">Arabic Address</label>
+            <div class="form-control bg-light">{{ branch.addressAr }}</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label text-muted fw-bold small">English Address</label>
+            <div class="form-control bg-light">{{ branch.addressEn }}</div>
+          </div>
+        </div>
+        
+        <div class="row mb-3">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <label class="form-label text-muted fw-bold small">Country</label>
+            <div class="form-control bg-light">{{ branch.country }}</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label text-muted fw-bold small">City</label>
+            <div class="form-control bg-light">{{ branch.city }}</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <label class="form-label text-muted fw-bold small">Cost Center</label>
+            <div class="form-control bg-light">{{ branch.costCenter }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content: Contacts -->
+      <div *ngIf="activeTab === 'contacts'">
+        <div class="row mb-2" *ngFor="let contact of branch.contacts; let i=index">
+          <div class="col-md-4">
+            <label *ngIf="i===0" class="form-label text-muted fw-bold small">Contact Type</label>
+            <div class="form-control bg-light">{{ contact.type }}</div>
+          </div>
+          <div class="col-md-4">
+            <label *ngIf="i===0" class="form-label text-muted fw-bold small">Contact</label>
+            <div class="form-control bg-light">{{ contact.value }}</div>
+          </div>
+          <div class="col-md-4">
+            <label *ngIf="i===0" class="form-label text-muted fw-bold small">Contact Name</label>
+            <div class="form-control bg-light">{{ contact.name }}</div>
+          </div>
+        </div>
+        <p *ngIf="!branch.contacts || branch.contacts.length === 0" class="text-muted">No contacts added.</p>
+      </div>
+
+      <!-- Tab Content: Documents -->
+      <div *ngIf="activeTab === 'documents'">
+        <div class="row mb-2" *ngFor="let doc of branch.documents; let i=index">
+          <div class="col-md-3">
+            <label *ngIf="i===0" class="form-label text-muted fw-bold small">Document Type</label>
+            <div class="form-control bg-light">{{ doc.type }}</div>
+          </div>
+          <div class="col-md-3">
+            <label *ngIf="i===0" class="form-label text-muted fw-bold small">Document Number</label>
+            <div class="form-control bg-light">{{ doc.documentNumber }}</div>
+          </div>
+          <div class="col-md-3">
+            <label *ngIf="i===0" class="form-label text-muted fw-bold small">Attach File</label>
+            <div class="form-control bg-light d-flex justify-content-between align-items-center">
+              <span>{{ getFileName(doc) }}</span>
+              <i class="fas fa-download text-teal cursor-pointer" (click)="downloadDocument(doc)"></i>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <label *ngIf="i===0" class="form-label text-muted fw-bold small">Expiry Date</label>
+            <div class="form-control bg-light">{{ doc.expiryDate | date }}</div>
+          </div>
+        </div>
+        <p *ngIf="!branch.documents || branch.documents.length === 0" class="text-muted">No documents added.</p>
+      </div>
+
+    </div>
+  </div>
+</div>

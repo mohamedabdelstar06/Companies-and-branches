@@ -1,0 +1,99 @@
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center text-teal fw-bold">
+      <i class="fas fa-chevron-left me-2"></i>
+      <span>Settings / Branches</span>
+    </div>
+    <div style="width: 280px;">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search by name, code, address, phone..."
+          [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" id="branchSearch">
+        <span class="input-group-text bg-white text-teal border-start-0">
+          <i class="fas fa-search"></i>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <button class="btn bg-teal" routerLink="add" id="createBranchBtn">
+      <i class="fas fa-plus me-1"></i> Create New
+    </button>
+    <div *ngIf="searchTerm" class="text-muted small">
+      Showing {{ branches.length }} of {{ allBranches.length }} records
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body p-0 table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th class="ps-3" style="width: 40px;">
+              <input type="checkbox" class="form-check-input">
+            </th>
+            <th class="sortable-th" [class.sort-active]="sortField === 'code'" (click)="toggleSort('code')">
+              Code <i class="fas sort-icon" [class.fa-sort-amount-up]="sortField==='code' && sortDir==='asc'" [class.fa-sort-amount-down]="sortField==='code' && sortDir==='desc'" [class.fa-arrows-alt-v]="sortField!=='code'"></i>
+            </th>
+            <th>Logo</th>
+            <th class="sortable-th" [class.sort-active]="sortField === 'name'" (click)="toggleSort('name')">
+              Name <i class="fas sort-icon" [class.fa-sort-amount-up]="sortField==='name' && sortDir==='asc'" [class.fa-sort-amount-down]="sortField==='name' && sortDir==='desc'" [class.fa-arrows-alt-v]="sortField!=='name'"></i>
+            </th>
+            <th>Company</th>
+            <th class="sortable-th" [class.sort-active]="sortField === 'address'" (click)="toggleSort('address')">
+              Address <i class="fas sort-icon" [class.fa-sort-amount-up]="sortField==='address' && sortDir==='asc'" [class.fa-sort-amount-down]="sortField==='address' && sortDir==='desc'" [class.fa-arrows-alt-v]="sortField!=='address'"></i>
+            </th>
+            <th>Website</th>
+            <th class="sortable-th" [class.sort-active]="sortField === 'phone'" (click)="toggleSort('phone')">
+              Phone <i class="fas sort-icon" [class.fa-sort-amount-up]="sortField==='phone' && sortDir==='asc'" [class.fa-sort-amount-down]="sortField==='phone' && sortDir==='desc'" [class.fa-arrows-alt-v]="sortField!=='phone'"></i>
+            </th>
+            <th>Is Active</th>
+            <th class="text-end pe-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (branch of branches; track branch.id) {
+            <tr>
+              <td class="ps-3"><input type="checkbox" class="form-check-input"></td>
+              <td>{{ branch.code }}</td>
+              <td>
+                <div class="border rounded d-flex align-items-center justify-content-center overflow-hidden bg-white" style="width: 35px; height: 35px;">
+                  <img [src]="getLogoUrl(branch.logo)" alt="logo" class="w-100 h-100 object-fit-contain" (error)="onImgError($event)">
+                </div>
+              </td>
+              <td>{{ branch.name }}</td>
+              <td>{{ branch.companyName }}</td>
+              <td>{{ branch.address || '-' }}</td>
+              <td>
+                <a *ngIf="branch.website" [href]="branch.website" target="_blank" class="text-teal text-decoration-none">
+                  <i class="fas fa-external-link-alt me-1"></i> Open
+                </a>
+                <span *ngIf="!branch.website" class="text-muted">-</span>
+              </td>
+              <td>{{ branch.phone || '-' }}</td>
+              <td>
+                <div class="form-check form-switch ms-3">
+                  <input class="form-check-input custom-switch cursor-pointer" type="checkbox" 
+                         [checked]="branch.isActive" 
+                         (change)="toggleActive(branch, $event)">
+                </div>
+              </td>
+              <td class="text-end pe-3">
+                <button class="btn btn-icon" [routerLink]="['view', branch.id]"><i class="fas fa-eye"></i></button>
+                <button class="btn btn-icon" [routerLink]="['edit', branch.id]"><i class="fas fa-edit"></i></button>
+                <button class="btn btn-danger-icon" (click)="deleteBranch(branch.id)"><i class="fas fa-trash-alt"></i></button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="10" class="text-center py-4 text-muted">
+                <i class="fas fa-search me-2"></i>
+                {{ searchTerm ? 'No matching branches found.' : 'No branches found.' }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

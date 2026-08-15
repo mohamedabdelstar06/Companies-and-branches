@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZAD.Persistence.Context;
 
@@ -11,9 +12,11 @@ using ZAD.Persistence.Context;
 namespace ZAD.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260813093447_AddLookupsTable")]
+    partial class AddLookupsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,6 +68,9 @@ namespace ZAD.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -120,8 +126,14 @@ namespace ZAD.Persistence.Migrations
                     b.Property<string>("Nationality")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Website")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -301,6 +313,25 @@ namespace ZAD.Persistence.Migrations
                                 .HasForeignKey("BranchId");
                         });
 
+                    b.OwnsOne("ZAD.Domain.ValueObjects.EmailAddress", "Email", b1 =>
+                        {
+                            b1.Property<int>("BranchId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasMaxLength(255)
+                                .HasColumnType("nvarchar(255)")
+                                .HasColumnName("Email");
+
+                            b1.HasKey("BranchId");
+
+                            b1.ToTable("Branches");
+
+                            b1.WithOwner()
+                                .HasForeignKey("BranchId");
+                        });
+
                     b.Navigation("Address");
 
                     b.Navigation("Company");
@@ -308,6 +339,8 @@ namespace ZAD.Persistence.Migrations
                     b.Navigation("Contacts");
 
                     b.Navigation("Documents");
+
+                    b.Navigation("Email");
                 });
 
             modelBuilder.Entity("ZAD.Domain.Entities.Companies.Company", b =>
@@ -434,11 +467,32 @@ namespace ZAD.Persistence.Migrations
                                 .HasForeignKey("CompanyId");
                         });
 
+                    b.OwnsOne("ZAD.Domain.ValueObjects.EmailAddress", "Email", b1 =>
+                        {
+                            b1.Property<int>("CompanyId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasMaxLength(255)
+                                .HasColumnType("nvarchar(255)")
+                                .HasColumnName("Email");
+
+                            b1.HasKey("CompanyId");
+
+                            b1.ToTable("Companies");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CompanyId");
+                        });
+
                     b.Navigation("Address");
 
                     b.Navigation("Contacts");
 
                     b.Navigation("Documents");
+
+                    b.Navigation("Email");
                 });
 #pragma warning restore 612, 618
         }

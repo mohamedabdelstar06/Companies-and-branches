@@ -17,8 +17,8 @@ namespace ZAD.Application.DTOs.Branch
         public string? AddressAr { get; set; }
         public string? AddressEn { get; set; }
 
-        public string? Email { get; set; }
-        public string? Phone { get; set; }
+
+
         public string? CostCenter { get; set; }
         public bool IsMainBranch { get; set; }
 

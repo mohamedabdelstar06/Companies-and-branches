@@ -18,12 +18,15 @@ namespace ZAD.Application.DTOs.Branch
         public string? AddressAr { get; set; }
         public string? AddressEn { get; set; }
 
-        public string? Email { get; set; }
-        public string? Phone { get; set; }
+
+
         public string? CostCenter { get; set; }
         public bool IsMainBranch { get; set; }
         public string? LogoPath { get; set; }
         public bool IsActive { get; set; }
+
+        public System.DateTime CreatedAt { get; set; }
+        public System.DateTime? UpdatedAt { get; set; }
 
         public List<ContactDto> Contacts { get; set; } = new();
         public List<DocumentDto> Documents { get; set; } = new();

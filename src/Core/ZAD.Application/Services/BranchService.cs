@@ -44,7 +44,6 @@ namespace ZAD.Application.Services
             }
 
             var address = new Address(dto.Country, dto.City, dto.AddressAr, dto.AddressEn);
-            var email = !string.IsNullOrWhiteSpace(dto.Email) ? new EmailAddress(dto.Email) : null;
 
             int count = _unitOfWork.Branches.FindAllNoTracking().Count();
             string code = string.IsNullOrWhiteSpace(dto.Code) ? (count + 1).ToString() : dto.Code;
@@ -55,7 +54,7 @@ namespace ZAD.Application.Services
                 logoPath = await _fileUploadService.UploadFileAsync(dto.Logo, "branches");
             }
 
-            var branch = new Branch(code, dto.NameAr, dto.NameEn, dto.CompanyId, address, email, dto.Phone, dto.CostCenter, dto.IsMainBranch, logoPath);
+            var branch = new Branch(code, dto.NameAr, dto.NameEn, dto.CompanyId, address, dto.CostCenter, dto.IsMainBranch, logoPath);
 
             if (dto.Contacts != null)
             {
@@ -102,7 +101,6 @@ namespace ZAD.Application.Services
             }
 
             var address = new Address(dto.Country, dto.City, dto.AddressAr, dto.AddressEn);
-            var email = !string.IsNullOrWhiteSpace(dto.Email) ? new EmailAddress(dto.Email) : null;
 
             string? logoPath = null;
             if (dto.Logo != null)
@@ -110,7 +108,7 @@ namespace ZAD.Application.Services
                 logoPath = await _fileUploadService.UploadFileAsync(dto.Logo, "branches");
             }
 
-            branch.Update(dto.NameAr, dto.NameEn, dto.CompanyId, address, email, dto.Phone, dto.CostCenter, dto.IsMainBranch, logoPath, dto.IsActive);
+            branch.Update(dto.NameAr, dto.NameEn, dto.CompanyId, address, dto.CostCenter, dto.IsMainBranch, logoPath, dto.IsActive);
 
             branch.ClearContacts();
             if (dto.Contacts != null)
@@ -193,6 +191,33 @@ namespace ZAD.Application.Services
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize
             };
+        }
+
+        public async Task ToggleActiveAsync(int id)
+        {
+            _logger.LogInformation("Toggling active status for Branch {Id}", id);
+
+            var branch = await _unitOfWork.Branches.GetByIdAsync(id);
+            if (branch == null)
+            {
+                _logger.LogWarning("Branch {Id} not found", id);
+                throw new NotFoundException($"Branch {id} not found.");
+            }
+
+            branch.Update(
+                branch.NameAr, 
+                branch.NameEn, 
+                branch.CompanyId,
+                branch.Address, 
+                branch.CostCenter, 
+                branch.IsMainBranch, 
+                branch.LogoPath, 
+                !branch.IsActive);
+
+            _unitOfWork.Branches.Update(branch);
+            await _unitOfWork.SaveChangesAsync();
+
+            _logger.LogInformation("Branch {Id} active status toggled successfully", id);
         }
     }
 }

@@ -11,5 +11,6 @@ namespace ZAD.Application.Interfaces
         Task<string> DeleteAsync(int id);
         Task<CompanyDetailDto> GetAsync(int id);
         Task<PageResult<CompanyListDto>> GetPageAsync(PageQuery query);
+        Task ToggleActiveAsync(int id);
     }
 }

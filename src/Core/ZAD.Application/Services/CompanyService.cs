@@ -44,7 +44,6 @@ namespace ZAD.Application.Services
             }
 
             var address = new Address(dto.Country, dto.City, dto.AddressAr, dto.AddressEn);
-            var email = !string.IsNullOrWhiteSpace(dto.Email) ? new EmailAddress(dto.Email) : null;
             
             int count = _unitOfWork.Companies.FindAllNoTracking().Count();
             string code = string.IsNullOrWhiteSpace(dto.Code) ? (count + 1).ToString() : dto.Code;
@@ -55,7 +54,7 @@ namespace ZAD.Application.Services
                 logoPath = await _fileUploadService.UploadFileAsync(dto.Logo, "companies");
             }
 
-            var company = new Company(code, dto.NameAr, dto.NameEn, address, email, dto.Phone, dto.Website, dto.Nationality, dto.Language, logoPath);
+            var company = new Company(code, dto.NameAr, dto.NameEn, address, dto.Nationality, dto.Language, logoPath);
 
             if (dto.Contacts != null)
             {
@@ -102,7 +101,6 @@ namespace ZAD.Application.Services
             }
 
             var address = new Address(dto.Country, dto.City, dto.AddressAr, dto.AddressEn);
-            var email = !string.IsNullOrWhiteSpace(dto.Email) ? new EmailAddress(dto.Email) : null;
 
             string? logoPath = null;
             if (dto.Logo != null)
@@ -110,7 +108,7 @@ namespace ZAD.Application.Services
                 logoPath = await _fileUploadService.UploadFileAsync(dto.Logo, "companies");
             }
 
-            company.Update(dto.NameAr, dto.NameEn, address, email, dto.Phone, dto.Website, dto.Nationality, dto.Language, logoPath, dto.IsActive);
+            company.Update(dto.NameAr, dto.NameEn, address, dto.Nationality, dto.Language, logoPath, dto.IsActive);
 
             company.ClearContacts();
             if (dto.Contacts != null)
@@ -193,6 +191,32 @@ namespace ZAD.Application.Services
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize
             };
+        }
+
+        public async Task ToggleActiveAsync(int id)
+        {
+            _logger.LogInformation("Toggling active status for Company {Id}", id);
+
+            var company = await _unitOfWork.Companies.GetByIdAsync(id);
+            if (company == null)
+            {
+                _logger.LogWarning("Company {Id} not found", id);
+                throw new NotFoundException($"Company {id} not found.");
+            }
+
+            company.Update(
+                company.NameAr, 
+                company.NameEn, 
+                company.Address, 
+                company.Nationality, 
+                company.Language, 
+                company.LogoPath, 
+                !company.IsActive);
+
+            _unitOfWork.Companies.Update(company);
+            await _unitOfWork.SaveChangesAsync();
+
+            _logger.LogInformation("Company {Id} active status toggled successfully", id);
         }
     }
 }

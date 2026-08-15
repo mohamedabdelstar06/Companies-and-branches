@@ -21,8 +21,8 @@ namespace ZAD.WebAPI.Services
             if (file == null || file.Length == 0)
                 throw new ArgumentException("File is empty.");
 
-            if (!file.ContentType.StartsWith("image/"))
-                throw new ArgumentException("Only images are allowed.");
+            if (!file.ContentType.StartsWith("image/") && file.ContentType != "application/pdf")
+                throw new ArgumentException("Only images and PDFs are allowed.");
 
             var ext = Path.GetExtension(file.FileName);
             var fileName = $"{Guid.NewGuid()}{ext}";

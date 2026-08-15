@@ -38,7 +38,7 @@ namespace ZAD.WebAPI.Middleware
             var response = context.Response;
             response.ContentType = "application/json";
 
-            var statusCode = (int)HttpStatusCode.InternalServerError;
+            var statusCode = (int)HttpStatusCode.BadRequest; // Changed from 500 to 400 as requested
             var message = "An error occurred while processing your request.";
 
             switch (exception)

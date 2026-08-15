@@ -52,5 +52,12 @@ namespace ZAD.WebAPI.Controllers
             var message = await _companyService.DeleteAsync(id);
             return Ok(new { message });
         }
+
+        [HttpPut("{id}/toggle-active")]
+        public async Task<IActionResult> ToggleActive(int id)
+        {
+            await _companyService.ToggleActiveAsync(id);
+            return Ok();
+        }
     }
 }

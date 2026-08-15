@@ -17,11 +17,6 @@ namespace ZAD.WebAPI.Controllers
             _lookupService = lookupService;
         }
 
-        [HttpGet("{lookupKey}")]
-        public async Task<ActionResult<IEnumerable<LookupDto>>> Get(string lookupKey, [FromQuery] string culture = "ar")
-        {
-            var lookups = await _lookupService.GetLookupsAsync(lookupKey, culture);
-            return Ok(lookups);
-        }
+
     }
 }

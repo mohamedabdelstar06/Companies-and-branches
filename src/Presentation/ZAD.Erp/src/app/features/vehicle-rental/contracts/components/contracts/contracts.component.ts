@@ -62,10 +62,10 @@ export class ContractsComponent implements OnInit {
     let filtered = this.allContracts;
 
     if (this.context?.companyId) {
-      filtered = filtered.filter(c => c.companyId === this.context?.companyId);
+      filtered = filtered.filter(c => c.companyId == this.context?.companyId);
     }
     if (this.context?.branchId) {
-      filtered = filtered.filter(c => c.branchId === this.context?.branchId);
+      filtered = filtered.filter(c => c.branchId == this.context?.branchId);
     }
 
     if (term) {

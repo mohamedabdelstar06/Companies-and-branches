@@ -11,15 +11,16 @@ import { SweetAlertService } from '@app/core/services/sweet-alert.service';
 import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
-  selector: 'app-add-contract',
+  selector: 'app-update-contract',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, NgSelectModule],
-  templateUrl: './add-contract.component.html',
-  styleUrl: './add-contract.component.scss'
+  templateUrl: './update-contract.component.html',
+  styleUrl: './update-contract.component.scss'
 })
-export class AddContractComponent implements OnInit {
+export class UpdateContractComponent implements OnInit {
   form!: FormGroup;
   contractId: number | null = null;
+  originalVehicleId: number | null = null;
   activeTab = 'header'; // 'header', 'tenant', 'vehicle'
 
   tenants: any[] = [];
@@ -194,23 +195,32 @@ export class AddContractComponent implements OnInit {
       if (val) {
         const vehicle = this.vehicles.find(v => v.id == val);
         if (vehicle) {
-          if (vehicle.isRented) {
+          // If the vehicle is rented AND it's NOT the vehicle already attached to THIS contract
+          if (vehicle.isRented && vehicle.currentContractId !== this.contractId) {
              import('sweetalert2').then(Swal => {
                 Swal.default.fire({
                   icon: 'error',
-                  html: `The car cannot be used in the current contract/exit because it is under contract number '${vehicle.currentContractId}', reference no. '${vehicle.currentContractReferenceNo}'. <a style="color: #20c997; cursor: pointer; text-decoration: underline;"></a>`,
+                  html: `The car cannot be used in the current contract/exit because it is under contract number '${vehicle.currentContractId}', reference no. '${vehicle.currentContractReferenceNo}'. <a style="color: #20c997; cursor: pointer; text-decoration: underline;">View</a>`,
                   confirmButtonColor: '#d33',
                   confirmButtonText: 'Ok'
                 });
              });
-             this.form.get('rentalVehicleId')?.setValue(null, { emitEvent: false });
+             this.form.get('rentalVehicleId')?.setValue(this.originalVehicleId || null, { emitEvent: false });
              
-             this.form.patchValue({
-                kilometerPerDay: 0,
-                maximumKilometerPerDay: 0,
-                amountOfKmExceedingLimit: 0,
-                kilometerCounter: 0
-             });
+             // Restore previous vehicle details or clear
+             const originalVehicle = this.originalVehicleId ? this.vehicles.find(v => v.id == this.originalVehicleId) : null;
+             if (originalVehicle) {
+                 this.form.patchValue({
+                    kilometerCounter: originalVehicle.kilometerCounter
+                 });
+             } else {
+                 this.form.patchValue({
+                    kilometerPerDay: 0,
+                    maximumKilometerPerDay: 0,
+                    amountOfKmExceedingLimit: 0,
+                    kilometerCounter: 0
+                 });
+             }
              this.recalculateRentPrice();
              return;
           }
@@ -397,6 +407,7 @@ export class AddContractComponent implements OnInit {
 
   loadContract(id: number): void {
     this.contractService.getById(id).subscribe(res => {
+      this.originalVehicleId = res.rentalVehicleId;
       this.form.patchValue(res);
     });
   }
@@ -593,13 +604,16 @@ export class AddContractComponent implements OnInit {
     if (dto.secondDriverLicenseExpireDate === '') dto.secondDriverLicenseExpireDate = null;
     if (dto.secondDriverIdExpireDate === '') dto.secondDriverIdExpireDate = null;
 
-    this.contractService.create(dto).subscribe({
-      next: () => {
-        this.sweetAlert.success('Success', 'Contract created successfully');
-        this.router.navigate(['/vehicle-rental/contracts']);
-      },
-      error: (err) => this.handleError(err, 'Error creating contract')
-    });
+    if (this.contractId) {
+      dto.id = this.contractId;
+      this.contractService.update(this.contractId, dto).subscribe({
+        next: () => {
+          this.sweetAlert.success('Success', 'Contract updated successfully');
+          this.router.navigate(['/vehicle-rental/contracts']);
+        },
+        error: (err) => this.handleError(err, 'Error updating contract')
+      });
+    }
   }
 
   private handleError(err: any, defaultMessage: string) {
@@ -607,7 +621,7 @@ export class AddContractComponent implements OnInit {
     let errorMessage = defaultMessage;
     
     if (err.error) {
-      // Check for validation errors format
+      // Check for ASP.NET Core validation errors format
       if (err.error.errors) {
         const validationErrors = [];
         for (const key in err.error.errors) {

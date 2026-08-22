@@ -131,6 +131,31 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
             NetRentPrice = RentPrice - DiscountAmount;
             DailyRate = DriverFare + (DriverWorkingHoursPerDay * DriverOvertimeAmountPerHour);
             RemainingAmount = NetRentPrice; // Default logic for now
+
+            var startDateTime = Date.Date + Time;
+            DateTime expectedDateTime = startDateTime;
+
+            switch (ContractType)
+            {
+                case ContractType.Daily:
+                    expectedDateTime = startDateTime.AddDays(PeriodInDays);
+                    break;
+                case ContractType.Weekly:
+                    expectedDateTime = startDateTime.AddDays(PeriodInDays * 7);
+                    break;
+                case ContractType.Monthly:
+                    expectedDateTime = startDateTime.AddMonths(PeriodInDays);
+                    break;
+                case ContractType.LongTerm:
+                    expectedDateTime = startDateTime.AddYears(PeriodInDays);
+                    break;
+                case ContractType.Hourly:
+                    expectedDateTime = startDateTime.AddHours(PeriodInDays);
+                    break;
+            }
+
+            ExpectedReceivingDate = expectedDateTime.Date;
+            ExpectedReceivingTime = expectedDateTime.TimeOfDay;
         }  
         
          public Contract(

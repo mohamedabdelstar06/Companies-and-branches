@@ -7,6 +7,8 @@ namespace ZAD.Application.DTOs.VehicleRental.Contract
     {
         public int Id { get; set; }
         public int AccountingNo { get; set; }
+        public int? CompanyId { get; set; }
+        public int? BranchId { get; set; }
         public string CompanyName { get; set; } = string.Empty;
         public string BranchName { get; set; } = string.Empty;
         public string PlateNo { get; set; } = string.Empty;

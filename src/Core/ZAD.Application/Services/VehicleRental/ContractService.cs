@@ -35,9 +35,9 @@ namespace ZAD.Application.Services.VehicleRental
             }
 
             var age = Math.Max(0, (DateTime.Today - tenant.Birthday).Days / 365);
-            if (age < 18 || age > 60)
+            if ((age < 18 || age > 60) && string.IsNullOrWhiteSpace(dto.SponsorName))
             {
-                throw new FluentValidation.ValidationException("Tenant age must be between 18 and 60 years old.");
+                throw new FluentValidation.ValidationException("A Sponsor is required when the tenant age is under 18 or over 60.");
             }
 
             var vehicle = await _unitOfWork.RentalVehicles.GetByIdAsync(dto.RentalVehicleId);
@@ -114,9 +114,9 @@ namespace ZAD.Application.Services.VehicleRental
             }
 
             var age = Math.Max(0, (DateTime.Today - tenant.Birthday).Days / 365);
-            if (age < 18 || age > 60)
+            if ((age < 18 || age > 60) && string.IsNullOrWhiteSpace(dto.SponsorName))
             {
-                throw new FluentValidation.ValidationException("Tenant age must be between 18 and 60 years old.");
+                throw new FluentValidation.ValidationException("A Sponsor is required when the tenant age is under 18 or over 60.");
             }
 
             var vehicle = await _unitOfWork.RentalVehicles.GetByIdAsync(dto.RentalVehicleId);
@@ -221,6 +221,9 @@ namespace ZAD.Application.Services.VehicleRental
             var branches = await _unitOfWork.Branches.GetAsync(x => !x.IsDeleted);
             var sponsors = await _unitOfWork.Sponsors.GetAsync(x => !x.IsDeleted);
             var secondDrivers = await _unitOfWork.SecondDrivers.GetAsync(x => !x.IsDeleted);
+            
+            // Get active contracts to populate CurrentContract details for rented vehicles
+            var activeContracts = await _unitOfWork.Contracts.GetAsync(c => !c.IsDeleted && c.DeliveryStatus == ZAD.Domain.Enums.VehicleRental.DeliveryStatus.Rented);
 
             return new ContractDropdownsDto
             {
@@ -251,22 +254,27 @@ namespace ZAD.Application.Services.VehicleRental
                     Id = d.Id,
                     Name = d.Name
                 }),
-                Vehicles = vehicles.Select(v => new ZAD.Application.DTOs.VehicleRental.RentalVehicle.RentalVehicleDropdownDto
-                {
-                    Id = v.Id,
-                    PlateNo = v.Brand + " - " + v.PlateNo,
-                    Brand = v.Brand,
-                    ModelYear = v.ModelYear,
-                    FileNo = v.FileNo,
-                    KilometerCounter = v.KilometerCounter,
-                    Type = (int)v.Type,
-                    TypeName = v.Type.ToString(),
-                    HourlyRentPrice = v.HourlyRentPrice,
-                    DailyRentPrice = v.DailyRentPrice,
-                    WeeklyRentPrice = v.WeeklyRentPrice,
-                    MonthlyRentPrice = v.MonthlyRentPrice,
-                    YearlyRentPrice = v.YearlyRentPrice,
-                    IsRented = v.IsRented
+                Vehicles = vehicles.Select(v => {
+                    var activeContract = activeContracts.FirstOrDefault(c => c.RentalVehicleId == v.Id);
+                    return new ZAD.Application.DTOs.VehicleRental.RentalVehicle.RentalVehicleDropdownDto
+                    {
+                        Id = v.Id,
+                        PlateNo = v.Brand + " - " + v.PlateNo,
+                        Brand = v.Brand,
+                        ModelYear = v.ModelYear,
+                        FileNo = v.FileNo,
+                        KilometerCounter = v.KilometerCounter,
+                        Type = (int)v.Type,
+                        TypeName = v.Type.ToString(),
+                        HourlyRentPrice = v.HourlyRentPrice,
+                        DailyRentPrice = v.DailyRentPrice,
+                        WeeklyRentPrice = v.WeeklyRentPrice,
+                        MonthlyRentPrice = v.MonthlyRentPrice,
+                        YearlyRentPrice = v.YearlyRentPrice,
+                        IsRented = v.IsRented || activeContract != null,
+                        CurrentContractId = activeContract?.Id,
+                        CurrentContractReferenceNo = activeContract?.AccountingNo
+                    };
                 }),
                 Sponsors = sponsors.Select(s => new ZAD.Application.DTOs.VehicleRental.Sponsor.SponsorDropdownDto
                 {

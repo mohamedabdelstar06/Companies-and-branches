@@ -26,7 +26,7 @@ export const routes: Routes = [
           },
           {
             path: 'contracts/edit/:id',
-            loadComponent: () => import('./features/vehicle-rental/contracts/components/add-contract/add-contract.component').then(m => m.AddContractComponent)
+            loadComponent: () => import('./features/vehicle-rental/contracts/components/update-contract/update-contract.component').then(m => m.UpdateContractComponent)
           }
         ]
       },

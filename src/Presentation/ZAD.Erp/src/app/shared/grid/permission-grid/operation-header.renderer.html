@@ -1,0 +1,6 @@
+{{ context.header }}
+    @if (!context.params?.disabled) {
+    <span class="btn btn-link ms-2 p-0" (click)="selectAll()">
+        <i class="fa-solid fa-check-double"></i>
+    </span>
+    }

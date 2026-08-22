@@ -1,0 +1,40 @@
+<p-table [value]="rowData" class="permission-grid" [responsive]="true" styleClass="p-datatable-sm">
+
+    <ng-template pTemplate="header">
+        <tr>
+            <th *ngFor="let column of columns">
+                @if (column.headerComponent) {
+                <ng-container *ngComponentOutlet="column.headerComponent; inputs: { context:{
+                            params: column.params,
+                            field: column.field,
+                            header: column.header | translate
+                          }}"></ng-container>
+                }
+                @else
+                {
+                {{ column.header | translate }}
+                }
+            </th>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-row>
+        <tr>
+            <td *ngFor="let column of columns">
+                @if (column.component)
+                {
+                <ng-container *ngComponentOutlet="column.component; inputs: { context:{
+                        row,
+                        params: column.params,
+                        field: column.field,
+                        value: column.field ? row[column.field] : null
+                      }}"></ng-container>
+                }
+                @else
+                {
+            <td>{{ row[column.field!] }}</td>
+            }
+            </td>
+        </tr>
+    </ng-template>
+</p-table>

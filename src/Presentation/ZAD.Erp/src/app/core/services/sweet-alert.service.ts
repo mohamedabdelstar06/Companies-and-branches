@@ -12,10 +12,10 @@ export class SweetAlertService {
     return Swal.fire({
       title: title,
       text: text,
-      icon: 'question',
-      iconColor: '#d33', 
+      icon: 'warning',
+      iconColor: '#ffc107', 
       showCancelButton: true,
-      confirmButtonColor: '#d33', 
+      confirmButtonColor: '#ffc107', 
       cancelButtonColor: '#fff',
       cancelButtonText: '<span style="color: black">Cancel</span>',
       confirmButtonText: confirmButtonText,
@@ -58,6 +58,18 @@ export class SweetAlertService {
       title: title,
       text: text,
       confirmButtonColor: '#d33'
+    });
+  }
+
+  /**
+   * Shows an info message
+   */
+  info(title: string, text: string = '') {
+    Swal.fire({
+      icon: 'info',
+      title: title,
+      text: text,
+      confirmButtonColor: '#3085d6'
     });
   }
 }

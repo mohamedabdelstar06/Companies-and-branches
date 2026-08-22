@@ -1,0 +1,84 @@
+<div class="actions-btns d-flex flex-wrap justify-content-between align-items-center">
+    <div>
+        <a class="btn btn-link" (click)="navigateToAdd()" [title]="'general.create_new' | translate" type="button"
+            [authorize]="claims.create">
+            <i class="fa-solid fa-file"></i>
+        </a>
+        <button class="btn btn-link" (click)="navigateToEdit()" [title]="'general.update' | translate" type="button"
+            [authorize]="claims.update">
+            <i class="fa-solid fa-file-pen"></i>
+        </button>
+        <button class="btn btn-link" (click)="navigateToDuplicate()" [title]="'general.duplicate' | translate"
+            type="button" [authorize]="claims.create">
+            <i class="fa-regular fa-copy"></i>
+        </button>
+        <ng-container *ngTemplateOutlet="deletion"></ng-container>
+        @if (isActive !== undefined) {
+        <ng-container *ngTemplateOutlet="activation"></ng-container>
+        }
+        @if (isConfirmed !== undefined && isDeleted == false) {
+        <ng-container *ngTemplateOutlet="confirmation"></ng-container>
+        }
+    </div>
+    <button class="btn btn-link text-secondary" (click)="navigateToIndex()" [title]="'general.exit' | translate"
+        type="button">
+        <i class="fa-solid fa-right-from-bracket"></i>
+    </button>
+</div>
+
+<ng-template #deletion>
+    @if (isDeleted) {
+    <button class="btn btn-link text-success" [title]="'general.undelete' | translate" type="button"
+        (click)="undelete()" [authorize]="claims.undelete">
+        <i class="fa-solid fa-trash-can-arrow-up"></i>
+    </button>
+    }
+    @else if (isConfirmed == undefined || isConfirmed == false) {
+    <button class="btn btn-link p-2" data-toggle="tooltip" [title]="'general.delete' | translate" (click)="delete()"
+        [authorize]="claims.delete">
+        <i class="fa-regular fa-trash-can text-danger"></i>
+    </button>
+    }
+</ng-template>
+
+<ng-template #activation>
+    @if (isActive == false) {
+    <button class="btn btn-link text-success me-1" [title]="'general.activate' | translate" type="button"
+        (click)="activate()" [authorize]="claims.activate">
+        <i class="fa-regular fa-circle-check"></i>
+    </button>
+    }
+    @else {
+    @if (deactivateButtonTemplate)
+    {
+    <ng-container *ngTemplateOutlet="deactivateButtonTemplate" [authorize]="claims.deactivate"></ng-container>
+    }
+    @else {
+    <button class="btn btn-link text-danger me-1" [title]="'general.deactivate' | translate" type="button"
+        (click)="deactivate()" [authorize]="claims.deactivate">
+        <i class="fa-regular fa-circle-xmark"></i>
+    </button>
+    }
+    }
+</ng-template>
+
+<ng-template #confirmation>
+    @if (isConfirmed == false) {
+    <button class="btn btn-link text-success me-1" [title]="'general.confirm' | translate" type="button"
+        (click)="confirm()" [authorize]="claims.confirm">
+        <i class="fa-regular fa-thumbs-up"></i>
+    </button>
+    }
+    @else {
+    @if (unconfirmButtonTemplate)
+    {
+    <ng-container *ngTemplateOutlet="unconfirmButtonTemplate" [authorize]="claims.unconfirm"></ng-container>
+    }
+    @else {
+    <button class="btn btn-link text-danger me-1" [title]="'general.unconfirm' | translate" type="button"
+        (click)="unconfirm()" [authorize]="claims.unconfirm">
+        <i class="fa-regular fa-thumbs-down"></i>
+    </button>
+    }
+    }
+</ng-template>

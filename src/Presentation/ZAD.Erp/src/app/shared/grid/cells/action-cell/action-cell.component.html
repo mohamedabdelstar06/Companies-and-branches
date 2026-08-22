@@ -1,0 +1,110 @@
+<div class="d-flex justify-content-center">
+    <a class="btn btn-link p-2" *ngFor="let action of customActions" data-toggle="tooltip"
+        [title]="action.title | translate" (click)="action.onclick(row)" [authorize]="action.claim">
+        <i [class]="action.icon"></i>
+    </a>
+    @if(hasDefaultActions) {
+    <a class="btn btn-link p-2" data-toggle="tooltip" [title]="'general.view' | translate"
+        [authorize]="claims.viewDetails" (click)="navigateToView()">
+        <i class="far fa-eye"></i>
+    </a>
+    }
+    @else {
+    <a class="btn btn-link p-2" data-toggle="tooltip" [title]="'general.view' | translate"
+        (click)="context.params?.onViewClicked(row)" [authorize]="claims.viewDetails">
+        <i class="far fa-eye"></i>
+    </a>
+    }
+    @if (viewOnly == false) {
+    <ng-container *ngTemplateOutlet="actions"></ng-container>
+    }
+</div>
+
+<ng-template #actions>
+    @if(hasDefaultActions) {
+    <ng-container *ngTemplateOutlet="defaultActions"></ng-container>
+    }
+    @else {
+    <ng-container *ngTemplateOutlet="callbackActions"></ng-container>
+    }
+</ng-template>
+
+<ng-template #defaultActions>
+    <!-- @if (row.isActive !== undefined) {
+    <ng-container *ngTemplateOutlet="activation"></ng-container>
+    } -->
+    @if (row.isConfirmed !== undefined && row.isDeleted == false) {
+    <ng-container *ngTemplateOutlet="confirmation"></ng-container>
+    }
+    <a class="btn btn-link p-2" data-toggle="tooltip" [title]="'general.edit' | translate" [authorize]="claims.update"
+        [routerLink]="['edit', row.id]">
+        <i class="fa-regular fa-pen-to-square"></i>
+    </a>
+    <a class="btn btn-link p-2" data-toggle="tooltip" [title]="'general.duplicate' | translate"
+        [authorize]="claims.create" [routerLink]="['duplicate', row.id]">
+        <i class="fa-regular fa-regular fa-copy"></i>
+    </a>
+    @if (row.isDeleted) {
+    <button class="btn btn-link text-success p-2" [title]="'general.undelete' | translate" type="button"
+        (click)="undelete()" [authorize]="claims.undelete">
+        <i class="fa-solid fa-trash-can-arrow-up"></i>
+    </button>
+    }
+    @else if (row.isConfirmed == undefined || row.isConfirmed == false) {
+    <button class="btn btn-link p-2" data-toggle="tooltip" [title]="'general.delete' | translate" (click)="delete()"
+        [authorize]="claims.delete">
+        <i class="fa-regular fa-trash-can text-danger"></i>
+    </button>
+    }
+</ng-template>
+
+<ng-template #activation>
+    @if (row.isActive == false) {
+    <button class="btn btn-link text-success p-2" [title]="'general.activate' | translate" type="button"
+        (click)="activate()" [authorize]="claims.activate">
+        <i class="fa-regular fa-circle-check"></i>
+    </button>
+    }
+    @else {
+    <button class="btn btn-link text-danger p-2" [title]="'general.deactivate' | translate" type="button"
+        (click)="deactivate()" [authorize]="claims.deactivate">
+        <i class="fa-regular fa-circle-xmark"></i>
+    </button>
+    }
+</ng-template>
+
+<ng-template #confirmation>
+    @if (row.isConfirmed == false) {
+    <button class="btn btn-link text-success p-2" [title]="'general.confirm' | translate" type="button"
+        (click)="confirm()" [authorize]="claims.confirm">
+        <i class="fa-regular fa-thumbs-up"></i>
+    </button>
+    }
+    @else {
+    <button class="btn btn-link text-danger p-2" [title]="'general.unconfirm' | translate" type="button"
+        (click)="unconfirm()" [authorize]="claims.unconfirm">
+        <i class="fa-regular fa-thumbs-down"></i>
+    </button>
+    }
+</ng-template>
+
+<ng-template #callbackActions>
+    @if(context.params?.onEditClicked) {
+    <a class="btn btn-link p-2" data-toggle="tooltip" [title]="'general.edit' | translate"
+        (click)="context.params?.onEditClicked(row)" [authorize]="claims.update">
+        <i class="fa-regular fa-pen-to-square"></i>
+    </a>
+    }
+    @if(context.params?.onDuplicateClicked) {
+    <a class="btn btn-link p-2" data-toggle="tooltip" [title]="'general.duplicate' | translate"
+        (click)="context.params?.onDuplicateClicked(row)" [authorize]="claims.create">
+        <i class="fa-regular fa-regular fa-copy"></i>
+    </a>
+    }
+    @if(context.params?.onDeleteClicked) {
+    <button class="btn btn-link p-2" data-toggle="tooltip" [title]="'general.delete' | translate"
+        (click)="context.params?.onDeleteClicked(row)" [authorize]="claims.delete">
+        <i class="fa-regular fa-trash-can text-danger"></i>
+    </button>
+    }
+</ng-template>

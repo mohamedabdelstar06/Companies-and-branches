@@ -1,0 +1,3 @@
+<div class="form-check" *ngIf="hasOperation">
+      <input class="form-check-input operation" [attr.field]="context.field" type="checkbox" style="margin-top: 0.9rem;" [checked]="context.value || false" (change)="togglePermission($event)" [disabled]="context.params.disabled">
+    </div>

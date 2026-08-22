@@ -54,6 +54,7 @@ builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<CompanyProfile>();
     cfg.AddProfile<BranchProfile>();
+    cfg.AddProfile<ContractProfile>();
 });
 
 builder.Services.AddValidatorsFromAssemblyContaining<CreateCompanyDtoValidator>();

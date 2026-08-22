@@ -1,0 +1,10 @@
+<div class="row" [style]="{maxWidth: '400px'}">
+    <culture-input #nameInput [formGroup]="form" [submitted]="submitted" />
+
+    <div class="d-flex justify-content-center gap-2 mt-3">
+        @if (form.disabled == false) {
+        <button class="btn btn-primary" (click)="save()">{{ 'general.save' | translate }}</button>
+        }
+        <button class="btn btn-outline-secondary" (click)="close()">{{ 'general.exit' | translate }}</button>
+    </div>
+</div>

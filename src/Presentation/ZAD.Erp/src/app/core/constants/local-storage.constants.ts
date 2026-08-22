@@ -1,0 +1,13 @@
+export const TOKEN_KEY = 'access-token';
+export const REFRESHTOKEN_KEY = 'refresh-token';
+export const USER_KEY = 'user';
+export const USER_CLAIMS_KEY = 'user-claims';
+export const USER_COMPANIES_Key = 'user-companies';
+export const USER_BRANCHES_KEY = 'user-branches';
+export const CULTURE = 'culture';
+export const PAGE_ID = 'page-id';
+export const COMPANY_ID = 'company-id';
+export const COMPANY_LOGO = 'company-logo';
+export const COMPANY_PROFILE = 'company-profile';
+export const BRANCH_ID = 'branch-id';
+export const CULTURE_Code = 'culture-code';

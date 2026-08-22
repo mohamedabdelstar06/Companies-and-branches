@@ -1,0 +1,48 @@
+@if (formGroup) {
+
+<div class="row" [formGroup]="formGroup">
+    <div *ngFor="let culture of cultures" class="col-sm-6"
+        [ngClass]="{ 'invalid': submitted && f[name + '_' + culture.code + 'Input'].errors }">
+
+        <label class="form-label">{{ 'languages.' + culture.code + '_' + title.split('.')[1] | translate }}</label>
+
+        @if (fieldType == 'input') {
+
+        <input type="text" class="form-control" [placeholder]="'languages.' + culture.code | translate"
+            [formControlName]="name + '_' + culture.code + 'Input'"
+            [ngClass]="{ 'is-invalid': submitted && f[name + '_' + culture.code + 'Input'].errors }">
+
+        }
+        @else {
+
+        <textarea type="text" class="form-control" [placeholder]="'languages.' + culture.code | translate"
+            [formControlName]="name + '_' + culture.code + 'Input'"
+            [ngClass]="{ 'is-invalid': submitted && f[name + '_' + culture.code + 'Input'].errors }"></textarea>
+
+        }
+
+        <div *ngIf="submitted && f[name + '_' + culture.code + 'Input'].errors" class="invalid-feedback">
+            <div class="animate__animated animate__fadeInUp animate__fast"
+                *ngIf="f[name + '_' + culture.code + 'Input'].errors['required']">{{
+                'validation.required' | translate }}</div>
+        </div>
+    </div>
+</div>
+
+}
+@else {
+
+<div class="row">
+    <div *ngFor="let culture of cultures" class="col-sm-6" [ngClass]="{ 'disabled': disabled }">
+        <label class="form-label">{{ 'languages.' + culture.code | translate }} {{ title | translate }}</label>
+
+        @if (fieldType == 'input') {
+        <input type="text" class="form-control" [value]="c[culture.code] || ''" [disabled]="disabled">
+        }
+        @else {
+        <textarea type="text" class="form-control" [value]="c[culture.code] || ''" [disabled]="disabled"></textarea>
+        }
+    </div>
+</div>
+
+}

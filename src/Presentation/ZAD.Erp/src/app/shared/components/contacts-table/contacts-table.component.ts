@@ -20,48 +20,8 @@ export const CONTACT_TYPES = [
   selector: 'app-contacts-table',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  template: `
-    <div [formGroup]="parentForm">
-      <div formArrayName="contacts">
-        <div class="row mb-2 align-items-end" *ngFor="let contact of contacts.controls; let i=index" [formGroupName]="i">
-          <div class="col-md-3">
-            <label *ngIf="i===0" class="form-label text-muted fw-bold small">Contact Type</label>
-            <select class="form-select" formControlName="type"
-              [class.is-invalid]="contact.get('type')?.invalid && contact.get('type')?.touched"
-              (change)="onTypeChange(i)">
-              <option [ngValue]="null" disabled>Select type</option>
-              <option *ngFor="let ct of contactTypes" [ngValue]="ct.value">{{ ct.label }}</option>
-            </select>
-            <div class="invalid-feedback">Required.</div>
-          </div>
-          <div class="col-md-4">
-            <label *ngIf="i===0" class="form-label text-muted fw-bold small">Contact Value</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="fas {{ getIcon(i) }}"></i></span>
-              <input type="text" class="form-control" formControlName="value"
-                [class.is-invalid]="contact.get('value')?.invalid && contact.get('value')?.touched"
-                [placeholder]="getPlaceholder(i)">
-            </div>
-            <div class="invalid-feedback d-block"
-              *ngIf="contact.get('value')?.invalid && contact.get('value')?.touched">Required.</div>
-          </div>
-          <div class="col-md-4">
-            <label *ngIf="i===0" class="form-label text-muted fw-bold small">Contact Name / Label</label>
-            <input type="text" class="form-control" formControlName="name" placeholder="e.g. Main Line, HR Dept...">
-          </div>
-          <div class="col-md-1 d-flex justify-content-end" [class.mt-3]="i===0">
-            <button class="btn btn-icon text-danger" type="button" (click)="removeContact(i)">
-              <i class="fas fa-trash"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-      <button class="btn btn-outline-teal btn-sm mt-2" type="button" (click)="addContact()">
-        <i class="fas fa-plus"></i> Add Contact
-      </button>
-    </div>
-  `
-})
+  templateUrl: './contacts-table.component.html',
+  styleUrl: './contacts-table.component.scss',})
 export class ContactsTableComponent {
   @Input() parentForm!: FormGroup;
   private fb = inject(FormBuilder);

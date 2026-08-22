@@ -8,5 +8,7 @@ namespace ZAD.Application.DTOs.Common
         public string? SortColumn { get; set; }
         public string? SortDirection { get; set; }
         public bool? IsActive { get; set; }
+        public int? CompanyId { get; set; }
+        public int? BranchId { get; set; }
     }
 }

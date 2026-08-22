@@ -1,0 +1,47 @@
+<div [formGroup]="parentForm">
+      <div formArrayName="documents">
+        <div class="row mb-2" *ngFor="let doc of documents.controls; let i=index" [formGroupName]="i">
+          <div class="col-md-3">
+            <label *ngIf="i===0" class="form-label text-muted fw-bold small">Document Type</label>
+            <select class="form-select" formControlName="type"
+              [class.is-invalid]="doc.get('type')?.invalid && doc.get('type')?.touched">
+              <option value="" disabled>Select type</option>
+              <option *ngFor="let dt of documentTypes" [ngValue]="dt.value">{{ dt.label }}</option>
+            </select>
+            <div class="invalid-feedback">Document type is required.</div>
+          </div>
+          <div class="col-md-3">
+            <label *ngIf="i===0" class="form-label text-muted fw-bold small">Document Number</label>
+            <input type="text" class="form-control" formControlName="documentNumber"
+              [class.is-invalid]="doc.get('documentNumber')?.invalid && doc.get('documentNumber')?.touched"
+              placeholder="e.g. A123456">
+            <div class="invalid-feedback">Document number is required.</div>
+          </div>
+          <div class="col-md-3">
+            <label *ngIf="i===0" class="form-label text-muted fw-bold small">Attach File</label>
+            <div class="input-group">
+              <input type="text" class="form-control bg-white" [value]="getFileName(i)" readonly placeholder="Choose file" (click)="fileInput.click()" style="cursor: pointer;">
+              <input type="file" class="d-none" #fileInput (change)="onDocumentFileChange($event, i)">
+              <a *ngIf="isExistingFile(i)" class="btn btn-outline-teal" [href]="getFileUrl(i)" target="_blank" title="Download">
+                <i class="fas fa-download"></i>
+              </a>
+              <button class="btn btn-outline-teal" type="button" (click)="fileInput.click()" title="Upload File">
+                <i class="fas fa-upload"></i>
+              </button>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <label *ngIf="i===0" class="form-label text-muted fw-bold small">Expiry Date</label>
+            <input type="date" class="form-control" formControlName="expiryDate">
+          </div>
+          <div class="col-md-1 d-flex align-items-end justify-content-end">
+            <button class="btn btn-icon text-danger" type="button" (click)="removeDocument(i)">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-outline-teal btn-sm mt-2" type="button" (click)="addDocument()">
+        <i class="fas fa-plus"></i> Add Document
+      </button>
+    </div>

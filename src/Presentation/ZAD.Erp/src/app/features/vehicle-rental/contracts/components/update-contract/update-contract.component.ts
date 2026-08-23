@@ -585,10 +585,10 @@ export class UpdateContractComponent implements OnInit {
       }
       const expectedMinimum = baseRate * period;
 
-      if (netRentPrice < expectedMinimum) {
-        this.sweetAlert.error('Warning', `Net rent price (${netRentPrice}) is lower than the minimum allowed (${expectedMinimum}) for this car and period.`);
-        return;
-      }
+      // if (netRentPrice < expectedMinimum) {
+      //   this.sweetAlert.error('Warning', `Net rent price (${netRentPrice}) is lower than the minimum allowed (${expectedMinimum}) for this car and period.`);
+      //   return;
+      // }
     }
 
     const dto = this.form.getRawValue();

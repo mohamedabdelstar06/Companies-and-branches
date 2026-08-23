@@ -71,10 +71,10 @@ namespace ZAD.Application.Services.VehicleRental
             };
             var discountAmount = dto.RentPrice * dto.DiscountPercent / 100m;
             var netRentPrice = dto.RentPrice - discountAmount;
-            if (netRentPrice < expectedMinimum * dto.PeriodInDays)
-            {
-                throw new FluentValidation.ValidationException($"Net rent price ({netRentPrice}) is lower than the minimum allowed ({expectedMinimum * dto.PeriodInDays}) for this car and period.");
-            }
+            // if (netRentPrice < expectedMinimum * dto.PeriodInDays)
+            // {
+            //     throw new FluentValidation.ValidationException($"Net rent price ({netRentPrice}) is lower than the minimum allowed ({expectedMinimum * dto.PeriodInDays}) for this car and period.");
+            // }
 
             // In a real scenario, this would be generated safely
             var accountingNo = 1000 + new Random().Next(1000); 
@@ -150,10 +150,10 @@ namespace ZAD.Application.Services.VehicleRental
             };
             var discountAmount = dto.RentPrice * dto.DiscountPercent / 100m;
             var netRentPrice = dto.RentPrice - discountAmount;
-            if (netRentPrice < expectedMinimum * dto.PeriodInDays)
-            {
-                throw new FluentValidation.ValidationException($"Net rent price ({netRentPrice}) is lower than the minimum allowed ({expectedMinimum * dto.PeriodInDays}) for this car and period.");
-            }
+            // if (netRentPrice < expectedMinimum * dto.PeriodInDays)
+            // {
+            //     throw new FluentValidation.ValidationException($"Net rent price ({netRentPrice}) is lower than the minimum allowed ({expectedMinimum * dto.PeriodInDays}) for this car and period.");
+            // }
 
             contract.Update(
                 dto.CompanyId, dto.BranchId, contract.AccountingNo, dto.Time, dto.Date, dto.ContractType, dto.PaymentType, dto.PeriodInDays,

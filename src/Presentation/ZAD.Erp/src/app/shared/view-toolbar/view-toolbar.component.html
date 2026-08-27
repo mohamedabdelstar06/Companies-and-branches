@@ -8,10 +8,7 @@
             [authorize]="claims.update">
             <i class="fa-solid fa-file-pen"></i>
         </button>
-        <button class="btn btn-link" (click)="navigateToDuplicate()" [title]="'general.duplicate' | translate"
-            type="button" [authorize]="claims.create">
-            <i class="fa-regular fa-copy"></i>
-        </button>
+
         <ng-container *ngTemplateOutlet="deletion"></ng-container>
         @if (isActive !== undefined) {
         <ng-container *ngTemplateOutlet="activation"></ng-container>

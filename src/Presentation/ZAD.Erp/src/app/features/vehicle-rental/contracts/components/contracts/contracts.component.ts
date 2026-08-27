@@ -6,7 +6,7 @@ import { ContractService } from '../../services/contract.service';
 import { SweetAlertService } from '@app/core/services/sweet-alert.service';
 import { VehicleRentalContextService, VehicleRentalContext } from '../../../shared/services/vehicle-rental-context.service';
 
-type SortField = 'accountingNo' | 'plateNo' | 'brand' | 'date' | 'toDate' | 'companyName' | 'branchName' | 'tenantName' | 'status' | 'createdAt';
+type SortField = 'accountingNo' | 'plateNo' | 'brand' | 'date' | 'toDate' | 'periodInDays' | 'actualPeriodInDays' | 'contractType' | 'tenantName' | 'remainingAmount' | 'deliveryStatus' | 'status';
 type SortDir = 'asc' | 'desc' | null;
 
 @Component({
@@ -34,6 +34,8 @@ export class ContractsComponent implements OnInit {
   sortField: SortField | null = null;
   sortDir: SortDir = null;
 
+  selectedIds: Set<number> = new Set();
+
   ngOnInit(): void {
     this.contextService.context$.subscribe(ctx => {
       this.context = ctx;
@@ -43,7 +45,7 @@ export class ContractsComponent implements OnInit {
 
   changeContext() {
     this.contextService.clearContext();
-    this.router.navigate(['/vehicle-rental/login']);
+    this.router.navigate(['/account/login/company']);
   }
 
   loadContracts(): void {
@@ -70,11 +72,11 @@ export class ContractsComponent implements OnInit {
 
     if (term) {
       filtered = filtered.filter(c =>
-        (c.accountingNo?.toLowerCase() || '').includes(term) ||
+        (c.accountingNo?.toString() || '').includes(term) ||
         (c.plateNo?.toLowerCase() || '').includes(term) ||
-        (c.companyName?.toLowerCase() || '').includes(term) ||
-        (c.branchName?.toLowerCase() || '').includes(term) ||
-        (c.tenantName?.toLowerCase() || '').includes(term)
+        (c.brand?.toLowerCase() || '').includes(term) ||
+        (c.tenantName?.toLowerCase() || '').includes(term) ||
+        (c.status?.toLowerCase() || '').includes(term)
       );
     }
 
@@ -112,11 +114,72 @@ export class ContractsComponent implements OnInit {
     return 'fas fa-sort-amount-down-alt text-teal';
   }
 
+  //   ─ Selection            ─
+  toggleSelect(id: number): void {
+    if (this.selectedIds.has(id)) this.selectedIds.delete(id);
+    else this.selectedIds.add(id);
+  }
+
+  isSelected(id: number): boolean {
+    return this.selectedIds.has(id);
+  }
+
+  toggleSelectAll(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    if (checked) {
+      this.contracts.forEach(c => this.selectedIds.add(c.id));
+    } else {
+      this.selectedIds.clear();
+    }
+  }
+
+  get allSelected(): boolean {
+    return this.contracts.length > 0 && this.contracts.every(c => this.selectedIds.has(c.id));
+  }
+
+  //   ─ Status helpers        ─
+  isConfirmed(contract: any): boolean {
+    return contract.status === 'Confirmed';
+  }
+
+  isDraft(contract: any): boolean {
+    return contract.status === 'Draft';
+  }
+
+  isDeleted(contract: any): boolean {
+    return contract.status === 'Deleted';
+  }
+
+  getDeliveryStatusClass(status: string): string {
+    switch (status) {
+      case 'Rented': return 'badge-delivery-rented';
+      case 'LateThanExpected': return 'badge-delivery-late';
+      case 'Delivered': return 'badge-delivery-delivered';
+      default: return 'badge bg-secondary';
+    }
+  }
+
+  getDeliveryStatusLabel(status: string): string {
+    switch (status) {
+      case 'Rented': return 'Rented';
+      case 'LateThanExpected': return 'Late Than Expected';
+      case 'Delivered': return 'Delivered';
+      default: return status;
+    }
+  }
+
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'Confirmed': return 'text-success fw-semibold';
+      case 'Draft': return 'text-secondary fw-semibold';
+      case 'Deleted': return 'text-danger fw-semibold';
+      default: return '';
+    }
+  }
+
+  //   ─ Actions      
   async deleteContract(id: number) {
-    const confirmed = await this.sweetAlert.confirm(
-      'Confirm',
-      'Are you sure you want to delete item(s)?'
-    );
+    const confirmed = await this.sweetAlert.confirm('Confirm', 'Are you sure you want to delete this contract?');
     if (confirmed) {
       this.contractService.delete(id).subscribe({
         next: () => {
@@ -124,11 +187,70 @@ export class ContractsComponent implements OnInit {
           this.loadContracts();
         },
         error: (err: any) => {
-          console.error('Error deleting contract', err);
-          this.sweetAlert.error('Error', 'Failed to delete contract');
+          const msg = err?.error?.message || 'Failed to delete contract';
+          this.sweetAlert.error('Error', msg);
         }
       });
     }
+  }
+
+  async restoreContract(id: number) {
+    const confirmed = await this.sweetAlert.confirm('Restore', 'Restore this contract?');
+    if (confirmed) {
+      this.contractService.restore(id).subscribe({
+        next: () => {
+          this.sweetAlert.success('Contract restored successfully');
+          this.loadContracts();
+        },
+        error: (err: any) => {
+          const msg = err?.error?.message || 'Failed to restore contract';
+          this.sweetAlert.error('Error', msg);
+        }
+      });
+    }
+  }
+
+  async confirmContract(id: number) {
+    const confirmed = await this.sweetAlert.confirm('Confirm Contract', 'Are you sure you want to confirm this contract?');
+    if (confirmed) {
+      this.contractService.confirm(id).subscribe({
+        next: () => {
+          this.sweetAlert.success('Contract confirmed successfully');
+          this.loadContracts();
+        },
+        error: (err: any) => {
+          const msg = err?.error?.message || 'Failed to confirm contract';
+          this.sweetAlert.error('Error', msg);
+        }
+      });
+    }
+  }
+
+  async unconfirmContract(id: number): Promise<void> {
+    const ok = await this.sweetAlert.confirm('Unconfirm Contract', 'Are you sure you want to unconfirm this contract?');
+    if (!ok) return;
+
+    this.contractService.unconfirm(id).subscribe({
+      next: () => {
+        this.sweetAlert.success('Contract unconfirmed successfully');
+        this.loadContracts();
+      },
+      error: (err) => this.sweetAlert.error('Error', err?.error?.message || 'Failed to unconfirm contract')
+    });
+  }
+
+
+  async unreceiveVehicle(id: number): Promise<void> {
+    const ok = await this.sweetAlert.confirm('Unconfirm Receive Vehicle', 'Are you sure you want to unconfirm vehicle receipt?');
+    if (!ok) return;
+
+    this.contractService.unreceiveVehicle(id).subscribe({
+      next: () => {
+        this.sweetAlert.success('Vehicle receipt unconfirmed');
+        this.loadContracts();
+      },
+      error: (err) => this.sweetAlert.error('Error', err?.error?.message || 'Failed to unreceive vehicle')
+    });
   }
 
   onCreateClick(): void {

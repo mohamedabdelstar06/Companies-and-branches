@@ -40,10 +40,7 @@
         [routerLink]="['edit', row.id]">
         <i class="fa-regular fa-pen-to-square"></i>
     </a>
-    <a class="btn btn-link p-2" data-toggle="tooltip" [title]="'general.duplicate' | translate"
-        [authorize]="claims.create" [routerLink]="['duplicate', row.id]">
-        <i class="fa-regular fa-regular fa-copy"></i>
-    </a>
+
     @if (row.isDeleted) {
     <button class="btn btn-link text-success p-2" [title]="'general.undelete' | translate" type="button"
         (click)="undelete()" [authorize]="claims.undelete">
@@ -95,12 +92,7 @@
         <i class="fa-regular fa-pen-to-square"></i>
     </a>
     }
-    @if(context.params?.onDuplicateClicked) {
-    <a class="btn btn-link p-2" data-toggle="tooltip" [title]="'general.duplicate' | translate"
-        (click)="context.params?.onDuplicateClicked(row)" [authorize]="claims.create">
-        <i class="fa-regular fa-regular fa-copy"></i>
-    </a>
-    }
+
     @if(context.params?.onDeleteClicked) {
     <button class="btn btn-link p-2" data-toggle="tooltip" [title]="'general.delete' | translate"
         (click)="context.params?.onDeleteClicked(row)" [authorize]="claims.delete">

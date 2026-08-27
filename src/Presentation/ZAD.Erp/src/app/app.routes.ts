@@ -27,6 +27,10 @@ export const routes: Routes = [
           {
             path: 'contracts/edit/:id',
             loadComponent: () => import('./features/vehicle-rental/contracts/components/update-contract/update-contract.component').then(m => m.UpdateContractComponent)
+          },
+          {
+            path: 'contracts/view/:id',
+            loadComponent: () => import('./features/vehicle-rental/contracts/components/view-contract/view-contract.component').then(m => m.ViewContractComponent)
           }
         ]
       },

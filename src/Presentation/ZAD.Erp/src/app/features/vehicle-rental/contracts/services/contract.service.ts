@@ -74,6 +74,26 @@ export class ContractService {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
+  restore(id: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${id}/restore`, {});
+  }
+
+  confirm(id: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${id}/confirm`, {});
+  }
+
+  unconfirm(id: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${id}/unconfirm`, {});
+  }
+
+  receiveVehicle(id: number, payload: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${id}/receive-vehicle`, payload);
+  }
+
+  unreceiveVehicle(id: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${id}/unreceive-vehicle`, {});
+  }
+
   // Toolbar methods
   deleteBulk(ids: number[]): Observable<any> {
     return this.http.post(`${this.apiUrl}/bulk-delete`, ids);
@@ -87,3 +107,4 @@ export class ContractService {
     return this.http.get(`${this.apiUrl}/export-excel`, { responseType: 'blob' });
   }
 }
+

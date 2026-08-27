@@ -1,1 +1,43 @@
-/* Contracts SCSS */
+// Delivery Status Badges
+.badge-delivery {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  display: inline-block;
+}
+
+.badge-delivery-rented {
+  background-color: #0d6e5a;
+  color: #fff;
+}
+
+.badge-delivery-late {
+  background-color: #cb3234;
+  color: #fff;
+}
+
+.badge-delivery-delivered {
+  background-color: #143d59;
+  color: #fff;
+}
+
+// Deleted row styling
+.table-row-deleted td {
+  opacity: 0.6;
+  text-decoration: line-through;
+  text-decoration-color: rgba(0, 0, 0, 0.3);
+}
+.table-row-deleted td:last-child {
+  text-decoration: none;
+}
+
+// Table header
+.table-header-teal th {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #495057;
+  padding: 0.65rem 0.75rem;
+  white-space: nowrap;
+}

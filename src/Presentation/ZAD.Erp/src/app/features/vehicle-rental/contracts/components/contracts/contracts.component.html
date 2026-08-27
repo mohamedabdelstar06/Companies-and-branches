@@ -1,25 +1,24 @@
 <div class="container-fluid py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <div class="d-flex align-items-center text-teal fw-bold">
-      <i class="fas fa-chevron-left me-2"></i>
+  <!--    Top bar    ─ -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex align-items-center text-teal fw-bold fs-6">
+      <i class="fas fa-chevron-left me-2 cursor-pointer" (click)="changeContext()"></i>
       <span>Vehicle Rental / Contracts</span>
     </div>
-    <div class="d-flex gap-3 align-items-center">
-      <div class="d-flex align-items-center gap-3 bg-white px-3 py-2 rounded shadow-sm border">
-        <span class="text-muted small">
-          <i class="fa-solid fa-building me-1"></i> {{context?.companyName}}
-        </span>
-        <span class="text-muted small">
-          <i class="fa-solid fa-code-branch me-1"></i> {{context?.branchName}}
-        </span>
+    <div class="d-flex gap-2 align-items-center">
+      <!-- Context badge -->
+      <div class="d-flex align-items-center gap-2 bg-white px-3 py-2 rounded shadow-sm border">
+        <span class="text-muted small"><i class="fa-solid fa-building me-1"></i>{{context?.companyName}}</span>
+        <span class="text-muted small"><i class="fa-solid fa-code-branch me-1"></i>{{context?.branchName}}</span>
         <button class="btn btn-sm btn-outline-secondary" (click)="changeContext()" title="Change Context">
           <i class="fa-solid fa-right-from-bracket"></i>
         </button>
       </div>
-      <div style="width: 280px;">
+      <!-- Search -->
+      <div style="width: 260px;">
         <div class="input-group">
-          <input type="text" class="form-control" placeholder="Search contracts..."
-            [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" id="contractSearch">
+          <input type="text" class="form-control" placeholder="Search for record" [(ngModel)]="searchTerm"
+            (ngModelChange)="onSearch()" id="contractSearch">
           <span class="input-group-text bg-white text-teal border-start-0">
             <i class="fas fa-search"></i>
           </span>
@@ -28,90 +27,176 @@
     </div>
   </div>
 
+  <!--    Toolbar     -->
   <div class="d-flex justify-content-between align-items-center mb-3">
     <div class="d-flex gap-2">
-        <button class="btn bg-teal text-white" (click)="onCreateClick()" id="createContractBtn">
+      <button class="btn bg-teal text-white" (click)="onCreateClick()" id="createContractBtn">
         <i class="fas fa-plus me-1"></i> Create New
-        </button>
+      </button>
     </div>
-    <div *ngIf="searchTerm" class="text-muted small">
-      Showing {{ contracts.length }} of {{ allContracts.length }} records
-    </div>
+
   </div>
 
+  <!--    Table       -->
   <div class="card">
-    <div class="card-body p-0 table-responsive">
-      <table class="table table-hover mb-0">
-        <thead>
+    <!-- Horizontal scroll only (no vertical scroll) -->
+    <div class="card-body p-0" style="overflow-x: auto; overflow-y: visible;">
+      <table class="table table-hover mb-0" style="min-width: 1400px; white-space: nowrap;">
+        <thead class="table-header-teal">
           <tr>
             <th class="ps-3" style="width: 40px;">
-              <input type="checkbox" class="form-check-input">
+              <input type="checkbox" class="form-check-input" (change)="toggleSelectAll($event)"
+                [checked]="allSelected">
             </th>
-            <th class="sortable-th" [class.sort-active]="sortField === 'accountingNo'" (click)="toggleSort('accountingNo')">
-              # <i class="fas sort-icon" [ngClass]="getSortIcon('accountingNo')"></i>
-            </th>
+            <th style="width: 55px;">Serial</th>
             <th class="sortable-th" [class.sort-active]="sortField === 'plateNo'" (click)="toggleSort('plateNo')">
-              Plate No. <i class="fas sort-icon" [ngClass]="getSortIcon('plateNo')"></i>
+              Plate No. <i class="sort-icon" [ngClass]="getSortIcon('plateNo')"></i>
             </th>
             <th class="sortable-th" [class.sort-active]="sortField === 'brand'" (click)="toggleSort('brand')">
-              Brand <i class="fas sort-icon" [ngClass]="getSortIcon('brand')"></i>
+              Brand <i class="sort-icon" [ngClass]="getSortIcon('brand')"></i>
             </th>
             <th class="sortable-th" [class.sort-active]="sortField === 'date'" (click)="toggleSort('date')">
-              From <i class="fas sort-icon" [ngClass]="getSortIcon('date')"></i>
+              From <i class="sort-icon" [ngClass]="getSortIcon('date')"></i>
             </th>
             <th class="sortable-th" [class.sort-active]="sortField === 'toDate'" (click)="toggleSort('toDate')">
-              To <i class="fas sort-icon" [ngClass]="getSortIcon('toDate')"></i>
+              To <i class="sort-icon" [ngClass]="getSortIcon('toDate')"></i>
             </th>
-            <th class="sortable-th" [class.sort-active]="sortField === 'createdAt'" (click)="toggleSort('createdAt')">
-              Created At <i class="fas sort-icon" [ngClass]="getSortIcon('createdAt')"></i>
+            <th class="sortable-th" [class.sort-active]="sortField === 'periodInDays'"
+              (click)="toggleSort('periodInDays')">
+              Period <i class="sort-icon" [ngClass]="getSortIcon('periodInDays')"></i>
             </th>
-            <th class="sortable-th" [class.sort-active]="sortField === 'companyName'" (click)="toggleSort('companyName')">
-              Company <i class="fas sort-icon" [ngClass]="getSortIcon('companyName')"></i>
+            <th class="sortable-th" [class.sort-active]="sortField === 'contractType'"
+              (click)="toggleSort('contractType')">
+              Contract Type <i class="sort-icon" [ngClass]="getSortIcon('contractType')"></i>
             </th>
-            <th class="sortable-th" [class.sort-active]="sortField === 'branchName'" (click)="toggleSort('branchName')">
-              Branch <i class="fas sort-icon" [ngClass]="getSortIcon('branchName')"></i>
+            <th class="sortable-th" [class.sort-active]="sortField === 'actualPeriodInDays'"
+              (click)="toggleSort('actualPeriodInDays')">
+              Actual Period In Days <i class="sort-icon" [ngClass]="getSortIcon('actualPeriodInDays')"></i>
             </th>
             <th class="sortable-th" [class.sort-active]="sortField === 'tenantName'" (click)="toggleSort('tenantName')">
-              Tenant <i class="fas sort-icon" [ngClass]="getSortIcon('tenantName')"></i>
+              Tenant <i class="sort-icon" [ngClass]="getSortIcon('tenantName')"></i>
             </th>
+            <th class="sortable-th" [class.sort-active]="sortField === 'remainingAmount'"
+              (click)="toggleSort('remainingAmount')">
+              Remaining Amount <i class="sort-icon" [ngClass]="getSortIcon('remainingAmount')"></i>
+            </th>
+            <th class="sortable-th" [class.sort-active]="sortField === 'deliveryStatus'"
+              (click)="toggleSort('deliveryStatus')">
+              Delivery Status <i class="sort-icon" [ngClass]="getSortIcon('deliveryStatus')"></i>
+            </th>
+
             <th class="sortable-th" [class.sort-active]="sortField === 'status'" (click)="toggleSort('status')">
-              Status <i class="fas sort-icon" [ngClass]="getSortIcon('status')"></i>
+              Status <i class="sort-icon" [ngClass]="getSortIcon('status')"></i>
             </th>
-            <th class="text-end pe-4">Actions</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          @for (contract of contracts; track contract.id) {
-            <tr>
-              <td class="ps-3"><input type="checkbox" class="form-check-input"></td>
-              <td>{{ contract.accountingNo }}</td>
-              <td>{{ contract.plateNo }}</td>
-              <td>{{ contract.brand }}</td>
-              <td>{{ contract.date | date }}</td>
-              <td>{{ contract.toDate | date }}</td>
-              <td>{{ contract.createdAt | date:'short' }}</td>
-              <td>{{ contract.companyName }}</td>
-              <td>{{ contract.branchName }}</td>
-              <td>{{ contract.tenantName }}</td>
-              <td>
-                <span class="badge bg-teal">{{ contract.status }}</span>
-              </td>
-              <td class="text-end pe-3">
-                <button class="btn btn-icon text-muted" [routerLink]="['view', contract.id]"><i class="fas fa-eye"></i></button>
-                <button class="btn btn-icon text-muted" [routerLink]="['edit', contract.id]"><i class="fas fa-edit"></i></button>
-                <button class="btn btn-icon text-danger" (click)="deleteContract(contract.id)"><i class="fas fa-trash-alt"></i></button>
-              </td>
-            </tr>
+          @for (contract of contracts; track contract.id; let i = $index) {
+          <tr>
+            <td class="ps-3">
+              <input type="checkbox" class="form-check-input" [checked]="isSelected(contract.id)"
+                (change)="toggleSelect(contract.id)">
+            </td>
+            <!-- Serial -->
+            <td class="text-muted small">{{ i + 1 }}</td>
+            <!-- Plate No -->
+            <td class="fw-semibold">{{ contract.plateNo }}</td>
+            <!-- Brand -->
+            <td>{{ contract.brand }}</td>
+            <!-- From -->
+            <td>{{ contract.date | date:'yyyy-MM-dd' }}</td>
+            <!-- To -->
+            <td>{{ contract.toDate | date:'yyyy-MM-dd' }}</td>
+            <!-- Period -->
+            <td>{{ contract.periodInDays }}</td>
+            <!-- Contract Type -->
+            <td>{{ contract.contractType }}</td>
+            <!-- Actual Period -->
+            <td>{{ contract.actualPeriodInDays }}</td>
+            <!-- Tenant -->
+            <td>{{ contract.tenantName }}</td>
+            <!-- Remaining Amount -->
+            <td class="fw-semibold">{{ contract.remainingAmount | number:'1.3-3' }}</td>
+            <!-- Delivery Status -->
+            <td>
+              <span class="badge-delivery px-3 py-1"
+                [ngClass]="getDeliveryStatusClass(contract.deliveryStatus)">
+                {{ getDeliveryStatusLabel(contract.deliveryStatus) }}
+              </span>
+            </td>
+
+            <!-- Status -->
+            <td>
+              <span [ngClass]="getStatusClass(contract.status)">{{ contract.status }}</span>
+            </td>
+            <!-- Actions -->
+            <td>
+              <div class="d-flex align-items-center gap-1">
+                <!-- View — always visible -->
+                <button class="btn btn-icon" title="View" [routerLink]="['view', contract.id]">
+                  <i class="fas fa-eye text-teal"></i>
+                </button>
+
+                @if (isDraft(contract)) {
+                <!-- Edit -->
+                <button class="btn btn-icon" title="Edit" [routerLink]="['edit', contract.id]">
+                  <i class="fas fa-edit text-teal"></i>
+                </button>
+
+                <!-- Confirm -->
+                <button class="btn btn-icon" title="Confirm Contract" (click)="confirmContract(contract.id)">
+                  <i class="fas fa-thumbs-up text-success"></i>
+                </button>
+                <!-- Soft Delete -->
+                <button class="btn btn-icon" title="Delete" (click)="deleteContract(contract.id)">
+                  <i class="fas fa-trash-alt text-danger"></i>
+                </button>
+                }
+
+                @if (isConfirmed(contract)) {
+
+                <!-- Unconfirm -->
+                <button class="btn btn-icon" title="Unconfirm Contract" (click)="unconfirmContract(contract.id)">
+                  <i class="fas fa-thumbs-down text-danger"></i>
+                </button>
+                }
+
+                @if (isDeleted(contract)) {
+                <!-- View is already outside this block, we need to add Copy and Restore -->
+                <!-- Edit -->
+                <button class="btn btn-icon" title="Edit" [routerLink]="['edit', contract.id]">
+                  <i class="fas fa-edit text-teal"></i>
+                </button>
+
+                <!-- Restore (Undelete) -->
+                <button class="btn btn-icon" title="Restore Contract" (click)="restoreContract(contract.id)">
+                  <i class="fas fa-trash-restore text-success"></i>
+                </button>
+                }
+              </div>
+            </td>
+          </tr>
           } @empty {
-            <tr>
-              <td colspan="11" class="text-center py-4 text-muted">
-                <i class="fas fa-search me-2"></i>
-                {{ searchTerm ? 'No matching contracts found.' : 'No contracts found.' }}
-              </td>
-            </tr>
+          <tr>
+            <td colspan="15" class="text-center py-5 text-muted">
+              <i class="fas fa-file-contract fa-2x mb-2 d-block opacity-25"></i>
+              {{ searchTerm ? 'No matching contracts found.' : 'No contracts found.' }}
+            </td>
+          </tr>
           }
         </tbody>
       </table>
     </div>
   </div>
+
+  <!--    Footer info      ─ -->
+  @if (contracts.length > 0) {
+  <div class="mt-2 text-muted small d-flex justify-content-between px-1">
+    <span>Showing {{ contracts.length }} record(s)</span>
+    @if (searchTerm) {
+    <span>{{ contracts.length }} of {{ allContracts.length }} total</span>
+    }
+  </div>
+  }
 </div>

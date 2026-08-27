@@ -21,9 +21,12 @@ namespace ZAD.Persistence.Repositories.VehicleRental
         public override async Task<Contract?> GetByIdAsync(int id)
         {
             return await _dbSet
+                .IgnoreQueryFilters()
                 .Include(c => c.Tenant)
                 .Include(c => c.Driver)
                 .Include(c => c.RentalVehicle)
+                .Include(c => c.Company)
+                .Include(c => c.Branch)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
@@ -46,6 +49,7 @@ namespace ZAD.Persistence.Repositories.VehicleRental
                 int pageIndex, int pageSize, string? searchTerm, string? sortColumn, string? sortDirection, bool? isActive)
             {
                 IQueryable<Contract> query = _repo.FindAllNoTracking()
+                    .IgnoreQueryFilters()
                     .Include(c => c.Tenant)
                     .Include(c => c.RentalVehicle);
 
@@ -63,6 +67,7 @@ namespace ZAD.Persistence.Repositories.VehicleRental
                 int pageIndex, int pageSize, string? searchTerm, string? sortColumn, string? sortDirection, int? companyId, int? branchId)
             {
                 IQueryable<Contract> query = _repo.FindAllNoTracking()
+                    .IgnoreQueryFilters()
                     .Include(c => c.Tenant)
                     .Include(c => c.RentalVehicle)
                     .Include(c => c.Company)

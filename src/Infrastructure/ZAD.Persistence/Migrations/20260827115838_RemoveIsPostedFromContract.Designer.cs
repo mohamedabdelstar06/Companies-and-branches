@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZAD.Persistence.Context;
 
@@ -11,9 +12,11 @@ using ZAD.Persistence.Context;
 namespace ZAD.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260827115838_RemoveIsPostedFromContract")]
+    partial class RemoveIsPostedFromContract
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -212,12 +215,6 @@ namespace ZAD.Persistence.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("DelayHours")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("DelayPenaltyAmount")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<decimal>("DelayPenaltyPerHour")
                         .HasColumnType("decimal(18,4)");
 
@@ -248,26 +245,14 @@ namespace ZAD.Persistence.Migrations
                     b.Property<TimeSpan>("ExpectedReceivingTime")
                         .HasColumnType("time");
 
-                    b.Property<decimal?>("FinalNetDueAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("FreeKM")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
-
-                    b.Property<int?>("KMExceededTheLimit")
-                        .HasColumnType("int");
 
                     b.Property<int>("KilometerCounter")
                         .HasColumnType("int");
 
                     b.Property<int>("KilometerPerDay")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("MaintenancePaidByTenant")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("MaintenancePenalty")
                         .HasColumnType("decimal(18,4)");
@@ -283,24 +268,6 @@ namespace ZAD.Persistence.Migrations
 
                     b.Property<int>("PeriodInDays")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("ReceiveDiscountAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("ReceiveNotes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("ReceiveProofDocuments")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("ReceivingDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("ReceivingKilometerCounter")
-                        .HasColumnType("int");
-
-                    b.Property<TimeSpan?>("ReceivingTime")
-                        .HasColumnType("time");
 
                     b.Property<decimal>("RemainingAmount")
                         .HasColumnType("decimal(18,4)");
@@ -359,21 +326,6 @@ namespace ZAD.Persistence.Migrations
 
                     b.Property<TimeSpan>("Time")
                         .HasColumnType("time");
-
-                    b.Property<decimal?>("TotalAmountOfKMExceedingTheLimit")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("TotalConsumptionKilometers")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("TotalDriverAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("TotalDueAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("TotalRentalAmount")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");

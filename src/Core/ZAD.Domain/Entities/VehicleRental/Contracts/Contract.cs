@@ -110,18 +110,33 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
         
         public decimal AmountOfKmExceedingLimit { get; private set; }
 
-
-       
-
-
         // Status and Payment
         public DeliveryStatus DeliveryStatus { get; private set; }
         
         public ContractStatus Status { get; private set; }
-       
-        public bool IsPosted { get; private set; }
 
         public decimal RemainingAmount { get; private set; }
+
+        // Receiving Fields
+        public DateTime? ReceivingDate { get; private set; }
+        public TimeSpan? ReceivingTime { get; private set; }
+        public int? ReceivingKilometerCounter { get; private set; }
+        public bool? ReceiveProofDocuments { get; private set; }
+        public string? ReceiveNotes { get; private set; }
+        public decimal MaintenancePaidByTenant { get; private set; }
+        public decimal ReceiveDiscountAmount { get; private set; }
+
+        // Computed Receiving Totals
+        public int? DelayHours { get; private set; }
+        public int? TotalConsumptionKilometers { get; private set; }
+        public int? FreeKM { get; private set; }
+        public int? KMExceededTheLimit { get; private set; }
+        public decimal? TotalAmountOfKMExceedingTheLimit { get; private set; }
+        public decimal? DelayPenaltyAmount { get; private set; }
+        public decimal? TotalRentalAmount { get; private set; }
+        public decimal? TotalDriverAmount { get; private set; }
+        public decimal? TotalDueAmount { get; private set; }
+        public decimal? FinalNetDueAmount { get; private set; } // Distinct from existing NetRentPrice
 
     }
 }

@@ -10,6 +10,7 @@ namespace ZAD.Domain.SeedWork
         public DateTime CreatedAt { get; private set; }
         public DateTime? UpdatedAt { get; private set; }
         public void MarkAsDeleted() => IsDeleted = true;
+        public void RestoreFromDeleted() => IsDeleted = false;
         public void SetCreatedAt(DateTime date) => CreatedAt = date;
         public void SetUpdatedAt(DateTime date) => UpdatedAt = date;
         private List<IDomainEvent>? _domainEvents;

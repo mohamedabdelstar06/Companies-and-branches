@@ -57,5 +57,36 @@ namespace ZAD.WebAPI.Controllers.VehicleRental
             var message = await _contractService.DeleteAsync(id);
             return Ok(new { message });
         }
+
+        [HttpPost("{id}/restore")]
+        public async Task<IActionResult> Restore(int id)
+        {
+            var message = await _contractService.RestoreAsync(id);
+            return Ok(new { message });
+        }
+
+        [HttpPost("{id}/confirm")]
+        public async Task<ActionResult<ContractDetailDto>> Confirm(int id)
+        {
+            return Ok(await _contractService.ConfirmAsync(id));
+        }
+
+        [HttpPost("{id}/unconfirm")]
+        public async Task<ActionResult<ContractDetailDto>> Unconfirm(int id)
+        {
+            return Ok(await _contractService.UnconfirmAsync(id));
+        }
+
+        [HttpPost("{id}/receive-vehicle")]
+        public async Task<ActionResult<ContractDetailDto>> ReceiveVehicle(int id, [FromBody] ReceiveVehicleDto dto)
+        {
+            return Ok(await _contractService.ReceiveVehicleAsync(id, dto));
+        }
+
+        [HttpPost("{id}/unreceive-vehicle")]
+        public async Task<ActionResult<ContractDetailDto>> UnreceiveVehicle(int id)
+        {
+            return Ok(await _contractService.UnreceiveVehicleAsync(id));
+        }
     }
 }

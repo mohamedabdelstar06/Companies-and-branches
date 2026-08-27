@@ -90,7 +90,7 @@ namespace ZAD.Application.Services.VehicleRental
                 dto.DelayPenaltyPerHour, dto.AllowedDelayHours, dto.MaintenancePenalty, dto.AccidentPenalty,
                 dto.DriverFare, dto.DriverWorkingHoursPerDay, dto.DriverOvertimeAmountPerHour,
                 dto.KilometerPerDay, dto.MaximumKilometerPerDay, dto.AmountOfKmExceedingLimit,
-                DeliveryStatus.Rented, ContractStatus.Draft, false
+                DeliveryStatus.Rented, ContractStatus.Draft
             );
 
             await _unitOfWork.Contracts.AddAsync(contract);
@@ -166,7 +166,7 @@ namespace ZAD.Application.Services.VehicleRental
                 dto.DelayPenaltyPerHour, dto.AllowedDelayHours, dto.MaintenancePenalty, dto.AccidentPenalty,
                 dto.DriverFare, dto.DriverWorkingHoursPerDay, dto.DriverOvertimeAmountPerHour,
                 dto.KilometerPerDay, dto.MaximumKilometerPerDay, dto.AmountOfKmExceedingLimit,
-                contract.DeliveryStatus, contract.Status, contract.IsPosted
+                contract.DeliveryStatus, contract.Status
             );
 
             _unitOfWork.Contracts.Update(contract);
@@ -177,9 +177,108 @@ namespace ZAD.Application.Services.VehicleRental
 
         public async Task<string> DeleteAsync(int id)
         {
-            await _unitOfWork.Contracts.DeleteAsync(id);
+            var contract = await _unitOfWork.Contracts.GetByIdAsync(id);
+            if (contract == null)
+            {
+                throw new NotFoundException($"Contract {id} not found.");
+            }
+            if (contract.Status == ZAD.Domain.Enums.VehicleRental.ContractStatus.Confirmed)
+            {
+                throw new FluentValidation.ValidationException("Cannot delete a confirmed contract. Unconfirm it first.");
+            }
+            contract.SoftDelete();
+            _unitOfWork.Contracts.Update(contract);
             await _unitOfWork.SaveChangesAsync();
             return "Contract deleted successfully.";
+        }
+
+        public async Task<string> RestoreAsync(int id)
+        {
+            var contract = await _unitOfWork.Contracts.GetByIdAsync(id);
+            if (contract == null)
+            {
+                throw new NotFoundException($"Contract {id} not found.");
+            }
+            contract.Restore();
+            _unitOfWork.Contracts.Update(contract);
+            await _unitOfWork.SaveChangesAsync();
+            return "Contract restored successfully.";
+        }
+
+        public async Task<ContractDetailDto> ConfirmAsync(int id)
+        {
+            var contract = await _unitOfWork.Contracts.GetByIdAsync(id);
+            if (contract == null)
+            {
+                throw new NotFoundException($"Contract {id} not found.");
+            }
+            if (contract.Status == ZAD.Domain.Enums.VehicleRental.ContractStatus.Deleted)
+            {
+                throw new FluentValidation.ValidationException("Cannot confirm a deleted contract.");
+            }
+            contract.Confirm();
+            _unitOfWork.Contracts.Update(contract);
+            await _unitOfWork.SaveChangesAsync();
+            return _mapper.Map<ContractDetailDto>(contract);
+        }
+
+        public async Task<ContractDetailDto> UnconfirmAsync(int id)
+        {
+            var contract = await _unitOfWork.Contracts.GetByIdAsync(id);
+            if (contract == null)
+            {
+                throw new NotFoundException($"Contract {id} not found.");
+            }
+            if (contract.Status != ZAD.Domain.Enums.VehicleRental.ContractStatus.Confirmed)
+            {
+                throw new FluentValidation.ValidationException("Contract is not in Confirmed state.");
+            }
+            contract.Unconfirm();
+            _unitOfWork.Contracts.Update(contract);
+            await _unitOfWork.SaveChangesAsync();
+            return _mapper.Map<ContractDetailDto>(contract);
+        }
+
+        public async Task<ContractDetailDto> ReceiveVehicleAsync(int id, ReceiveVehicleDto dto)
+        {
+            var contract = await _unitOfWork.Contracts.GetByIdAsync(id);
+            if (contract == null)
+            {
+                throw new NotFoundException($"Contract {id} not found.");
+            }
+            if (contract.Status != ZAD.Domain.Enums.VehicleRental.ContractStatus.Confirmed)
+            {
+                throw new FluentValidation.ValidationException("Contract must be confirmed before receiving vehicle.");
+            }
+            
+            contract.ReceiveVehicle(
+                dto.ReceivingDate,
+                dto.ReceivingTime,
+                dto.ReceivingKilometerCounter,
+                dto.ReceiveProofDocuments,
+                dto.ReceiveNotes,
+                dto.MaintenancePenaltyAmount,
+                dto.AccidentPenaltyAmount,
+                dto.MaintenancePaidByTenant,
+                dto.ReceiveDiscountAmount
+            );
+            
+            _unitOfWork.Contracts.Update(contract);
+            await _unitOfWork.SaveChangesAsync();
+            return _mapper.Map<ContractDetailDto>(contract);
+        }
+
+        public async Task<ContractDetailDto> UnreceiveVehicleAsync(int id)
+        {
+            var contract = await _unitOfWork.Contracts.GetByIdAsync(id);
+            if (contract == null)
+            {
+                throw new NotFoundException($"Contract {id} not found.");
+            }
+            contract.UnreceiveVehicle();
+            _unitOfWork.Contracts.Update(contract);
+            await _unitOfWork.SaveChangesAsync();
+            return _mapper.Map<ContractDetailDto>(contract);
         }
 
         public async Task<ContractDetailDto> GetAsync(int id)

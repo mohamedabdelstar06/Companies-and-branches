@@ -21,7 +21,7 @@ namespace ZAD.Application.DTOs.VehicleRental.Contract
         public string TenantName { get; set; } = string.Empty;
         public decimal RemainingAmount { get; set; }
         public string DeliveryStatus { get; set; } = string.Empty;
-        public string IsPosted { get; set; } = string.Empty;
+
         public string Status { get; set; } = string.Empty;
     }
 }

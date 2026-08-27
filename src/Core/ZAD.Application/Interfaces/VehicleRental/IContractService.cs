@@ -10,6 +10,11 @@ namespace ZAD.Application.Interfaces.VehicleRental
         Task<ContractDetailDto> CreateAsync(CreateContractDto dto);
         Task<ContractDetailDto> UpdateAsync(UpdateContractDto dto);
         Task<string> DeleteAsync(int id);
+        Task<string> RestoreAsync(int id);
+        Task<ContractDetailDto> ConfirmAsync(int id);
+        Task<ContractDetailDto> UnconfirmAsync(int id);
+        Task<ContractDetailDto> ReceiveVehicleAsync(int id, ReceiveVehicleDto dto);
+        Task<ContractDetailDto> UnreceiveVehicleAsync(int id);
         Task<ContractDetailDto> GetAsync(int id);
         Task<PageResult<ContractListDto>> GetPageAsync(PageQuery query);
         Task<ContractDropdownsDto> GetDropdownsAsync();

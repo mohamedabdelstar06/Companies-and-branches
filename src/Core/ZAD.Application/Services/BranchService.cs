@@ -1,5 +1,4 @@
-using System.Linq;
-using System.Threading.Tasks;
+
 using AutoMapper;
 using Microsoft.Extensions.Logging;
 using ZAD.Application.DTOs.Common;
@@ -44,7 +43,6 @@ namespace ZAD.Application.Services
             }
 
             var address = new Address(dto.Country, dto.City, dto.AddressAr, dto.AddressEn);
-
             int count = _unitOfWork.Branches.FindAllNoTracking().Count();
             string code = string.IsNullOrWhiteSpace(dto.Code) ? (count + 1).ToString() : dto.Code;
 
@@ -170,7 +168,7 @@ namespace ZAD.Application.Services
             }
 
             return _mapper.Map<BranchDetailDto>(branch);
-        }
+             }
 
         public async Task<PageResult<BranchListDto>> GetPageAsync(PageQuery query)
         {

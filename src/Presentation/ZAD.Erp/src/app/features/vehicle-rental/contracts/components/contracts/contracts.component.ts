@@ -6,7 +6,7 @@ import { ContractService } from '../../services/contract.service';
 import { SweetAlertService } from '@app/core/services/sweet-alert.service';
 import { VehicleRentalContextService, VehicleRentalContext } from '../../../shared/services/vehicle-rental-context.service';
 
-type SortField = 'accountingNo' | 'plateNo' | 'brand' | 'date' | 'toDate' | 'periodInDays' | 'actualPeriodInDays' | 'contractType' | 'tenantName' | 'remainingAmount' | 'deliveryStatus' | 'status';
+type SortField = 'id' | 'plateNo' | 'brand' | 'date' | 'toDate' | 'periodInDays' | 'actualPeriodInDays' | 'contractType' | 'tenantName' | 'remainingAmount' | 'deliveryStatus' | 'status';
 type SortDir = 'asc' | 'desc' | null;
 
 @Component({
@@ -72,7 +72,7 @@ export class ContractsComponent implements OnInit {
 
     if (term) {
       filtered = filtered.filter(c =>
-        (c.accountingNo?.toString() || '').includes(term) ||
+        (c.id?.toString() || '').includes(term) ||
         (c.plateNo?.toLowerCase() || '').includes(term) ||
         (c.brand?.toLowerCase() || '').includes(term) ||
         (c.tenantName?.toLowerCase() || '').includes(term) ||

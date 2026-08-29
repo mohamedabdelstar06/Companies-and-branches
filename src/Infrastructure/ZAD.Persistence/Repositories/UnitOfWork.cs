@@ -5,6 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using ZAD.Domain.Interfaces;
 using ZAD.Persistence.Context;
 using ZAD.Domain.SeedWork;
+using ZAD.Domain.Interfaces.VehicleRental;
+using ZAD.Domain.Entities.Lookups;
+using ZAD.Domain.Entities.VehicleRental.Sponsors;
+using ZAD.Domain.Entities.VehicleRental.Drivers;
+using ZAD.Persistence.Repositories.VehicleRental;
 
 namespace ZAD.Persistence.Repositories
 {
@@ -15,14 +20,14 @@ namespace ZAD.Persistence.Repositories
         
         public ICompanyRepository Companies { get; }
         public IBranchRepository Branches { get; }
-        public IGenericRepository<ZAD.Domain.Entities.Lookups.Lookup> Lookups { get; }
+        public IGenericRepository<Lookup> Lookups { get; }
 
-        public ZAD.Domain.Interfaces.VehicleRental.IContractRepository Contracts { get; }
-        public ZAD.Domain.Interfaces.VehicleRental.ITenantRepository Tenants { get; }
-        public ZAD.Domain.Interfaces.VehicleRental.IDriverRepository Drivers { get; }
-        public ZAD.Domain.Interfaces.VehicleRental.IRentalVehicleRepository RentalVehicles { get; }
-        public IGenericRepository<ZAD.Domain.Entities.VehicleRental.Sponsors.Sponsor> Sponsors { get; }
-        public IGenericRepository<ZAD.Domain.Entities.VehicleRental.Drivers.SecondDriver> SecondDrivers { get; }
+        public IContractRepository Contracts { get; }
+        public ITenantRepository Tenants { get; }
+        public IDriverRepository Drivers { get; }
+        public IRentalVehicleRepository RentalVehicles { get; }
+        public IGenericRepository<Sponsor> Sponsors { get; }
+        public IGenericRepository<SecondDriver> SecondDrivers { get; }
 
         public UnitOfWork(ApplicationDbContext context, IMapper mapper)
         {
@@ -30,14 +35,14 @@ namespace ZAD.Persistence.Repositories
             _mapper = mapper;
             Companies = new CompanyRepository(_context, _mapper);
             Branches = new BranchRepository(_context, _mapper);
-            Lookups = new GenericRepository<ZAD.Domain.Entities.Lookups.Lookup>(_context);
+            Lookups = new GenericRepository<Lookup>(_context);
 
-            Contracts = new ZAD.Persistence.Repositories.VehicleRental.ContractRepository(_context, _mapper);
-            Tenants = new ZAD.Persistence.Repositories.VehicleRental.TenantRepository(_context, _mapper);
-            Drivers = new ZAD.Persistence.Repositories.VehicleRental.DriverRepository(_context);
-            RentalVehicles = new ZAD.Persistence.Repositories.VehicleRental.RentalVehicleRepository(_context);
-            Sponsors = new GenericRepository<ZAD.Domain.Entities.VehicleRental.Sponsors.Sponsor>(_context);
-            SecondDrivers = new GenericRepository<ZAD.Domain.Entities.VehicleRental.Drivers.SecondDriver>(_context);
+            Contracts = new ContractRepository(_context, _mapper);
+            Tenants = new TenantRepository(_context, _mapper);
+            Drivers = new DriverRepository(_context);
+            RentalVehicles = new RentalVehicleRepository(_context);
+            Sponsors = new GenericRepository<Sponsor>(_context);
+            SecondDrivers = new GenericRepository<SecondDriver>(_context);
         }
 
         public async Task<int> SaveChangesAsync()

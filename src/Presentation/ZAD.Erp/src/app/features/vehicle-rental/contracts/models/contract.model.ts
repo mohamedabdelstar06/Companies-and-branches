@@ -1,6 +1,5 @@
 export interface ContractListDto {
   id: number;
-  accountingNo: number;
   companyId?: number;
   branchId?: number;
   companyName: string;
@@ -26,7 +25,6 @@ export interface ContractDetailDto {
   branchId?: number;
   branchName?: string;
 
-  accountingNo: number;
   referenceNo?: string;
 
   time: string;
@@ -108,4 +106,28 @@ export interface ContractDetailDto {
   // Metadata
   createdAt?: string;
   updatedAt?: string;
+  
+  // Receiving Fields
+  receivingDate?: string;
+  receivingTime?: string;
+  receivingKilometerCounter?: number;
+  receiveProofDocuments?: boolean;
+  receiveNotes?: string;
+  maintenancePaidByTenant?: number;
+  receiveDiscountAmount?: number;
+  isMaintenanceDoneByTenant?: boolean;
+  vehicleReceivingStatus?: number;
+  isVehicleStoppedUntilMaintenanceOrRepair?: boolean;
+  damageNote?: string;
+
+  delayHours?: number;
+  totalConsumptionKilometers?: number;
+  freeKM?: number;
+  kMExceededTheLimit?: number;
+  totalAmountOfKMExceedingTheLimit?: number;
+  delayPenaltyAmount?: number;
+  totalRentalAmount?: number;
+  totalDriverAmount?: number;
+  totalDueAmount?: number;
+  finalNetDueAmount?: number;
 }

@@ -12,6 +12,8 @@ using ZAD.WebAPI.Middleware;
 using ZAD.WebAPI.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
+using System.IO;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +21,7 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-var logPath = System.IO.Path.Combine(AppContext.BaseDirectory, "Logs", "log-.txt");
+var logPath = Path.Combine(AppContext.BaseDirectory, "Logs", "log-.txt");
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File(logPath, rollingInterval: RollingInterval.Day, retainedFileCountLimit: 14)
@@ -29,7 +31,7 @@ builder.Host.UseSerilog();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
-    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

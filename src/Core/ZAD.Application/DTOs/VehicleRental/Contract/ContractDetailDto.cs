@@ -12,7 +12,6 @@ namespace ZAD.Application.DTOs.VehicleRental.Contract
         public int? BranchId { get; set; }
         public string? BranchName { get; set; }
 
-        public int AccountingNo { get; set; }
         public string? ReferenceNo { get; set; }
 
         public TimeSpan Time { get; set; }
@@ -103,6 +102,11 @@ namespace ZAD.Application.DTOs.VehicleRental.Contract
         public string? ReceiveNotes { get; set; }
         public decimal MaintenancePaidByTenant { get; set; }
         public decimal ReceiveDiscountAmount { get; set; }
+        
+        public bool IsMaintenanceDoneByTenant { get; set; }
+        public ZAD.Domain.Enums.VehicleRental.VehicleReceivingStatus? VehicleReceivingStatus { get; set; }
+        public bool IsVehicleStoppedUntilMaintenanceOrRepair { get; set; }
+        public string? DamageNote { get; set; }
 
         public int? DelayHours { get; set; }
         public int? TotalConsumptionKilometers { get; set; }

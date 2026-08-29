@@ -18,7 +18,8 @@ namespace ZAD.Domain.ValueObjects
             if (string.IsNullOrWhiteSpace(value))
                 throw new ArgumentException("Email cannot be empty.");
             
-            if (!value.Contains("@")) // Basic domain validation, can be improved
+            if (!value.Contains("@")) // Basic domain validation, can be improved in the future
+            
                 throw new ArgumentException("Invalid email format.");
 
             Value = value;

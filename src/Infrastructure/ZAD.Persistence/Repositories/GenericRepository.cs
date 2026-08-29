@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
+using System;
 using Microsoft.EntityFrameworkCore;
 using ZAD.Domain.Interfaces;
 using ZAD.Domain.SeedWork;
@@ -63,7 +65,7 @@ namespace ZAD.Persistence.Repositories
             return await _dbSet.Where(specification.ToExpression()).FirstOrDefaultAsync();
         }
 
-        public async Task<IReadOnlyList<T>> GetAsync(System.Linq.Expressions.Expression<System.Func<T, bool>> predicate)
+        public async Task<IReadOnlyList<T>> GetAsync(Expression<Func<T, bool>> predicate)
         {
             return await _dbSet.Where(predicate).ToListAsync();
         }

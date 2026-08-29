@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
+using System;
 using ZAD.Domain.SeedWork;
 
 namespace ZAD.Domain.Interfaces
@@ -15,6 +17,6 @@ namespace ZAD.Domain.Interfaces
         IQueryable<T> FindAllNoTracking();
         Task<IEnumerable<T>> FindAsync(Specification<T> specification);
         Task<T?> FirstOrDefaultAsync(Specification<T> specification);
-        Task<System.Collections.Generic.IReadOnlyList<T>> GetAsync(System.Linq.Expressions.Expression<System.Func<T, bool>> predicate);
+        Task<IReadOnlyList<T>> GetAsync(Expression<Func<T, bool>> predicate);
     }
 }

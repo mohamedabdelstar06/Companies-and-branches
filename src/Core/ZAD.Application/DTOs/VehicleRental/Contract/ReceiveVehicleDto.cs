@@ -13,5 +13,9 @@ namespace ZAD.Application.DTOs.VehicleRental.Contract
         public decimal AccidentPenaltyAmount { get; set; }
         public decimal MaintenancePaidByTenant { get; set; }
         public decimal ReceiveDiscountAmount { get; set; }
+        public bool IsMaintenanceDoneByTenant { get; set; }
+        public ZAD.Domain.Enums.VehicleRental.VehicleReceivingStatus? VehicleReceivingStatus { get; set; }
+        public bool IsVehicleStoppedUntilMaintenanceOrRepair { get; set; }
+        public string? DamageNote { get; set; }
     }
 }

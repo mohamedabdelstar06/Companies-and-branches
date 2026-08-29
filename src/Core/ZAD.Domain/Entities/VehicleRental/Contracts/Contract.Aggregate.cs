@@ -8,7 +8,7 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
         private Contract() { } 
 
         public Contract(
-            int? companyId, int? branchId, int accountingNo, TimeSpan time, DateTime date, ContractType contractType, PaymentType paymentType, int periodInDays,
+            int? companyId, int? branchId, TimeSpan time, DateTime date, ContractType contractType, PaymentType paymentType, int periodInDays,
             TimeSpan expectedReceivingTime, DateTime expectedReceivingDate, bool withDriver, int? driverId,
             int tenantId, string? sponsorName, string? sponsorNationality, string? sponsorLicenseNumber, 
             DateTime? sponsorLicenseExpireDate, string? sponsorIdNumber, DateTime? sponsorIdExpireDate,
@@ -22,7 +22,6 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
         {
             CompanyId = companyId;
             BranchId = branchId;
-            AccountingNo = accountingNo;
             Time = time;
             Date = date;
             ContractType = contractType;
@@ -67,7 +66,7 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
         }
 
         public void Update(
-            int? companyId, int? branchId, int accountingNo, TimeSpan time, DateTime date, ContractType contractType, PaymentType paymentType, int periodInDays,
+            int? companyId, int? branchId, TimeSpan time, DateTime date, ContractType contractType, PaymentType paymentType, int periodInDays,
             TimeSpan expectedReceivingTime, DateTime expectedReceivingDate, bool withDriver, int? driverId,
             int tenantId, string? sponsorName, string? sponsorNationality, string? sponsorLicenseNumber, 
             DateTime? sponsorLicenseExpireDate, string? sponsorIdNumber, DateTime? sponsorIdExpireDate,
@@ -81,7 +80,6 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
         {
             CompanyId = companyId;
             BranchId = branchId;
-            AccountingNo = accountingNo;
             Time = time;
             Date = date;
             ContractType = contractType;
@@ -92,39 +90,32 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
             WithDriver = withDriver;
             DriverId = driverId;
             TenantId = tenantId;
-            
             SponsorName = sponsorName;
             SponsorNationality = sponsorNationality;
             SponsorLicenseNumber = sponsorLicenseNumber;
             SponsorLicenseExpireDate = sponsorLicenseExpireDate;
             SponsorIdNumber = sponsorIdNumber;
             SponsorIdExpireDate = sponsorIdExpireDate;
-
             SecondDriverName = secondDriverName;
             SecondDriverNationality = secondDriverNationality;
             SecondDriverLicenseNumber = secondDriverLicenseNumber;
             SecondDriverLicenseExpireDate = secondDriverLicenseExpireDate;
             SecondDriverIdNumber = secondDriverIdNumber;
             SecondDriverIdExpireDate = secondDriverIdExpireDate;
-
             RentalVehicleId = rentalVehicleId;
             KilometerCounter = kilometerCounter;
             RentPrice = rentPrice;
             DiscountPercent = discountPercent;
-
             DelayPenaltyPerHour = delayPenaltyPerHour;
             AllowedDelayHours = allowedDelayHours;
             MaintenancePenalty = maintenancePenalty;
             AccidentPenalty = accidentPenalty;
-
             DriverFare = driverFare;
             DriverWorkingHoursPerDay = driverWorkingHoursPerDay;
             DriverOvertimeAmountPerHour = driverOvertimeAmountPerHour;
-
             KilometerPerDay = kilometerPerDay;
             MaximumKilometerPerDay = maximumKilometerPerDay;
             AmountOfKmExceedingLimit = amountOfKmExceedingLimit;
-
             DeliveryStatus = deliveryStatus;
             Status = status;
 
@@ -205,7 +196,11 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
             decimal maintenancePenaltyAmount,
             decimal accidentPenaltyAmount,
             decimal maintenancePaidByTenant,
-            decimal receiveDiscountAmount)
+            decimal receiveDiscountAmount,
+            bool isMaintenanceDoneByTenant,
+            ZAD.Domain.Enums.VehicleRental.VehicleReceivingStatus? vehicleReceivingStatus,
+            bool isVehicleStoppedUntilMaintenanceOrRepair,
+            string? damageNote)
         {
             ReceivingDate = receivingDate;
             ReceivingTime = receivingTime;
@@ -216,17 +211,21 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
             AccidentPenalty = accidentPenaltyAmount;
             MaintenancePaidByTenant = maintenancePaidByTenant;
             ReceiveDiscountAmount = receiveDiscountAmount;
-
-            var actualPeriod = Math.Max(0, (receivingDate.Date - Date.Date).Days);
             
+            IsMaintenanceDoneByTenant = isMaintenanceDoneByTenant;
+            VehicleReceivingStatus = vehicleReceivingStatus;
+            IsVehicleStoppedUntilMaintenanceOrRepair = isVehicleStoppedUntilMaintenanceOrRepair;
+            DamageNote = damageNote;
+            var actualPeriod = Math.Max(0, (receivingDate.Date - Date.Date).Days);  
             var expectedEnd = Date.Date.AddDays(PeriodInDays).Add(ExpectedReceivingTime);
             var actualEnd = receivingDate.Date.Add(receivingTime);
-            
             var diffHours = (int)(actualEnd - expectedEnd).TotalHours;
             DelayHours = diffHours > AllowedDelayHours ? diffHours - AllowedDelayHours : 0;
             if (DelayHours < 0) DelayHours = 0;
-
-            TotalConsumptionKilometers = Math.Max(0, receivingKilometerCounter - KilometerCounter);
+            TotalConsumptionKilometers = receivingKilometerCounter - KilometerCounter;
+            
+            var avgKmPerDay = actualPeriod > 0 ? TotalConsumptionKilometers.Value / actualPeriod : 0;
+            
             FreeKM = actualPeriod * KilometerPerDay;
             KMExceededTheLimit = Math.Max(0, TotalConsumptionKilometers.Value - FreeKM.Value);
             TotalAmountOfKMExceedingTheLimit = KMExceededTheLimit.Value * AmountOfKmExceedingLimit;

@@ -27,6 +27,7 @@ export class MainLayoutComponent implements OnInit {
   private sweetAlert = inject(SweetAlertService);
 
   ngOnInit() {
+    this.contextService.loadContext();
     this.contextService.context$.subscribe(ctx => {
       this.context = ctx;
       this.updateFilteredBranches();

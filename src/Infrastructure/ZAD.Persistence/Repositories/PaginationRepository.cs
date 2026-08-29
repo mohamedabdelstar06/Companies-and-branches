@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
+using System.Reflection;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using ZAD.Domain.Interfaces;
@@ -60,11 +60,11 @@ namespace ZAD.Persistence.Repositories
             
             foreach (var member in sortColumn.Split('.'))
             {
-                var propInfo = property.Type.GetProperty(member, System.Reflection.BindingFlags.IgnoreCase | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                var propInfo = property.Type.GetProperty(member, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
                 if (propInfo == null)
                 {
                     // Fallback to Code if property is not found (e.g., trying to sort by non-existent property)
-                    propInfo = property.Type.GetProperty("Code", System.Reflection.BindingFlags.IgnoreCase | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                    propInfo = property.Type.GetProperty("Code", BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
                     if (propInfo == null) return query; // If even Code is not found, return original query
                 }
                 property = Expression.Property(property, propInfo);

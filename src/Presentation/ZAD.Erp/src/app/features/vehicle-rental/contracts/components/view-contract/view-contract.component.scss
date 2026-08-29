@@ -42,3 +42,38 @@
   color: #212529;
   min-height: 38px;
 }
+
+// Action Buttons
+.btn-action-icon {
+  background-color: #f8f9fa;
+  border: none;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: all 0.2s;
+  
+  &:hover {
+    background-color: #e9ecef;
+  }
+}
+
+.btn-action-text {
+  background-color: #f8f9fa;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  
+  &:hover {
+    background-color: #e9ecef;
+  }
+}

@@ -10,7 +10,7 @@ namespace ZAD.Domain.ValueObjects
         public string? AddressAr { get; private set; }
         public string? AddressEn { get; private set; }
 
-        private Address() { } // Needed for EF Core
+        private Address() { } 
 
         public Address(string? country, string? city, string? addressAr, string? addressEn)
         {

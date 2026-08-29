@@ -17,9 +17,9 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
         public Company? Company { get; private set; }
 
         public int? BranchId { get; private set; }
+        
         public Branch? Branch { get; private set; }
 
-        public int AccountingNo { get; private set; }
         public TimeSpan Time { get; private set; }
 
         public DateTime Date { get; private set; }
@@ -119,23 +119,45 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
 
         // Receiving Fields
         public DateTime? ReceivingDate { get; private set; }
+        
         public TimeSpan? ReceivingTime { get; private set; }
+        
         public int? ReceivingKilometerCounter { get; private set; }
+        
         public bool? ReceiveProofDocuments { get; private set; }
+        
         public string? ReceiveNotes { get; private set; }
+        
         public decimal MaintenancePaidByTenant { get; private set; }
+        
+        public bool IsMaintenanceDoneByTenant { get; private set; }
+        
+        public ZAD.Domain.Enums.VehicleRental.VehicleReceivingStatus? VehicleReceivingStatus { get; private set; }
+        
+        public bool IsVehicleStoppedUntilMaintenanceOrRepair { get; private set; }
+        
+        public string? DamageNote { get; private set; }
+        
         public decimal ReceiveDiscountAmount { get; private set; }
-
         // Computed Receiving Totals
         public int? DelayHours { get; private set; }
+        
         public int? TotalConsumptionKilometers { get; private set; }
+        
         public int? FreeKM { get; private set; }
+        
         public int? KMExceededTheLimit { get; private set; }
+        
         public decimal? TotalAmountOfKMExceedingTheLimit { get; private set; }
+        
         public decimal? DelayPenaltyAmount { get; private set; }
+        
         public decimal? TotalRentalAmount { get; private set; }
+        
         public decimal? TotalDriverAmount { get; private set; }
+        
         public decimal? TotalDueAmount { get; private set; }
+
         public decimal? FinalNetDueAmount { get; private set; } // Distinct from existing NetRentPrice
 
     }

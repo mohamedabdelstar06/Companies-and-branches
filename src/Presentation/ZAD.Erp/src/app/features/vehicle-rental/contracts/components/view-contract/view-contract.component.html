@@ -10,77 +10,71 @@
 @if (!loading && contract) {
 <div class="content p-3 pt-0">
 
-  <!--    Top Toolbar         -->
-  <div class="view-toolbar d-flex align-items-center justify-content-between px-3 py-2 bg-white border-bottom mb-0">
-    <!-- Left: Breadcrumb -->
-    <div class="d-flex align-items-center gap-2 text-teal fw-semibold">
-      <i class="fas fa-chevron-left cursor-pointer me-1" (click)="goBack()"></i>
-      <span class="text-muted small">
-        Vehicle Rental /
-        <a routerLink="/vehicle-rental/contracts" class="text-decoration-none text-muted"
-          style="cursor: pointer;">Contracts</a> /
-        View Contract
-      </span>
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3 mt-3 px-3">
+    <div class="d-flex align-items-center text-teal fw-bold">
+      <a routerLink="/vehicle-rental/contracts" class="text-teal text-decoration-none">
+        <i class="fas fa-chevron-left me-2"></i>
+        <span>Vehicle Rental / Contracts</span>
+      </a>
+      <span class="ms-2 text-muted fw-normal">/ View Contract</span>
     </div>
+  </div>
 
-    <!-- Right: Actions -->
-    <div class="d-flex align-items-center gap-2">
-      <!-- Navigation arrows -->
-      <!-- <div class="btn-group">
-          <button class="btn btn-sm btn-outline-secondary px-2" title="First"><i class="fas fa-step-backward"></i></button>
-          <button class="btn btn-sm btn-outline-secondary px-2" title="Prev"><i class="fas fa-chevron-left"></i></button>
-          <button class="btn btn-sm btn-outline-secondary px-2" title="Next"><i class="fas fa-chevron-right"></i></button>
-          <button class="btn btn-sm btn-outline-secondary px-2" title="Last"><i class="fas fa-step-forward"></i></button>
-        </div> -->
+  <!-- Actions -->
+  <div class="d-flex align-items-center gap-2 px-3 mb-4 pb-3 border-bottom">
+   
 
-      <!-- Edit (Draft and Deleted) -->
-      @if (isDraft || isDeleted) {
-      <button class="btn btn-sm btn-outline-secondary" title="Edit"
-        [routerLink]="['/vehicle-rental/contracts/edit', contract.id]">
-        <i class="fas fa-edit"></i>
-      </button>
-      }
 
-      <!-- Restore (Deleted only) -->
-      @if (isDeleted) {
-      <button class="btn btn-sm btn-outline-success" title="Restore" (click)="onRestore()">
-        <i class="fas fa-undo me-1"></i>Restore
-      </button>
-      }
-      <!-- Confirm (Draft only) -->
-      @if (isDraft) {
-      <button class="btn btn-sm btn-outline-success" title="Confirm" (click)="onConfirm()">
-        <i class="fas fa-check-circle me-1"></i>Confirm
-      </button>
-      }
-      <!-- Unconfirm + Unconfirm Receive Vehicle (Confirmed only) -->
-      @if (isConfirmed) {
-      <button class="btn btn-sm btn-outline-danger" title="Unconfirm Contract" (click)="onUnconfirm()">
-        <i class="fas fa-thumbs-down"></i>
-      </button>
+    <!-- Edit (Draft and Deleted) -->
+    @if (isDraft || isDeleted) {
+    <button class="btn-action-icon" title="Edit Contract" [routerLink]="['/vehicle-rental/contracts/edit', contract.id]">
+      <i class="fa-solid fa-file-pen" style="color: #176B6B;"></i>
+    </button>
+    }
 
-      @if (contract.deliveryStatus !== 'Delivered') {
-      <button class="btn btn-sm btn-outline-primary" title="Receive Vehicle" (click)="onReceiveVehicle()">
+ 
+    <!-- Delete (Draft or Confirmed) -->
+    @if (!isDeleted && isDraft) {
+    <button class="btn-action-icon" title="Delete" (click)="onDelete()">
+      <i class="fa-regular fa-trash-can text-danger"></i>
+    </button>
+    }
+
+    <!-- Restore (Deleted only) -->
+    @if (isDeleted) {
+    <button class="btn-action-text" title="Restore" (click)="onRestore()">
+      <i class="fas fa-undo text-success me-2"></i><span class="text-success">Restore</span>
+    </button>
+    }
+
+    <!-- Confirm (Draft only) -->
+    @if (isDraft) {
+    <button class="btn-action-icon" title="Confirm" (click)="onConfirm()">
+      <i class="fa-regular fa-thumbs-up" style="color: #176B6B;"></i>
+    </button>
+    }
+
+    <!-- Unconfirm (Confirmed only) -->
+    @if (isConfirmed) {
+    <button class="btn-action-icon" title="Unconfirm Contract" (click)="onUnconfirm()">
+      <i class="fa-regular fa-thumbs-down text-danger"></i>
+    </button>
+    }
+
+    
+    <!-- Receive Vehicle -->
+    @if (isConfirmed && !isVehicleReceived) {
+      <button class="btn-action-text text-teal" title="Receive Vehicle" (click)="onReceiveVehicle()">
         Receive Vehicle
       </button>
-      } @else {
-      <button class="btn btn-sm btn-danger" title="Unconfirm Receive Vehicle" (click)="onUnreceiveVehicle()">
-        <i class="fas fa-car me-1"></i>Unconfirm Receive Vehicle
+    }
+    <!-- Confirm Receive Vehicle -->
+    @if (isVehicleReceived) {
+      <button class="btn-action-text text-teal" title="Unconfirm Receive Vehicle" (click)="onUnreceiveVehicle()">
+        Unconfirm Receive Vehicle
       </button>
-      }
-
-      }
-      <!-- Print -->
-      <!-- <button class="btn btn-sm btn-outline-secondary" title="Print">
-          <i class="fas fa-print"></i>
-        </button> -->
-      <!-- Delete (Draft only) -->
-      @if (isDraft) {
-      <button class="btn btn-sm btn-outline-danger" title="Delete" (click)="onDelete()">
-        <i class="fas fa-trash-alt"></i>
-      </button>
-      }
-    </div>
+    }
   </div>
 
 
@@ -366,9 +360,54 @@
             <label class="form-label">Driver Name</label>
             <input type="text" class="form-control" [value]="contract.driverName || ''" readonly>
           </div>
+        </div>
+      </div>
+
+      <!-- New Status and Damage Details -->
+      <div class="col-12 mt-2">
+        <div class="form-check mb-3">
+          <input class="form-check-input" type="checkbox" id="maintenanceDoneByTenant" formControlName="isMaintenanceDoneByTenant">
+          <label class="form-check-label fw-bold text-secondary" for="maintenanceDoneByTenant">
+            Maintenance Done by Tenant
+          </label>
+        </div>
+        
+        <div class="row g-4">
+          <!-- Vehicle Receiving Status -->
           <div class="col-md-6">
-            <label class="form-label">Notes</label>
-            <input type="text" class="form-control" formControlName="receiveNotes">
+            <fieldset class="border p-3 rounded h-100">
+              <legend class="float-none w-auto px-2 fs-6 fw-bold text-secondary mb-0">Vehicle Receiving Status</legend>
+              <div class="mb-3">
+                <label class="form-label">Vehicle Receiving Status</label>
+                <select class="form-select" formControlName="vehicleReceivingStatus">
+                  <option [ngValue]="null" disabled>Select one</option>
+                  @for (status of vehicleReceivingStatuses; track status.value) {
+                    <option [value]="status.value">{{ status.label }}</option>
+                  }
+                </select>
+              </div>
+              <div class="mb-0">
+                <label class="form-label">Receiving Note</label>
+                <textarea class="form-control" rows="3" formControlName="receiveNotes"></textarea>
+              </div>
+            </fieldset>
+          </div>
+          
+          <!-- Vehicle Damage Details -->
+          <div class="col-md-6">
+            <fieldset class="border p-3 rounded h-100">
+              <legend class="float-none w-auto px-2 fs-6 fw-bold text-secondary mb-0">Vehicle Damage Details</legend>
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="stopVehicle" formControlName="isVehicleStoppedUntilMaintenanceOrRepair">
+                <label class="form-check-label" for="stopVehicle">
+                  Stop Vehicle until maintenance or repair done
+                </label>
+              </div>
+              <div class="mb-0">
+                <label class="form-label">Damage Note</label>
+                <textarea class="form-control" rows="3" formControlName="damageNote"></textarea>
+              </div>
+            </fieldset>
           </div>
         </div>
       </div>
@@ -462,6 +501,16 @@
         </div>
       </div>
       </div>
+      
+      <!-- Save Button -->
+      <div class="row mt-4">
+        <div class="col-12 text-end">
+          <button class="btn btn-teal px-4 py-2 fw-bold" style="background-color: #176B6B; color: white; border: none; border-radius: 6px;" (click)="onReceiveVehicle()">
+            <i class="fas fa-save me-2"></i> Save
+          </button>
+        </div>
+      </div>
+      
     </div>
     }
   </div>

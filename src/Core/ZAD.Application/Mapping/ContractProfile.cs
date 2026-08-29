@@ -43,7 +43,7 @@ namespace ZAD.Application.Mapping
                 .ForMember(dest => dest.PaymentTypeName, opt => opt.MapFrom(src => src.PaymentType.ToString()))
                 .ForMember(dest => dest.Day,            opt => opt.MapFrom(src => src.Date.DayOfWeek.ToString()))
                 .ForMember(dest => dest.ExpectedReceivingDay, opt => opt.MapFrom(src => src.ExpectedReceivingDate.DayOfWeek.ToString()))
-                .ForMember(dest => dest.ReferenceNo,    opt => opt.MapFrom(src => $"{src.Date:dd/MM/yyyy}-{src.AccountingNo}"))
+                .ForMember(dest => dest.ReferenceNo,    opt => opt.MapFrom(src => $"{src.Date:dd/MM/yyyy}-{src.Id}"))
                 .ForMember(dest => dest.CreatedAt,      opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.UpdatedAt,      opt => opt.MapFrom(src => src.UpdatedAt));
 

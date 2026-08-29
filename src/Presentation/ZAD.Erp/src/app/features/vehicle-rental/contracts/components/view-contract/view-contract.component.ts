@@ -26,6 +26,17 @@ export class ViewContractComponent implements OnInit {
   contractId: number | null = null;
 
   receiveForm!: FormGroup;
+  vehicleReceivingStatuses = [
+    { value: 1, label: 'Pending Inspection' },
+    { value: 2, label: 'Under Inspection' },
+    { value: 3, label: 'Damaged' },
+    { value: 4, label: 'Cleaned' },
+    { value: 5, label: 'In Repair' },
+    { value: 6, label: 'Ready for Rental' },
+    { value: 7, label: 'Needs Cleaning' },
+    { value: 8, label: 'Unclean' },
+    { value: 9, label: 'Rented' }
+  ];
   private fb = inject(FormBuilder);
 
   ngOnInit(): void {
@@ -50,7 +61,11 @@ export class ViewContractComponent implements OnInit {
       maintenancePenaltyAmount: [0, Validators.min(0)],
       accidentPenaltyAmount: [0, Validators.min(0)],
       maintenancePaidByTenant: [0, Validators.min(0)],
-      receiveDiscountAmount: [0, Validators.min(0)]
+      receiveDiscountAmount: [0, Validators.min(0)],
+      isMaintenanceDoneByTenant: [false],
+      vehicleReceivingStatus: [null, Validators.required],
+      isVehicleStoppedUntilMaintenanceOrRepair: [false],
+      damageNote: ['']
     });
   }
 
@@ -115,7 +130,7 @@ export class ViewContractComponent implements OnInit {
     if (!this.contract) return 0;
     const receiving = this.receiveForm.value.receivingKilometerCounter || 0;
     const renting = this.contract.kilometerCounter || 0;
-    return Math.max(0, receiving - renting);
+    return receiving - renting;
   }
 
   get recAvgKmPerDay(): number {
@@ -174,6 +189,7 @@ export class ViewContractComponent implements OnInit {
   get isConfirmed(): boolean { return this.contract?.status === 'Confirmed'; }
   get isDraft(): boolean { return this.contract?.status === 'Draft'; }
   get isDeleted(): boolean { return this.contract?.status === 'Deleted'; }
+  get isVehicleReceived(): boolean { return this.contract?.deliveryStatus === 'Delivered' || this.contract?.deliveryStatus === 'Late'; }
 
   get statusClass(): string {
     switch (this.contract?.status) {
@@ -208,9 +224,16 @@ export class ViewContractComponent implements OnInit {
   async onReceiveVehicle(): Promise<void> {
     if (!this.contractId) return;
     if (this.receiveForm.invalid) {
-      this.sweetAlert.error('Validation Error', 'Please check the receiving form inputs (e.g. valid kilometer counter).');
+      this.sweetAlert.error('Validation Error', 'Please check the receiving form inputs.');
       return;
     }
+    
+    // Custom Validation as per requirements
+    if (this.recTotalConsumptionKm < 0) {
+      this.sweetAlert.error('Validation Error', "'Total Kilo Meters Consumption' must be greater than or equal to '0'.\n'Average Kilo Meters Per Day' must be greater than or equal to '0'.");
+      return;
+    }
+    
     const ok = await this.sweetAlert.confirm('Receive Vehicle', 'Confirm vehicle receipt and close contract?');
     if (!ok) return;
     this.contractService.receiveVehicle(this.contractId, this.receiveForm.value).subscribe({

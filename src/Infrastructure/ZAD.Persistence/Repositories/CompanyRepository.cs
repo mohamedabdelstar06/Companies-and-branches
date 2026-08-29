@@ -59,7 +59,7 @@ namespace ZAD.Persistence.Repositories
                     query = query.Where(c => c.IsActive == isActive.Value);
                 }
 
-                if (string.Equals(sortColumn, "phone", System.StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(sortColumn, "phone", StringComparison.OrdinalIgnoreCase))
                 {
                     bool isDesc = sortDirection?.ToLower() == "desc";
                     query = isDesc 
@@ -67,7 +67,7 @@ namespace ZAD.Persistence.Repositories
                         : query.OrderBy(c => c.Contacts.FirstOrDefault() != null ? c.Contacts.FirstOrDefault()!.Value : "");
                     sortColumn = null; // Prevent dynamic sorting
                 }
-                else if (string.Equals(sortColumn, "address", System.StringComparison.OrdinalIgnoreCase))
+                else if (string.Equals(sortColumn, "address", StringComparison.OrdinalIgnoreCase))
                 {
                     bool isDesc = sortDirection?.ToLower() == "desc";
                     query = isDesc 

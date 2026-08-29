@@ -22,6 +22,6 @@ namespace ZAD.Application.DTOs.VehicleRental.RentalVehicle
         
         public bool IsRented { get; set; }
         public int? CurrentContractId { get; set; }
-        public int? CurrentContractReferenceNo { get; set; }
+        public string? CurrentContractReferenceNo { get; set; }
     }
 }

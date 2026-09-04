@@ -1,6 +1,6 @@
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
-namespace ZAD.Application.Validators.Strategies
+namespace ZAD.Application.Strategies.ContactValidation
 {
     public class EmailContactValidationStrategy : IContactValidationStrategy
     {
@@ -17,3 +17,4 @@ namespace ZAD.Application.Validators.Strategies
         }
     }
 }
+

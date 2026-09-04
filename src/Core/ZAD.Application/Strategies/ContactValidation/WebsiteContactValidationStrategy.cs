@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 
-namespace ZAD.Application.Validators.Strategies
+namespace ZAD.Application.Strategies.ContactValidation
 {
     public class WebsiteContactValidationStrategy : IContactValidationStrategy
     {
@@ -16,3 +16,4 @@ namespace ZAD.Application.Validators.Strategies
         }
     }
 }
+

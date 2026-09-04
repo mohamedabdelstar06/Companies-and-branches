@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using ZAD.Domain.Enums;
 
-namespace ZAD.Application.Validators.Strategies
+namespace ZAD.Application.Strategies.ContactValidation
 {
     public static class ContactValidationStrategyFactory
     {
@@ -21,3 +21,4 @@ namespace ZAD.Application.Validators.Strategies
         }
     }
 }
+

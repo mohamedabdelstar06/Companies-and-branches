@@ -7,6 +7,7 @@ using ZAD.Application.DTOs.VehicleRental.Tenant;
 using ZAD.Application.DTOs.VehicleRental.Contract;
 using ZAD.Application.DTOs.VehicleRental.Driver;
 using ZAD.Application.DTOs.VehicleRental.RentalVehicle;
+using ZAD.Domain.Enums.VehicleRental; 
 
 namespace ZAD.Application.Mapping
 {
@@ -44,6 +45,10 @@ namespace ZAD.Application.Mapping
                 .ForMember(dest => dest.Day,            opt => opt.MapFrom(src => src.Date.DayOfWeek.ToString()))
                 .ForMember(dest => dest.ExpectedReceivingDay, opt => opt.MapFrom(src => src.ExpectedReceivingDate.DayOfWeek.ToString()))
                 .ForMember(dest => dest.ReferenceNo,    opt => opt.MapFrom(src => $"{src.Date:dd/MM/yyyy}-{src.Id}"))
+                .ForMember(dest => dest.ActualPeriodInDays, opt => opt.MapFrom(src => 
+                    src.DeliveryStatus == DeliveryStatus.Delivered && src.ReceivingDate.HasValue 
+                    ? Math.Max(0, src.ReceivingDate.Value.Subtract(src.Date).Days) 
+                    : Math.Max(0, DateTime.Now.Subtract(src.Date).Days)))
                 .ForMember(dest => dest.CreatedAt,      opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.UpdatedAt,      opt => opt.MapFrom(src => src.UpdatedAt));
 
@@ -57,7 +62,10 @@ namespace ZAD.Application.Mapping
                 .ForMember(dest => dest.ContractType,   opt => opt.MapFrom(src => src.ContractType.ToString()))
                 .ForMember(dest => dest.DeliveryStatus, opt => opt.MapFrom(src => src.DeliveryStatus.ToString()))
                 .ForMember(dest => dest.Status,         opt => opt.MapFrom(src => src.Status.ToString()))
-
+                .ForMember(dest => dest.ActualPeriodInDays, opt => opt.MapFrom(src => 
+                    src.DeliveryStatus == DeliveryStatus.Delivered && src.ReceivingDate.HasValue 
+                    ? Math.Max(0, src.ReceivingDate.Value.Subtract(src.Date).Days) 
+                    : Math.Max(0, DateTime.Now.Subtract(src.Date).Days)))
                 .ForMember(dest => dest.ToDate,         opt => opt.MapFrom(src => src.Date.AddDays(src.PeriodInDays)));
         }
     }

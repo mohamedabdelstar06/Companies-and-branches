@@ -1,9 +1,11 @@
+
+using System.Linq;
 using AutoMapper;
 using ZAD.Application.DTOs.Company;
 using ZAD.Application.DTOs.Common;
 using ZAD.Domain.Entities.Companies;
 using ZAD.Domain.Entities.Common;
-using System.Linq;
+using ZAD.Domain.Enums;
 
 namespace ZAD.Application.Mapping
 {
@@ -16,20 +18,20 @@ namespace ZAD.Application.Mapping
 
             CreateMap<Company, CompanyListDto>()
                 .ForMember(d => d.Name, opt => opt.MapFrom(s => s.NameEn))
-                .ForMember(d => d.Website, opt => opt.MapFrom(s => s.Contacts.FirstOrDefault(c => c.Type == ZAD.Domain.Enums.ContactType.Website) != null ? s.Contacts.FirstOrDefault(c => c.Type == ZAD.Domain.Enums.ContactType.Website)!.Value : null))
-                .ForMember(d => d.Phone, opt => opt.MapFrom(s => s.Contacts.FirstOrDefault(c => c.Type == ZAD.Domain.Enums.ContactType.Phone) != null ? s.Contacts.FirstOrDefault(c => c.Type == ZAD.Domain.Enums.ContactType.Phone)!.Value : null))
+                .ForMember(d => d.Website, opt => opt.MapFrom(s => s.Contacts.FirstOrDefault(c => c.Type == ContactType.Website) != null ? s.Contacts.FirstOrDefault(c => c.Type == ContactType.Website)!.Value : null))
+                .ForMember(d => d.Phone, opt => opt.MapFrom(s => s.Contacts.FirstOrDefault(c => c.Type == ContactType.Phone) != null ? s.Contacts.FirstOrDefault(c => c.Type == ContactType.Phone)!.Value : null))
                 .ForMember(d => d.Address, opt => opt.MapFrom(s => s.Address != null ? s.Address.AddressEn : null))
                 .ForMember(d => d.Logo, opt => opt.MapFrom(s => s.LogoPath));
-                
+
             CreateMap<Company, CompanyDetailDto>()
                 .ForMember(d => d.Country, opt => opt.MapFrom(s => s.Address != null ? s.Address.Country : null))
                 .ForMember(d => d.City, opt => opt.MapFrom(s => s.Address != null ? s.Address.City : null))
                 .ForMember(d => d.AddressAr, opt => opt.MapFrom(s => s.Address != null ? s.Address.AddressAr : null))
                 .ForMember(d => d.AddressEn, opt => opt.MapFrom(s => s.Address != null ? s.Address.AddressEn : null));
-            
+
             // We won't map CreateCompanyDto/UpdateCompanyDto directly to Company anymore
             // because we are using DDD with rich aggregates and constructors.
-            // DTO -> Entity mapping is best handled manually or via factories in DDD.
+            // DTO ==> Entity mapping is best handled manually or via factories in DDD.
         }
     }
 }

@@ -1,4 +1,4 @@
-namespace ZAD.Application.Validators.Strategies
+﻿namespace ZAD.Application.Strategies.ContactValidation
 {
     public class DefaultContactValidationStrategy : IContactValidationStrategy
     {
@@ -10,3 +10,4 @@ namespace ZAD.Application.Validators.Strategies
         }
     }
 }
+

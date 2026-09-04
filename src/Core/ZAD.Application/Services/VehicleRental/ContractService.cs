@@ -13,6 +13,7 @@ using ZAD.Application.DTOs.VehicleRental.RentalVehicle;
 using ZAD.Application.DTOs.VehicleRental.Sponsor;
 using ZAD.Application.Exceptions;
 using ZAD.Application.Interfaces.VehicleRental;
+using ZAD.Application.Strategies.ContractTypeStrategies;
 using ZAD.Domain.Entities.VehicleRental.Contracts;
 using ZAD.Domain.Enums.VehicleRental;
 using ZAD.Domain.Interfaces;
@@ -66,21 +67,18 @@ namespace ZAD.Application.Services.VehicleRental
                     _unitOfWork.RentalVehicles.Update(vehicle);
                 }
             }
-            decimal expectedMinimum = dto.ContractType switch
-            {
-                ContractType.Hourly => vehicle.HourlyRentPrice,
-                ContractType.Daily => vehicle.DailyRentPrice,
-                ContractType.Weekly => vehicle.WeeklyRentPrice,
-                ContractType.Monthly => vehicle.MonthlyRentPrice,
-                ContractType.LongTerm => vehicle.YearlyRentPrice,
-                _ => 0
-            };
+            var strategy = ContractTypeStrategyFactory.GetStrategy(dto.ContractType);
+            decimal expectedMinimum = strategy.GetExpectedMinimumRent(vehicle);
             var discountAmount = dto.RentPrice * dto.DiscountPercent / 100m;
             var netRentPrice = dto.RentPrice - discountAmount;
             // if (netRentPrice < expectedMinimum * dto.PeriodInDays)
             // {
             //     throw new FluentValidation.ValidationException($"Net rent price ({netRentPrice}) is lower than the minimum allowed ({expectedMinimum * dto.PeriodInDays}) for this car and period.");
             // }
+
+            var expectedDateTime = strategy.CalculateExpectedReceivingDateTime(dto.Date.Date + dto.Time, dto.PeriodInDays);
+            dto.ExpectedReceivingDate = expectedDateTime.Date;
+            dto.ExpectedReceivingTime = expectedDateTime.TimeOfDay;
 
             var contract = new Contract(
                 dto.CompanyId, dto.BranchId, dto.Time, dto.Date, dto.ContractType, dto.PaymentType, dto.PeriodInDays,
@@ -142,21 +140,18 @@ namespace ZAD.Application.Services.VehicleRental
                     _unitOfWork.RentalVehicles.Update(vehicle);
                 }
             }
-            decimal expectedMinimum = dto.ContractType switch
-            {
-                ContractType.Hourly => vehicle.HourlyRentPrice,
-                ContractType.Daily => vehicle.DailyRentPrice,
-                ContractType.Weekly => vehicle.WeeklyRentPrice,
-                ContractType.Monthly => vehicle.MonthlyRentPrice,
-                ContractType.LongTerm => vehicle.YearlyRentPrice,
-                _ => 0
-            };
+            var strategy = ContractTypeStrategyFactory.GetStrategy(dto.ContractType);
+            decimal expectedMinimum = strategy.GetExpectedMinimumRent(vehicle);
             var discountAmount = dto.RentPrice * dto.DiscountPercent / 100m;
             var netRentPrice = dto.RentPrice - discountAmount;
             // if (netRentPrice < expectedMinimum * dto.PeriodInDays)
             // {
             //     throw new FluentValidation.ValidationException($"Net rent price ({netRentPrice}) is lower than the minimum allowed ({expectedMinimum * dto.PeriodInDays}) for this car and period.");
             // }
+
+            var expectedDateTime = strategy.CalculateExpectedReceivingDateTime(dto.Date.Date + dto.Time, dto.PeriodInDays);
+            dto.ExpectedReceivingDate = expectedDateTime.Date;
+            dto.ExpectedReceivingTime = expectedDateTime.TimeOfDay;
 
             contract.Update(
                 dto.CompanyId, dto.BranchId, dto.Time, dto.Date, dto.ContractType, dto.PaymentType, dto.PeriodInDays,
@@ -332,8 +327,6 @@ namespace ZAD.Application.Services.VehicleRental
             var companies = await _unitOfWork.Companies.GetAsync(x => !x.IsDeleted);
             var branches = await _unitOfWork.Branches.GetAsync(x => !x.IsDeleted);
             var sponsors = await _unitOfWork.Sponsors.GetAsync(x => !x.IsDeleted);
-            var secondDrivers = await _unitOfWork.SecondDrivers.GetAsync(x => !x.IsDeleted);
-            
             // Get active contracts to populate CurrentContract details for rented vehicles
             var activeContracts = await _unitOfWork.Contracts.GetAsync(c => !c.IsDeleted && c.DeliveryStatus == ZAD.Domain.Enums.VehicleRental.DeliveryStatus.Rented);
 
@@ -364,7 +357,16 @@ namespace ZAD.Application.Services.VehicleRental
                 Drivers = drivers.Select(d => new DriverDropdownDto
                 {
                     Id = d.Id,
-                    Name = d.Name
+                    Name = d.Name,
+                    Nationality = d.Nationality,
+                    LicenseNumber = d.LicenseNumber,
+                    LicenseExpireDate = d.LicenseExpireDate,
+                    IdNumber = d.IdNumber,
+                    IdExpireDate = d.IdExpireDate,
+                    DriverFare = d.DriverFare,
+                    DriverWorkingHoursPerDay = d.DriverWorkingHoursPerDay,
+                    DriverOvertimeAmountPerHour = d.DriverOvertimeAmountPerHour,
+                    DailyRate = d.DailyRate
                 }),
                 Vehicles = vehicles.Select(v => {
                     var activeContract = activeContracts.FirstOrDefault(c => c.RentalVehicleId == v.Id);
@@ -397,16 +399,6 @@ namespace ZAD.Application.Services.VehicleRental
                     LicenseExpireDate = s.LicenseExpireDate,
                     IdNumber = s.IdNumber,
                     IdExpireDate = s.IdExpireDate
-                }),
-                SecondDrivers = secondDrivers.Select(sd => new SecondDriverDropdownDto
-                {
-                    Id = sd.Id,
-                    Name = sd.Name,
-                    Nationality = sd.Nationality,
-                    LicenseNumber = sd.LicenseNumber,
-                    LicenseExpireDate = sd.LicenseExpireDate,
-                    IdNumber = sd.IdNumber,
-                    IdExpireDate = sd.IdExpireDate
                 })
             };
         }

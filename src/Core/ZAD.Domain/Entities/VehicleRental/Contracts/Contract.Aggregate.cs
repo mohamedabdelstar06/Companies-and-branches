@@ -133,31 +133,6 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
             // Default to NetRentPrice if not yet set
             if (RemainingAmount == 0)
                 RemainingAmount = NetRentPrice;
-
-            var startDateTime = Date.Date + Time;
-            DateTime expectedDateTime = startDateTime;
-
-            switch (ContractType)
-            {
-                case ContractType.Daily:
-                    expectedDateTime = startDateTime.AddDays(PeriodInDays);
-                    break;
-                case ContractType.Weekly:
-                    expectedDateTime = startDateTime.AddDays(PeriodInDays * 7);
-                    break;
-                case ContractType.Monthly:
-                    expectedDateTime = startDateTime.AddMonths(PeriodInDays);
-                    break;
-                case ContractType.LongTerm:
-                    expectedDateTime = startDateTime.AddYears(PeriodInDays);
-                    break;
-                case ContractType.Hourly:
-                    expectedDateTime = startDateTime.AddHours(PeriodInDays);
-                    break;
-            }
-
-            ExpectedReceivingDate = expectedDateTime.Date;
-            ExpectedReceivingTime = expectedDateTime.TimeOfDay;
         }
 
         public void SetRemainingAmount(decimal amount)
@@ -198,7 +173,7 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
             decimal maintenancePaidByTenant,
             decimal receiveDiscountAmount,
             bool isMaintenanceDoneByTenant,
-            ZAD.Domain.Enums.VehicleRental.VehicleReceivingStatus? vehicleReceivingStatus,
+            VehicleReceivingStatus? vehicleReceivingStatus,
             bool isVehicleStoppedUntilMaintenanceOrRepair,
             string? damageNote)
         {

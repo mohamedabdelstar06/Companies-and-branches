@@ -132,7 +132,7 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
         
         public bool IsMaintenanceDoneByTenant { get; private set; }
         
-        public ZAD.Domain.Enums.VehicleRental.VehicleReceivingStatus? VehicleReceivingStatus { get; private set; }
+        public VehicleReceivingStatus? VehicleReceivingStatus { get; private set; }
         
         public bool IsVehicleStoppedUntilMaintenanceOrRepair { get; private set; }
         

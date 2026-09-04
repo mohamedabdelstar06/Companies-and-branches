@@ -12,7 +12,7 @@ namespace ZAD.Domain.Entities.VehicleRental.Sponsors
         public string IdNumber { get; private set; } = string.Empty;
         public DateTime IdExpireDate { get; private set; }
 
-        private Sponsor() { } // EF Core
+        private Sponsor() { } 
 
         public Sponsor(string name, string nationality, string licenseNumber, DateTime licenseExpireDate, string idNumber, DateTime idExpireDate)
         {

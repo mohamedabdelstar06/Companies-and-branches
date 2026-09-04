@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using ZAD.Domain.Entities.Lookups;
 using ZAD.Domain.Interfaces.VehicleRental;
 using ZAD.Domain.Entities.VehicleRental.Sponsors;
-using ZAD.Domain.Entities.VehicleRental.Drivers;
+
 namespace ZAD.Domain.Interfaces
 {
     public interface IUnitOfWork : IDisposable
@@ -18,7 +18,6 @@ namespace ZAD.Domain.Interfaces
         IDriverRepository Drivers { get; }
         IRentalVehicleRepository RentalVehicles { get; }
         IGenericRepository<Sponsor> Sponsors { get; }
-        IGenericRepository<SecondDriver> SecondDrivers { get; }
 
         Task<int> SaveChangesAsync();
     }

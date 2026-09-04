@@ -10,10 +10,12 @@ import { SweetAlertService } from '../../../../core/services/sweet-alert.service
 type SortField = 'code' | 'name' | 'address' | 'phone';
 type SortDir = 'asc' | 'desc' | null;
 
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
+
 @Component({
   selector: 'app-branch-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, PaginationComponent],
   templateUrl: './branch-list.component.html',
   styleUrl: './branch-list.component.scss'
 })
@@ -21,7 +23,6 @@ export class BranchListComponent implements OnInit {
   private branchService = inject(BranchService);
   private sweetAlert = inject(SweetAlertService);
 
-  allBranches: BranchListDto[] = [];
   branches: BranchListDto[] = [];
   pageNumber = 1;
   pageSize = 10;
@@ -36,44 +37,37 @@ export class BranchListComponent implements OnInit {
   }
 
   loadBranches(): void {
-    this.branchService.getPage({ pageNumber: 1, pageSize: 9999 }).subscribe({
+    const query = {
+      pageNumber: this.pageNumber,
+      pageSize: this.pageSize,
+      searchTerm: this.searchTerm || undefined,
+      sortColumn: this.sortField || undefined,
+      sortDirection: this.sortDir || undefined
+    };
+
+    this.branchService.getPage(query).subscribe({
       next: (result) => {
-        this.allBranches = result.items;
+        this.branches = result.items;
         this.totalCount = result.totalCount;
-        this.applyFilter();
       },
       error: (err: any) => console.error(err)
     });
   }
 
-  applyFilter(): void {
-    const term = this.searchTerm.toLowerCase().trim();
-    let filtered = this.allBranches;
-
-    if (term) {
-      filtered = filtered.filter(b =>
-        (b.code?.toLowerCase() || '').includes(term) ||
-        (b.name?.toLowerCase() || '').includes(term) ||
-        (b.address?.toLowerCase() || '').includes(term) ||
-        (b.phone?.toLowerCase() || '').includes(term)
-      );
-    }
-
-    if (this.sortField && this.sortDir) {
-      const field = this.sortField;
-      const dir = this.sortDir === 'asc' ? 1 : -1;
-      filtered = [...filtered].sort((a, b) => {
-        const av = ((a as any)[field] || '').toLowerCase();
-        const bv = ((b as any)[field] || '').toLowerCase();
-        return av < bv ? -dir : av > bv ? dir : 0;
-      });
-    }
-
-    this.branches = filtered;
+  onSearch(): void {
+    this.pageNumber = 1;
+    this.loadBranches();
   }
 
-  onSearch(): void {
-    this.applyFilter();
+  onPageChange(page: number): void {
+    this.pageNumber = page;
+    this.loadBranches();
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize = size;
+    this.pageNumber = 1;
+    this.loadBranches();
   }
 
   toggleSort(field: SortField): void {
@@ -84,7 +78,7 @@ export class BranchListComponent implements OnInit {
       this.sortField = field;
       this.sortDir = 'asc';
     }
-    this.applyFilter();
+    this.loadBranches();
   }
 
   getSortIcon(field: SortField): string {

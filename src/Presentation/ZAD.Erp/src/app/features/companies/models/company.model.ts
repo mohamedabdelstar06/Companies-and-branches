@@ -48,6 +48,8 @@ export interface PageQuery {
   pageNumber: number;
   pageSize: number;
   searchTerm?: string;
+  sortColumn?: string;
+  sortDirection?: string;
 }
 
 export interface PageResult<T> {

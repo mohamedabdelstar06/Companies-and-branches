@@ -10,6 +10,7 @@ export interface BranchListDto {
   isActive: boolean;
 }
 
+
 export interface ContactDto {
   id?: number;
   type: string;

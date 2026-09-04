@@ -10,10 +10,12 @@ import { SweetAlertService } from '../../../../core/services/sweet-alert.service
 type SortField = 'code' | 'name' | 'address' | 'phone';
 type SortDir = 'asc' | 'desc' | null;
 
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
+
 @Component({
   selector: 'app-company-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, PaginationComponent],
   templateUrl: './company-list.component.html',
   styleUrl: './company-list.component.scss'
 })
@@ -21,7 +23,6 @@ export class CompanyListComponent implements OnInit {
   private companyService = inject(CompanyService);
   private sweetAlert = inject(SweetAlertService);
 
-  allCompanies: CompanyListDto[] = [];
   companies: CompanyListDto[] = [];
   pageNumber = 1;
   pageSize = 10;
@@ -36,44 +37,37 @@ export class CompanyListComponent implements OnInit {
   }
 
   loadCompanies(): void {
-    this.companyService.getPage({ pageNumber: 1, pageSize: 9999 }).subscribe({
+    const query = {
+      pageNumber: this.pageNumber,
+      pageSize: this.pageSize,
+      searchTerm: this.searchTerm || undefined,
+      sortColumn: this.sortField || undefined,
+      sortDirection: this.sortDir || undefined
+    };
+
+    this.companyService.getPage(query).subscribe({
       next: (result) => {
-        this.allCompanies = result.items;
+        this.companies = result.items;
         this.totalCount = result.totalCount;
-        this.applyFilter();
       },
       error: (err: any) => console.error(err)
     });
   }
 
-  applyFilter(): void {
-    const term = this.searchTerm.toLowerCase().trim();
-    let filtered = this.allCompanies;
-
-    if (term) {
-      filtered = filtered.filter(c =>
-        (c.code?.toLowerCase() || '').includes(term) ||
-        (c.name?.toLowerCase() || '').includes(term) ||
-        (c.address?.toLowerCase() || '').includes(term) ||
-        (c.phone?.toLowerCase() || '').includes(term)
-      );
-    }
-
-    if (this.sortField && this.sortDir) {
-      const field = this.sortField;
-      const dir = this.sortDir === 'asc' ? 1 : -1;
-      filtered = [...filtered].sort((a, b) => {
-        const av = (a[field] || '').toLowerCase();
-        const bv = (b[field] || '').toLowerCase();
-        return av < bv ? -dir : av > bv ? dir : 0;
-      });
-    }
-
-    this.companies = filtered;
+  onSearch(): void {
+    this.pageNumber = 1;
+    this.loadCompanies();
   }
 
-  onSearch(): void {
-    this.applyFilter();
+  onPageChange(page: number): void {
+    this.pageNumber = page;
+    this.loadCompanies();
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize = size;
+    this.pageNumber = 1;
+    this.loadCompanies();
   }
 
   toggleSort(field: SortField): void {
@@ -84,7 +78,7 @@ export class CompanyListComponent implements OnInit {
       this.sortField = field;
       this.sortDir = 'asc';
     }
-    this.applyFilter();
+    this.loadCompanies();
   }
 
   getSortIcon(field: SortField): string {

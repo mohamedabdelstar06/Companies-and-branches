@@ -1,0 +1,56 @@
+<div class="d-flex justify-content-center align-items-center mt-3 mb-2 gap-3" style="font-size: 0.875rem;">
+  <!-- Info Text -->
+  <div class="text-muted">
+    Showing {{ minRecord }} to {{ maxRecord }} of {{ totalCount }} entries
+  </div>
+  
+  <!-- Pagination Controls -->
+  <div class="d-flex align-items-center">
+    <!-- First -->
+    <button class="btn btn-sm btn-link text-secondary text-decoration-none px-2" 
+            [disabled]="pageNumber === 1 || totalCount === 0" 
+            (click)="changePage(1)">
+      <i class="fas fa-angle-double-left"></i>
+    </button>
+    
+    <!-- Previous -->
+    <button class="btn btn-sm btn-link text-secondary text-decoration-none px-2" 
+            [disabled]="pageNumber === 1 || totalCount === 0" 
+            (click)="changePage(pageNumber - 1)">
+      <i class="fas fa-angle-left"></i>
+    </button>
+    
+    <!-- Page Numbers -->
+    @for (p of pages; track p) {
+      <button class="btn btn-sm px-3 mx-1 page-number-btn" 
+              [class.active-page]="p === pageNumber" 
+              [class.inactive-page]="p !== pageNumber" 
+              (click)="changePage(p)">
+        {{ p }}
+      </button>
+    }
+    
+    <!-- Next -->
+    <button class="btn btn-sm btn-link text-secondary text-decoration-none px-2" 
+            [disabled]="pageNumber >= totalPages || totalCount === 0" 
+            (click)="changePage(pageNumber + 1)">
+      <i class="fas fa-angle-right"></i>
+    </button>
+    
+    <!-- Last -->
+    <button class="btn btn-sm btn-link text-secondary text-decoration-none px-2" 
+            [disabled]="pageNumber >= totalPages || totalCount === 0" 
+            (click)="changePage(totalPages)">
+      <i class="fas fa-angle-double-right"></i>
+    </button>
+    
+    <!-- Page Size Dropdown -->
+    <div class="ms-2">
+      <select class="form-select form-select-sm page-size-select" 
+              [ngModel]="pageSize" 
+              (ngModelChange)="onPageSizeChange($event)">
+        <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }}</option>
+      </select>
+    </div>
+  </div>
+</div>

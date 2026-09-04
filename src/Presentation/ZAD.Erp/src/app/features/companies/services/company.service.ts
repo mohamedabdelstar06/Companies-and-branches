@@ -19,6 +19,12 @@ export class CompanyService {
     if (query.searchTerm) {
       params = params.set('searchTerm', query.searchTerm);
     }
+    if (query.sortColumn) {
+      params = params.set('sortColumn', query.sortColumn);
+    }
+    if (query.sortDirection) {
+      params = params.set('sortDirection', query.sortDirection);
+    }
     
     return this.http.get<PageResult<CompanyListDto>>(this.apiUrl, { params });
   }

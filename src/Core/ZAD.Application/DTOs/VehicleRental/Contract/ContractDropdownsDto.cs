@@ -16,6 +16,5 @@ namespace ZAD.Application.DTOs.VehicleRental.Contract
         public IEnumerable<RentalVehicleDropdownDto> Vehicles { get; set; } = new List<RentalVehicleDropdownDto>();
         
         public IEnumerable<SponsorDropdownDto> Sponsors { get; set; } = new List<SponsorDropdownDto>();
-        public IEnumerable<SecondDriverDropdownDto> SecondDrivers { get; set; } = new List<SecondDriverDropdownDto>();
     }
 }

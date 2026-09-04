@@ -112,6 +112,7 @@ namespace ZAD.Application.DTOs.VehicleRental.Contract
         public int? TotalConsumptionKilometers { get; set; }
         public int? FreeKM { get; set; }
         public int? KMExceededTheLimit { get; set; }
+
         public decimal? TotalAmountOfKMExceedingTheLimit { get; set; }
         public decimal? DelayPenaltyAmount { get; set; }
         public decimal? TotalRentalAmount { get; set; }

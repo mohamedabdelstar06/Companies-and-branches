@@ -106,7 +106,7 @@ export interface ContractDetailDto {
   // Metadata
   createdAt?: string;
   updatedAt?: string;
-  
+
   // Receiving Fields
   receivingDate?: string;
   receivingTime?: string;

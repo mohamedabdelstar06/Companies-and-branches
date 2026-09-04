@@ -56,7 +56,7 @@ export class UpdateContractComponent implements OnInit {
   initForm(): void {
     const now = new Date();
     // format to HH:MM for input[type=time]
-    const timeString = now.toTimeString().substring(0, 5); 
+    const timeString = now.toTimeString().substring(0, 5);
     // format to YYYY-MM-DD for input[type=date]
     const dateString = now.toISOString().substring(0, 10);
 
@@ -64,28 +64,28 @@ export class UpdateContractComponent implements OnInit {
       // Header
       time: [timeString, Validators.required],
       date: [dateString, Validators.required],
-      day: [{value: this.getDayName(dateString), disabled: true}],
+      day: [{ value: this.getDayName(dateString), disabled: true }],
       contractType: [1, Validators.required],
       paymentType: [1, Validators.required],
       periodInDays: [1, [Validators.required, Validators.min(1)]],
-      actualPeriodInDays: [{value: 0, disabled: true}], // calculated
-      expectedReceivingTime: [{value: '', disabled: true}], // calculated
-      expectedReceivingDate: [{value: '', disabled: true}], // calculated
-      deliveryDay: [{value: '', disabled: true}], // calculated
+      actualPeriodInDays: [{ value: 0, disabled: true }], // calculated
+      expectedReceivingTime: [{ value: '', disabled: true }], // calculated
+      expectedReceivingDate: [{ value: '', disabled: true }], // calculated
+      deliveryDay: [{ value: '', disabled: true }], // calculated
       withDriver: [false],
-      driverId: [{value: null, disabled: true}],
+      driverId: [{ value: null, disabled: true }],
 
       // Tenant
       tenantId: [null, Validators.required],
 
       // Sponsor ( Part of Tenant Tab)
-      sponsorId: [{value: null, disabled: true}],
-      sponsorName: [{value: '', disabled: true}],
-      sponsorNationality: [{value: '', disabled: true}],
-      sponsorLicenseNumber: [{value: '', disabled: true}],
-      sponsorLicenseExpireDate: [{value: '', disabled: true}],
-      sponsorIdNumber: [{value: '', disabled: true}],
-      sponsorIdExpireDate: [{value: '', disabled: true}],
+      sponsorId: [{ value: null, disabled: true }],
+      sponsorName: [{ value: '', disabled: true }],
+      sponsorNationality: [{ value: '', disabled: true }],
+      sponsorLicenseNumber: [{ value: '', disabled: true }],
+      sponsorLicenseExpireDate: [{ value: '', disabled: true }],
+      sponsorIdNumber: [{ value: '', disabled: true }],
+      sponsorIdExpireDate: [{ value: '', disabled: true }],
 
       // Second Driver
       secondDriverId: [null],
@@ -100,8 +100,8 @@ export class UpdateContractComponent implements OnInit {
       kilometerCounter: [0, Validators.required],
       rentPrice: [0, [Validators.required, Validators.min(0)]],
       discountPercent: [0, [Validators.required, Validators.min(0), Validators.max(100)]],
-      discountAmount: [{value: 0, disabled: true}], //calculated
-      netRentPrice: [{value: 0, disabled: true}], //calculated
+      discountAmount: [{ value: 0, disabled: true }], //calculated
+      netRentPrice: [{ value: 0, disabled: true }], //calculated
 
       // Penalties
       delayPenaltyPerHour: [0, Validators.required],
@@ -113,7 +113,7 @@ export class UpdateContractComponent implements OnInit {
       driverFare: [0, Validators.required],
       driverWorkingHoursPerDay: [0, Validators.required],
       driverOvertimeAmountPerHour: [0, Validators.required],
-      dailyRate: [{value: 0, disabled: true}], // calculated
+      dailyRate: [{ value: 0, disabled: true }], // calculated
 
       // KM / Day
       // KM / Day
@@ -127,11 +127,11 @@ export class UpdateContractComponent implements OnInit {
     this.form.get('discountPercent')?.valueChanges.subscribe(() => {
       this.calculateFields();
     });
-    
+
     this.form.get('driverFare')?.valueChanges.subscribe(() => this.calculateFields());
     this.form.get('driverWorkingHoursPerDay')?.valueChanges.subscribe(() => this.calculateFields());
     this.form.get('driverOvertimeAmountPerHour')?.valueChanges.subscribe(() => this.calculateFields());
-    
+
     // We must subscribe to rentPrice changes to trigger recalculation of discount amount/net price
     this.form.get('rentPrice')?.valueChanges.subscribe(() => this.calculateFields());
 
@@ -152,7 +152,7 @@ export class UpdateContractComponent implements OnInit {
       const driverFare = this.form.get('driverFare');
       const driverWorkingHours = this.form.get('driverWorkingHoursPerDay');
       const driverOvertime = this.form.get('driverOvertimeAmountPerHour');
-      
+
       if (val === true || val === 'true') {
         driverCtrl?.enable();
         driverFare?.enable();
@@ -161,11 +161,11 @@ export class UpdateContractComponent implements OnInit {
       } else {
         driverCtrl?.disable();
         driverCtrl?.setValue(null);
-        
+
         driverFare?.disable();
         driverWorkingHours?.disable();
         driverOvertime?.disable();
-        
+
         driverFare?.setValue(0);
         driverWorkingHours?.setValue(0);
         driverOvertime?.setValue(0);
@@ -197,38 +197,38 @@ export class UpdateContractComponent implements OnInit {
         if (vehicle) {
           // If the vehicle is rented AND it's NOT the vehicle already attached to THIS contract
           if (vehicle.isRented && vehicle.currentContractId !== this.contractId) {
-             import('sweetalert2').then(Swal => {
-                Swal.default.fire({
-                  icon: 'error',
-                  html: `The car cannot be used in the current contract/exit because it is under contract number '${vehicle.currentContractId}', reference no. '${vehicle.currentContractReferenceNo}'. <a style="color: #20c997; cursor: pointer; text-decoration: underline;">View</a>`,
-                  confirmButtonColor: '#d33',
-                  confirmButtonText: 'Ok'
-                });
-             });
-             this.form.get('rentalVehicleId')?.setValue(this.originalVehicleId || null, { emitEvent: false });
-             
-             // Restore previous vehicle details or clear
-             const originalVehicle = this.originalVehicleId ? this.vehicles.find(v => v.id == this.originalVehicleId) : null;
-             if (originalVehicle) {
-                 this.form.patchValue({
-                    kilometerCounter: originalVehicle.kilometerCounter
-                 });
-             } else {
-                 this.form.patchValue({
-                    kilometerPerDay: 0,
-                    maximumKilometerPerDay: 0,
-                    amountOfKmExceedingLimit: 0,
-                    kilometerCounter: 0
-                 });
-             }
-             this.recalculateRentPrice();
-             return;
+            import('sweetalert2').then(Swal => {
+              Swal.default.fire({
+                icon: 'error',
+                html: `The car cannot be used in the current contract/exit because it is under contract number '${vehicle.currentContractId}', reference no. '${vehicle.currentContractReferenceNo}'. <a style="color: #20c997; cursor: pointer; text-decoration: underline;">View</a>`,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Ok'
+              });
+            });
+            this.form.get('rentalVehicleId')?.setValue(this.originalVehicleId || null, { emitEvent: false });
+
+            // Restore previous vehicle details or clear
+            const originalVehicle = this.originalVehicleId ? this.vehicles.find(v => v.id == this.originalVehicleId) : null;
+            if (originalVehicle) {
+              this.form.patchValue({
+                kilometerCounter: originalVehicle.kilometerCounter
+              });
+            } else {
+              this.form.patchValue({
+                kilometerPerDay: 0,
+                maximumKilometerPerDay: 0,
+                amountOfKmExceedingLimit: 0,
+                kilometerCounter: 0
+              });
+            }
+            this.recalculateRentPrice();
+            return;
           }
-          
+
           this.form.patchValue({
             kilometerCounter: vehicle.kilometerCounter
           });
-          
+
           // Set realistic KM limits based on vehicle brand/model
           let baseKm = 200;
           let maxKm = 250;
@@ -253,17 +253,17 @@ export class UpdateContractComponent implements OnInit {
           this.recalculateRentPrice();
         }
       } else {
-         this.form.patchValue({
-            kilometerPerDay: 0,
-            maximumKilometerPerDay: 0,
-            amountOfKmExceedingLimit: 0
-         });
+        this.form.patchValue({
+          kilometerPerDay: 0,
+          maximumKilometerPerDay: 0,
+          amountOfKmExceedingLimit: 0
+        });
       }
     });
 
     this.form.get('tenantId')?.valueChanges.subscribe(val => {
       const sponsorIdCtrl = this.form.get('sponsorId');
-      
+
       if (val) {
         const tenant = this.tenants.find(t => t.id == val);
         if (tenant) {
@@ -349,7 +349,7 @@ export class UpdateContractComponent implements OnInit {
       this.secondDrivers = res.secondDrivers || [];
     });
   }
-  
+
   get selectedTenant(): any {
     const id = this.form.get('tenantId')?.value;
     return id ? this.tenants.find(t => t.id == id) : null;
@@ -421,17 +421,17 @@ export class UpdateContractComponent implements OnInit {
     const discountPercent = this.form.get('discountPercent')?.value || 0;
     const discountAmount = rentPrice * (discountPercent / 100);
     const netRentPrice = rentPrice - discountAmount;
-    
+
     const driverFare = this.form.get('driverFare')?.value || 0;
     const driverWorkingHours = this.form.get('driverWorkingHoursPerDay')?.value || 0;
     const driverOvertime = this.form.get('driverOvertimeAmountPerHour')?.value || 0;
     const dailyRate = driverFare + (driverWorkingHours * driverOvertime);
 
     // Update form controls without emitting event to prevent infinite loop
-    this.form.get('discountAmount')?.setValue(discountAmount, {emitEvent: false});
-    this.form.get('netRentPrice')?.setValue(netRentPrice, {emitEvent: false});
-    this.form.get('dailyRate')?.setValue(dailyRate, {emitEvent: false});
-    
+    this.form.get('discountAmount')?.setValue(discountAmount, { emitEvent: false });
+    this.form.get('netRentPrice')?.setValue(netRentPrice, { emitEvent: false });
+    this.form.get('dailyRate')?.setValue(dailyRate, { emitEvent: false });
+
     this.calculateDates();
   }
 
@@ -458,9 +458,9 @@ export class UpdateContractComponent implements OnInit {
     }
 
     const calculatedPrice = baseRate * period;
-    
+
     // We must force the value to update, even if it's disabled
-    this.form.get('rentPrice')?.patchValue(calculatedPrice, {emitEvent: true, onlySelf: false});
+    this.form.get('rentPrice')?.patchValue(calculatedPrice, { emitEvent: true, onlySelf: false });
   }
 
   getPeriodLabel(): string {
@@ -482,13 +482,13 @@ export class UpdateContractComponent implements OnInit {
     const timeStr = this.form.get('time')?.value;
 
     if (!dateStr || !timeStr || !period) {
-       this.form.patchValue({
-         expectedReceivingDate: '',
-         expectedReceivingTime: '',
-         deliveryDay: '',
-         actualPeriodInDays: 0
-       }, {emitEvent: false});
-       return;
+      this.form.patchValue({
+        expectedReceivingDate: '',
+        expectedReceivingTime: '',
+        deliveryDay: '',
+        actualPeriodInDays: 0
+      }, { emitEvent: false });
+      return;
     }
 
     const [hoursStr, minutesStr] = timeStr.split(':');
@@ -530,13 +530,13 @@ export class UpdateContractComponent implements OnInit {
       expectedReceivingTime: expectedTimeStr,
       deliveryDay: this.getDayName(expectedDateStr),
       actualPeriodInDays: actualDays
-    }, {emitEvent: false});
+    }, { emitEvent: false });
   }
 
   onSubmit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      
+
       const fieldNames: any = {
         time: 'Time', date: 'Date', contractType: 'Contract Type', paymentType: 'Payment Type',
         periodInDays: 'Period', expectedReceivingTime: 'Expected Receiving Time', expectedReceivingDate: 'Expected Receiving Date',
@@ -574,7 +574,7 @@ export class UpdateContractComponent implements OnInit {
       const netRentPrice = this.form.get('netRentPrice')?.value;
       const type = +this.form.get('contractType')?.value;
       const period = +this.form.get('periodInDays')?.value || 1;
-      
+
       let baseRate = 0;
       switch (type) {
         case 1: baseRate = selectedVehicle.dailyRentPrice; break;
@@ -619,7 +619,7 @@ export class UpdateContractComponent implements OnInit {
   private handleError(err: any, defaultMessage: string) {
     console.error('API Error:', err);
     let errorMessage = defaultMessage;
-    
+
     if (err.error) {
       // Check for ASP.NET Core validation errors format
       if (err.error.errors) {
@@ -632,7 +632,7 @@ export class UpdateContractComponent implements OnInit {
         if (validationErrors.length > 0) {
           errorMessage = validationErrors.join('<br>');
         }
-      } 
+      }
       // Check for custom message
       else if (err.error.message) {
         errorMessage = err.error.message;
@@ -642,7 +642,7 @@ export class UpdateContractComponent implements OnInit {
         errorMessage = err.error;
       }
     }
-    
+
     this.sweetAlert.error('Error Details', errorMessage);
   }
 

@@ -24,6 +24,12 @@ export class ContractService {
     if (query.searchTerm) {
       params = params.set('searchTerm', query.searchTerm);
     }
+    if (query.sortColumn) {
+      params = params.set('sortColumn', query.sortColumn);
+    }
+    if (query.sortDirection) {
+      params = params.set('sortDirection', query.sortDirection);
+    }
 
     const context = this.contextService.getContext();
     if (context.companyId) {

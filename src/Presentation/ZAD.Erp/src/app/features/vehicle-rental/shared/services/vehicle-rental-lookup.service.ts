@@ -10,6 +10,17 @@ export interface DropdownDto {
     modelYear?: number;
     fileNo?: string;
     kilometerCounter?: number;
+    
+    // Driver fields
+    driverFare?: number;
+    driverWorkingHoursPerDay?: number;
+    driverOvertimeAmountPerHour?: number;
+    nationality?: string;
+    licenseNumber?: string;
+    licenseExpireDate?: string;
+    idNumber?: string;
+    idExpireDate?: string;
+    dailyRate?: number;
 }
 
 @Injectable({

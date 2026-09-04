@@ -173,12 +173,14 @@ export class AddContractComponent implements OnInit {
 
     this.form.get('driverId')?.valueChanges.subscribe(val => {
       if (val) {
-        // Set realistic driver fares
-        this.form.patchValue({
-          driverFare: 150.00,
-          driverWorkingHoursPerDay: 8.00,
-          driverOvertimeAmountPerHour: 25.00
-        });
+        const driver = this.drivers.find(d => d.id == val);
+        if (driver) {
+          this.form.patchValue({
+            driverFare: driver.driverFare,
+            driverWorkingHoursPerDay: driver.driverWorkingHoursPerDay,
+            driverOvertimeAmountPerHour: driver.driverOvertimeAmountPerHour
+          });
+        }
       }
     });
 
@@ -303,7 +305,7 @@ export class AddContractComponent implements OnInit {
 
     this.form.get('secondDriverId')?.valueChanges.subscribe(val => {
       if (val) {
-        const sd = this.secondDrivers.find(s => s.id == val);
+        const sd = this.drivers.find(s => s.id == val);
         if (sd) {
           this.form.patchValue({
             secondDriverNationality: sd.nationality,
@@ -336,8 +338,15 @@ export class AddContractComponent implements OnInit {
       this.companies = res.companies;
       this.branches = res.branches;
       this.sponsors = res.sponsors || [];
-      this.secondDrivers = res.secondDrivers || [];
     });
+  }
+  
+  get availableSecondDrivers(): any[] {
+    const primaryDriverId = this.form.get('driverId')?.value;
+    if (primaryDriverId) {
+      return this.drivers.filter(d => d.id != primaryDriverId);
+    }
+    return this.drivers;
   }
   
   get selectedTenant(): any {

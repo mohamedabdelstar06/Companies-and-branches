@@ -207,7 +207,7 @@ export class ViewContractComponent implements OnInit {
     if (!ok) return;
     this.contractService.confirm(this.contractId).subscribe({
       next: () => { this.sweetAlert.success('Confirmed!'); this.loadContract(this.contractId!); },
-      error: (err) => this.sweetAlert.error('Error', err?.error?.message || 'Failed')
+      error: (err) => this.sweetAlert.error('Error', this.getErrorMessage(err))
     });
   }
 
@@ -217,14 +217,15 @@ export class ViewContractComponent implements OnInit {
     if (!ok) return;
     this.contractService.unconfirm(this.contractId).subscribe({
       next: () => { this.sweetAlert.success('Unconfirmed!'); this.loadContract(this.contractId!); },
-      error: (err) => this.sweetAlert.error('Error', err?.error?.message || 'Failed')
+      error: (err) => this.sweetAlert.error('Error', this.getErrorMessage(err))
     });
   }
 
   async onReceiveVehicle(): Promise<void> {
     if (!this.contractId) return;
     if (this.receiveForm.invalid) {
-      this.sweetAlert.error('Validation Error', 'Please check the receiving form inputs.');
+      this.receiveForm.markAllAsTouched();
+      this.sweetAlert.error('Validation Error', 'Please check the required fields (highlighted in red).');
       return;
     }
     
@@ -238,7 +239,7 @@ export class ViewContractComponent implements OnInit {
     if (!ok) return;
     this.contractService.receiveVehicle(this.contractId, this.receiveForm.value).subscribe({
       next: () => { this.sweetAlert.success('Vehicle Received!'); this.loadContract(this.contractId!); },
-      error: (err) => this.sweetAlert.error('Error', err?.error?.message || 'Failed')
+      error: (err) => this.sweetAlert.error('Error', this.getErrorMessage(err))
     });
   }
 
@@ -248,7 +249,7 @@ export class ViewContractComponent implements OnInit {
     if (!ok) return;
     this.contractService.unreceiveVehicle(this.contractId).subscribe({
       next: () => { this.sweetAlert.success('Vehicle Receipt Unconfirmed!'); this.loadContract(this.contractId!); },
-      error: (err) => this.sweetAlert.error('Error', err?.error?.message || 'Failed')
+      error: (err) => this.sweetAlert.error('Error', this.getErrorMessage(err))
     });
   }
 
@@ -258,7 +259,7 @@ export class ViewContractComponent implements OnInit {
     if (!ok) return;
     this.contractService.delete(this.contractId).subscribe({
       next: () => { this.sweetAlert.success('Deleted!'); this.router.navigate(['/vehicle-rental/contracts']); },
-      error: (err) => this.sweetAlert.error('Error', err?.error?.message || 'Failed')
+      error: (err) => this.sweetAlert.error('Error', this.getErrorMessage(err))
     });
   }
 
@@ -268,7 +269,7 @@ export class ViewContractComponent implements OnInit {
     if (!ok) return;
     this.contractService.restore(this.contractId).subscribe({
       next: () => { this.sweetAlert.success('Restored!'); this.loadContract(this.contractId!); },
-      error: (err) => this.sweetAlert.error('Error', err?.error?.message || 'Failed')
+      error: (err) => this.sweetAlert.error('Error', this.getErrorMessage(err))
     });
   }
 
@@ -284,5 +285,14 @@ export class ViewContractComponent implements OnInit {
     const ampm = h >= 12 ? 'PM' : 'AM';
     const h12 = h % 12 === 0 ? 12 : h % 12;
     return `${h12}:${m} ${ampm}`;
+  }
+
+  private getErrorMessage(err: any): string {
+    if (err?.error?.message) return err.error.message;
+    if (err?.error?.errors) {
+      return Object.values(err.error.errors).flat().join('\n');
+    }
+    if (typeof err?.error === 'string') return err.error;
+    return err?.message || 'Failed';
   }
 }

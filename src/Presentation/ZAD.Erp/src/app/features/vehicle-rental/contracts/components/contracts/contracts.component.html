@@ -191,12 +191,13 @@
   </div>
 
   <!--    Footer info      ─ -->
-  @if (contracts.length > 0) {
-  <div class="mt-2 text-muted small d-flex justify-content-between px-1">
-    <span>Showing {{ contracts.length }} record(s)</span>
-    @if (searchTerm) {
-    <span>{{ contracts.length }} of {{ allContracts.length }} total</span>
-    }
-  </div>
+  @if (totalCount > 0) {
+    <app-pagination 
+      [pageNumber]="pageNumber"
+      [pageSize]="pageSize"
+      [totalCount]="totalCount"
+      (pageChanged)="changePage($event)"
+      (pageSizeChanged)="onPageSizeChange($event)">
+    </app-pagination>
   }
 </div>

@@ -23,17 +23,18 @@
 
   <!-- Actions -->
   <div class="d-flex align-items-center gap-2 px-3 mb-4 pb-3 border-bottom">
-   
+
 
 
     <!-- Edit (Draft and Deleted) -->
     @if (isDraft || isDeleted) {
-    <button class="btn-action-icon" title="Edit Contract" [routerLink]="['/vehicle-rental/contracts/edit', contract.id]">
+    <button class="btn-action-icon" title="Edit Contract"
+      [routerLink]="['/vehicle-rental/contracts/edit', contract.id]">
       <i class="fa-solid fa-file-pen" style="color: #176B6B;"></i>
     </button>
     }
 
- 
+
     <!-- Delete (Draft or Confirmed) -->
     @if (!isDeleted && isDraft) {
     <button class="btn-action-icon" title="Delete" (click)="onDelete()">
@@ -62,18 +63,18 @@
     </button>
     }
 
-    
+
     <!-- Receive Vehicle -->
     @if (isConfirmed && !isVehicleReceived) {
-      <button class="btn-action-text text-teal" title="Receive Vehicle" (click)="onReceiveVehicle()">
-        Receive Vehicle
-      </button>
+    <button class="btn-action-text text-teal" title="Receive Vehicle" (click)="onReceiveVehicle()">
+      Receive Vehicle
+    </button>
     }
     <!-- Confirm Receive Vehicle -->
     @if (isVehicleReceived) {
-      <button class="btn-action-text text-teal" title="Unconfirm Receive Vehicle" (click)="onUnreceiveVehicle()">
-        Unconfirm Receive Vehicle
-      </button>
+    <button class="btn-action-text text-teal" title="Unconfirm Receive Vehicle" (click)="onUnreceiveVehicle()">
+      Unconfirm Receive Vehicle
+    </button>
     }
   </div>
 
@@ -170,14 +171,20 @@
   <div class="page-content bg-white rounded shadow-sm p-4 mb-4">
     <ul class="nav nav-pills nav-justified mb-4" style="border: 1px solid #176B6B; border-radius: 0;">
       <li class="nav-item" style="border-right: 1px solid #176B6B;">
-        <a class="nav-link fw-bold rounded-0" [class.active]="activeTab === 'tenant'" (click)="switchTab('tenant')" role="button" [style.background-color]="activeTab === 'tenant' ? '#176B6B' : 'white'" [style.color]="activeTab === 'tenant' ? 'white' : '#176B6B'">Tenant</a>
+        <a class="nav-link fw-bold rounded-0" [class.active]="activeTab === 'tenant'" (click)="switchTab('tenant')"
+          role="button" [style.background-color]="activeTab === 'tenant' ? '#176B6B' : 'white'"
+          [style.color]="activeTab === 'tenant' ? 'white' : '#176B6B'">Tenant</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link fw-bold rounded-0" [class.active]="activeTab === 'vehicle'" (click)="switchTab('vehicle')" role="button" [style.background-color]="activeTab === 'vehicle' ? '#176B6B' : 'white'" [style.color]="activeTab === 'vehicle' ? 'white' : '#176B6B'">Vehicle info</a>
+        <a class="nav-link fw-bold rounded-0" [class.active]="activeTab === 'vehicle'" (click)="switchTab('vehicle')"
+          role="button" [style.background-color]="activeTab === 'vehicle' ? '#176B6B' : 'white'"
+          [style.color]="activeTab === 'vehicle' ? 'white' : '#176B6B'">Vehicle info</a>
       </li>
       @if (isConfirmed) {
       <li class="nav-item" style="border-left: 1px solid #176B6B;">
-        <a class="nav-link fw-bold rounded-0" [class.active]="activeTab === 'receive'" (click)="switchTab('receive')" role="button" [style.background-color]="activeTab === 'receive' ? '#176B6B' : 'white'" [style.color]="activeTab === 'receive' ? 'white' : '#176B6B'">Receiving Vehicle from Tenant</a>
+        <a class="nav-link fw-bold rounded-0" [class.active]="activeTab === 'receive'" (click)="switchTab('receive')"
+          role="button" [style.background-color]="activeTab === 'receive' ? '#176B6B' : 'white'"
+          [style.color]="activeTab === 'receive' ? 'white' : '#176B6B'">Receiving Vehicle from Tenant</a>
       </li>
       }
     </ul>
@@ -186,331 +193,351 @@
     <div [class.d-none]="activeTab !== 'tenant'">
       <h5 class="fw-bold text-secondary mb-4 border-bottom pb-2">Tenant</h5>
       <div class="row g-3">
-      <div class="col-md-3">
-        <label class="view-label">Tenant Name</label>
-        <div class="view-field">{{ contract.tenantName || '—' }}</div>
+        <div class="col-md-3">
+          <label class="view-label">Tenant Name</label>
+          <div class="view-field">{{ contract.tenantName || '—' }}</div>
+        </div>
+        @if (contract.sponsorName) {
+        <div class="col-md-3">
+          <label class="view-label">Sponsor Name</label>
+          <div class="view-field">{{ contract.sponsorName }}</div>
+        </div>
+        <div class="col-md-3">
+          <label class="view-label">Sponsor Nationality</label>
+          <div class="view-field">{{ contract.sponsorNationality || '—' }}</div>
+        </div>
+        <div class="col-md-3">
+          <label class="view-label">Sponsor License No.</label>
+          <div class="view-field">{{ contract.sponsorLicenseNumber || '—' }}</div>
+        </div>
+        <div class="col-md-3">
+          <label class="view-label">Sponsor License Expire</label>
+          <div class="view-field">{{ contract.sponsorLicenseExpireDate | date:'yyyy-MM-dd' }}</div>
+        </div>
+        <div class="col-md-3">
+          <label class="view-label">Sponsor ID No.</label>
+          <div class="view-field">{{ contract.sponsorIdNumber || '—' }}</div>
+        </div>
+        <div class="col-md-3">
+          <label class="view-label">Sponsor ID Expire</label>
+          <div class="view-field">{{ contract.sponsorIdExpireDate | date:'yyyy-MM-dd' }}</div>
+        </div>
+        }
       </div>
-      @if (contract.sponsorName) {
-      <div class="col-md-3">
-        <label class="view-label">Sponsor Name</label>
-        <div class="view-field">{{ contract.sponsorName }}</div>
-      </div>
-      <div class="col-md-3">
-        <label class="view-label">Sponsor Nationality</label>
-        <div class="view-field">{{ contract.sponsorNationality || '—' }}</div>
-      </div>
-      <div class="col-md-3">
-        <label class="view-label">Sponsor License No.</label>
-        <div class="view-field">{{ contract.sponsorLicenseNumber || '—' }}</div>
-      </div>
-      <div class="col-md-3">
-        <label class="view-label">Sponsor License Expire</label>
-        <div class="view-field">{{ contract.sponsorLicenseExpireDate | date:'yyyy-MM-dd' }}</div>
-      </div>
-      <div class="col-md-3">
-        <label class="view-label">Sponsor ID No.</label>
-        <div class="view-field">{{ contract.sponsorIdNumber || '—' }}</div>
-      </div>
-      <div class="col-md-3">
-        <label class="view-label">Sponsor ID Expire</label>
-        <div class="view-field">{{ contract.sponsorIdExpireDate | date:'yyyy-MM-dd' }}</div>
-      </div>
-      }
-    </div>
     </div>
 
     <!--    Vehicle Info      ─ -->
     <div [class.d-none]="activeTab !== 'vehicle'">
       <h5 class="fw-bold text-secondary mb-4 border-bottom pb-2">Vehicle Info</h5>
-    <div class="row g-3">
-      <div class="col-md-3">
-        <label class="view-label">Plate No.</label>
-        <div class="view-field fw-semibold">{{ contract.plateNo || '—' }}</div>
-      </div>
-      <div class="col-md-3">
-        <label class="view-label">Brand</label>
-        <div class="view-field">{{ contract.brand || '—' }}</div>
-      </div>
-      <div class="col-md-3">
-        <label class="view-label">Model Year</label>
-        <div class="view-field">{{ contract.modelYear || '—' }}</div>
-      </div>
-      <div class="col-md-3">
-        <label class="view-label">File No.</label>
-        <div class="view-field">{{ contract.fileNo || '—' }}</div>
-      </div>
-      <div class="col-md-3">
-        <label class="view-label">Kilometer Counter</label>
-        <div class="view-field">{{ contract.kilometerCounter | number }}</div>
-      </div>
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="view-label">Plate No.</label>
+          <div class="view-field fw-semibold">{{ contract.plateNo || '—' }}</div>
+        </div>
+        <div class="col-md-3">
+          <label class="view-label">Brand</label>
+          <div class="view-field">{{ contract.brand || '—' }}</div>
+        </div>
+        <div class="col-md-3">
+          <label class="view-label">Model Year</label>
+          <div class="view-field">{{ contract.modelYear || '—' }}</div>
+        </div>
+        <div class="col-md-3">
+          <label class="view-label">File No.</label>
+          <div class="view-field">{{ contract.fileNo || '—' }}</div>
+        </div>
+        <div class="col-md-3">
+          <label class="view-label">Kilometer Counter</label>
+          <div class="view-field">{{ contract.kilometerCounter | number }}</div>
+        </div>
 
-      <!-- Rent Price -->
-      <div class="col-12">
-        <hr class="my-2">
-        <h6 class="text-secondary fw-bold">Rent Price</h6>
-      </div>
-      <div class="col-md-3">
-        <label class="view-label">Rent Price</label>
-        <div class="view-field">{{ contract.rentPrice | number:'1.3-3' }}</div>
-      </div>
-      <div class="col-md-3">
-        <label class="view-label">Discount %</label>
-        <div class="view-field">{{ contract.discountPercent }}</div>
-      </div>
-      <div class="col-md-3">
-        <label class="view-label">Discount Amount</label>
-        <div class="view-field">{{ contract.discountAmount | number:'1.3-3' }}</div>
-      </div>
-      <div class="col-md-3">
-        <label class="view-label">Net Rent Price</label>
-        <div class="view-field fw-bold text-teal">{{ contract.netRentPrice | number:'1.3-3' }}</div>
-      </div>
+        <!-- Rent Price -->
+        <div class="col-12">
+          <hr class="my-2">
+          <h6 class="text-secondary fw-bold">Rent Price</h6>
+        </div>
+        <div class="col-md-3">
+          <label class="view-label">Rent Price</label>
+          <div class="view-field">{{ contract.rentPrice | number:'1.3-3' }}</div>
+        </div>
+        <div class="col-md-3">
+          <label class="view-label">Discount %</label>
+          <div class="view-field">{{ contract.discountPercent }}</div>
+        </div>
+        <div class="col-md-3">
+          <label class="view-label">Discount Amount</label>
+          <div class="view-field">{{ contract.discountAmount | number:'1.3-3' }}</div>
+        </div>
+        <div class="col-md-3">
+          <label class="view-label">Net Rent Price</label>
+          <div class="view-field fw-bold text-teal">{{ contract.netRentPrice | number:'1.3-3' }}</div>
+        </div>
 
-      <!-- Penalties -->
-      <div class="col-12">
-        <hr class="my-2">
-        <h6 class="text-secondary fw-bold">Penalties</h6>
-      </div>
-      <div class="col-md-3">
-        <label class="view-label">Delay Penalty / Hour</label>
-        <div class="view-field">{{ contract.delayPenaltyPerHour | number:'1.3-3' }}</div>
-      </div>
-      <div class="col-md-3">
-        <label class="view-label">Allowed Delay Hours</label>
-        <div class="view-field">{{ contract.allowedDelayHours }}</div>
-      </div>
-      <div class="col-md-3">
-        <label class="view-label">Maintenance Penalty</label>
-        <div class="view-field">{{ contract.maintenancePenalty | number:'1.3-3' }}</div>
-      </div>
-      <div class="col-md-3">
-        <label class="view-label">Accident Penalty</label>
-        <div class="view-field">{{ contract.accidentPenalty | number:'1.3-3' }}</div>
-      </div>
+        <!-- Penalties -->
+        <div class="col-12">
+          <hr class="my-2">
+          <h6 class="text-secondary fw-bold">Penalties</h6>
+        </div>
+        <div class="col-md-3">
+          <label class="view-label">Delay Penalty / Hour</label>
+          <div class="view-field">{{ contract.delayPenaltyPerHour | number:'1.3-3' }}</div>
+        </div>
+        <div class="col-md-3">
+          <label class="view-label">Allowed Delay Hours</label>
+          <div class="view-field">{{ contract.allowedDelayHours }}</div>
+        </div>
+        <div class="col-md-3">
+          <label class="view-label">Maintenance Penalty</label>
+          <div class="view-field">{{ contract.maintenancePenalty | number:'1.3-3' }}</div>
+        </div>
+        <div class="col-md-3">
+          <label class="view-label">Accident Penalty</label>
+          <div class="view-field">{{ contract.accidentPenalty | number:'1.3-3' }}</div>
+        </div>
 
-      <!-- KM / Day -->
-      <div class="col-12">
-        <hr class="my-2">
-        <h6 class="text-secondary fw-bold">Kilometer Per Day</h6>
+        <!-- KM / Day -->
+        <div class="col-12">
+          <hr class="my-2">
+          <h6 class="text-secondary fw-bold">Kilometer Per Day</h6>
+        </div>
+        <div class="col-md-4">
+          <label class="view-label">KM Per Day</label>
+          <div class="view-field">{{ contract.kilometerPerDay | number }}</div>
+        </div>
+        <div class="col-md-4">
+          <label class="view-label">Maximum KM Per Day</label>
+          <div class="view-field">{{ contract.maximumKilometerPerDay | number }}</div>
+        </div>
+        <div class="col-md-4">
+          <label class="view-label">Amount of KM Exceeding Limit</label>
+          <div class="view-field">{{ contract.amountOfKmExceedingLimit | number:'1.3-3' }}</div>
+        </div>
       </div>
-      <div class="col-md-4">
-        <label class="view-label">KM Per Day</label>
-        <div class="view-field">{{ contract.kilometerPerDay | number }}</div>
-      </div>
-      <div class="col-md-4">
-        <label class="view-label">Maximum KM Per Day</label>
-        <div class="view-field">{{ contract.maximumKilometerPerDay | number }}</div>
-      </div>
-      <div class="col-md-4">
-        <label class="view-label">Amount of KM Exceeding Limit</label>
-        <div class="view-field">{{ contract.amountOfKmExceedingLimit | number:'1.3-3' }}</div>
-      </div>
-    </div>
     </div>
 
     <!--    Receiving Vehicle from Tenant Tab      ─ -->
     @if (isConfirmed) {
     <div [class.d-none]="activeTab !== 'receive'" [formGroup]="receiveForm">
-    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
-      <h5 class="fw-bold text-secondary mb-0">Receiving Vehicle from Tenant</h5>
-    </div>
-    
-    <div class="row g-4">
-      <!-- Receiving Settings -->
-      <div class="col-12">
-        <h6 class="fw-bold text-secondary">Receiving settings</h6>
-        <div class="row g-3">
-          <div class="col-md-3">
-            <label class="form-label">Vehicle Branch</label>
-            <input type="text" class="form-control" [value]="contract.branchName || 'Main Branch'" readonly>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Receiving time</label>
-            <input type="time" class="form-control" formControlName="receivingTime">
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Receiving date</label>
-            <input type="date" class="form-control" formControlName="receivingDate">
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Day</label>
-            <input type="text" class="form-control" [value]="(receiveForm.value.receivingDate | date:'EEEE') || ''" readonly>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Contract Type</label>
-            <input type="text" class="form-control" [value]="contract.contractTypeName" readonly>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Actual Period In Days</label>
-            <input type="text" class="form-control" [value]="recActualPeriodInDays" readonly>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Delay hours</label>
-            <input type="text" class="form-control" [value]="recDelayHours" readonly>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Receive Proof Documents</label>
-            <input type="text" class="form-control" [value]="receiveForm.value.receiveProofDocuments ? 'Yes' : 'No'" readonly>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">With Driver</label>
-            <input type="text" class="form-control" [value]="contract.withDriver ? 'Yes' : 'No'" readonly>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">Driver Name</label>
-            <input type="text" class="form-control" [value]="contract.driverName || ''" readonly>
-          </div>
-        </div>
+      <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+        <h5 class="fw-bold text-secondary mb-0">Receiving Vehicle from Tenant</h5>
       </div>
 
-      <!-- New Status and Damage Details -->
-      <div class="col-12 mt-2">
-        <div class="form-check mb-3">
-          <input class="form-check-input" type="checkbox" id="maintenanceDoneByTenant" formControlName="isMaintenanceDoneByTenant">
-          <label class="form-check-label fw-bold text-secondary" for="maintenanceDoneByTenant">
-            Maintenance Done by Tenant
-          </label>
+      <div class="row g-4">
+        <!-- Receiving Settings -->
+        <div class="col-12">
+          <h6 class="fw-bold text-secondary">Receiving settings</h6>
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label class="form-label">Vehicle Branch</label>
+              <input type="text" class="form-control" [value]="contract.branchName || 'Main Branch'" readonly>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Receiving time</label>
+              <input type="time" class="form-control" formControlName="receivingTime"
+                [ngClass]="{'is-invalid': receiveForm.get('receivingTime')?.invalid && receiveForm.get('receivingTime')?.touched}">
+              <div class="invalid-feedback">Required</div>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Receiving date</label>
+              <input type="date" class="form-control" formControlName="receivingDate"
+                [ngClass]="{'is-invalid': receiveForm.get('receivingDate')?.invalid && receiveForm.get('receivingDate')?.touched}">
+              <div class="invalid-feedback">Required</div>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Day</label>
+              <input type="text" class="form-control" [value]="(receiveForm.value.receivingDate | date:'EEEE') || ''"
+                readonly>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Contract Type</label>
+              <input type="text" class="form-control" [value]="contract.contractTypeName" readonly>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Actual Period In Days</label>
+              <input type="text" class="form-control" [value]="recActualPeriodInDays" readonly>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Delay hours</label>
+              <input type="text" class="form-control" [value]="recDelayHours" readonly>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Receive Proof Documents</label>
+              <input type="text" class="form-control" [value]="receiveForm.value.receiveProofDocuments ? 'Yes' : 'No'"
+                readonly>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">With Driver</label>
+              <input type="text" class="form-control" [value]="contract.withDriver ? 'Yes' : 'No'" readonly>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Driver Name</label>
+              <input type="text" class="form-control" [value]="contract.driverName || ''" readonly>
+            </div>
+          </div>
         </div>
-        
-        <div class="row g-4">
-          <!-- Vehicle Receiving Status -->
-          <div class="col-md-6">
-            <fieldset class="border p-3 rounded h-100">
-              <legend class="float-none w-auto px-2 fs-6 fw-bold text-secondary mb-0">Vehicle Receiving Status</legend>
-              <div class="mb-3">
-                <label class="form-label">Vehicle Receiving Status</label>
-                <select class="form-select" formControlName="vehicleReceivingStatus">
-                  <option [ngValue]="null" disabled>Select one</option>
-                  @for (status of vehicleReceivingStatuses; track status.value) {
+
+        <!-- New Status and Damage Details -->
+        <div class="col-12 mt-2">
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="maintenanceDoneByTenant"
+              formControlName="isMaintenanceDoneByTenant">
+            <label class="form-check-label fw-bold text-secondary" for="maintenanceDoneByTenant">
+              Maintenance Done by Tenant
+            </label>
+          </div>
+
+          <div class="row g-4">
+            <!-- Vehicle Receiving Status -->
+            <div class="col-md-6">
+              <fieldset class="border p-3 rounded h-100">
+                <legend class="float-none w-auto px-2 fs-6 fw-bold text-secondary mb-0">Vehicle Receiving Status
+                </legend>
+                <div class="mb-3">
+                  <label class="form-label">Vehicle Receiving Status</label>
+                  <select class="form-select" formControlName="vehicleReceivingStatus"
+                    [ngClass]="{'is-invalid': receiveForm.get('vehicleReceivingStatus')?.invalid && receiveForm.get('vehicleReceivingStatus')?.touched}">
+                    <option [ngValue]="null" disabled>Select one</option>
+                    @for (status of vehicleReceivingStatuses; track status.value) {
                     <option [value]="status.value">{{ status.label }}</option>
-                  }
-                </select>
-              </div>
-              <div class="mb-0">
-                <label class="form-label">Receiving Note</label>
-                <textarea class="form-control" rows="3" formControlName="receiveNotes"></textarea>
-              </div>
-            </fieldset>
+                    }
+                  </select>
+                  <div class="invalid-feedback">Required</div>
+                </div>
+                <div class="mb-0">
+                  <label class="form-label">Receiving Note</label>
+                  <textarea class="form-control" rows="3" formControlName="receiveNotes"></textarea>
+                </div>
+              </fieldset>
+            </div>
+
+            <!-- Vehicle Damage Details -->
+            <div class="col-md-6">
+              <fieldset class="border p-3 rounded h-100">
+                <legend class="float-none w-auto px-2 fs-6 fw-bold text-secondary mb-0">Vehicle Damage Details</legend>
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="checkbox" id="stopVehicle"
+                    formControlName="isVehicleStoppedUntilMaintenanceOrRepair">
+                  <label class="form-check-label" for="stopVehicle">
+                    Stop Vehicle until maintenance or repair done
+                  </label>
+                </div>
+                <div class="mb-0">
+                  <label class="form-label">Damage Note</label>
+                  <textarea class="form-control" rows="3" formControlName="damageNote"></textarea>
+                </div>
+              </fieldset>
+            </div>
           </div>
-          
-          <!-- Vehicle Damage Details -->
-          <div class="col-md-6">
-            <fieldset class="border p-3 rounded h-100">
-              <legend class="float-none w-auto px-2 fs-6 fw-bold text-secondary mb-0">Vehicle Damage Details</legend>
-              <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" id="stopVehicle" formControlName="isVehicleStoppedUntilMaintenanceOrRepair">
-                <label class="form-check-label" for="stopVehicle">
-                  Stop Vehicle until maintenance or repair done
-                </label>
-              </div>
-              <div class="mb-0">
-                <label class="form-label">Damage Note</label>
-                <textarea class="form-control" rows="3" formControlName="damageNote"></textarea>
-              </div>
-            </fieldset>
+        </div>
+
+        <!-- Vehicle Kilometers -->
+        <div class="col-md-4">
+          <h6 class="fw-bold text-secondary">Vehicle Kilometers</h6>
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label">Receiving Kilometer Counter</label>
+              <input type="number" class="form-control" formControlName="receivingKilometerCounter"
+                [ngClass]="{'is-invalid': receiveForm.get('receivingKilometerCounter')?.invalid && receiveForm.get('receivingKilometerCounter')?.touched}">
+              <div class="invalid-feedback">Required</div>
+            </div>
+            <div class="col-6">
+              <label class="form-label">Renting Kilometer Counter</label>
+              <input type="text" class="form-control" [value]="contract.kilometerCounter" readonly>
+            </div>
+            <div class="col-6">
+              <label class="form-label">Total Consumption Kilometers</label>
+              <input type="text" class="form-control" [value]="recTotalConsumptionKm" readonly>
+            </div>
+            <div class="col-6">
+              <label class="form-label">AVG Kilometers Per Day</label>
+              <input type="text" class="form-control" [value]="recAvgKmPerDay | number:'1.2-2'" readonly>
+            </div>
+            <div class="col-6">
+              <label class="form-label">Free KM</label>
+              <input type="text" class="form-control" [value]="recFreeKm" readonly>
+            </div>
+            <div class="col-6">
+              <label class="form-label">KM Exceeded the Limit</label>
+              <input type="text" class="form-control" [value]="recKmExceeded" readonly>
+            </div>
+            <div class="col-6">
+              <label class="form-label">Amount of KM Exceeding the Limit</label>
+              <input type="text" class="form-control" [value]="contract.amountOfKmExceedingLimit | number:'1.3-3'"
+                readonly>
+            </div>
+          </div>
+        </div>
+
+        <!-- Penalties -->
+        <div class="col-md-4">
+          <h6 class="fw-bold text-secondary">Penalties</h6>
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label">Total Amount of KM Exceeding the Limit</label>
+              <input type="text" class="form-control bg-light" [value]="recKmExceededAmount | number:'1.3-3'" readonly>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Delay Penalty/Amount</label>
+              <input type="text" class="form-control bg-light" [value]="recDelayPenalty | number:'1.3-3'" readonly>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Maintenance Penalty Amount</label>
+              <input type="number" class="form-control" formControlName="maintenancePenaltyAmount">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Accident Penalty Amount</label>
+              <input type="number" class="form-control" formControlName="accidentPenaltyAmount">
+            </div>
+            <div class="col-12">
+              <label class="form-label">(-) Maintenance Paid by Tenant</label>
+              <input type="number" class="form-control" formControlName="maintenancePaidByTenant">
+            </div>
+          </div>
+        </div>
+
+        <!-- Totals -->
+        <div class="col-md-4">
+          <h6 class="fw-bold text-secondary">Totals</h6>
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label">Total Rental Amount</label>
+              <input type="text" class="form-control bg-light text-end" [value]="recTotalRentalAmount | number:'1.3-3'"
+                readonly>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Total Driver Amount</label>
+              <input type="text" class="form-control bg-light text-end" [value]="recTotalDriverAmount | number:'1.3-3'"
+                readonly>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Total Due Amount</label>
+              <input type="text" class="form-control bg-light text-end fw-bold"
+                [value]="recTotalDueAmount | number:'1.3-3'" readonly>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Discount amount</label>
+              <input type="number" class="form-control text-end" formControlName="receiveDiscountAmount">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Net Due Amount</label>
+              <input type="text" class="form-control bg-light text-end fw-bold text-teal"
+                [value]="recNetDueAmount | number:'1.3-3'" readonly>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Vehicle Kilometers -->
-      <div class="col-md-4">
-        <h6 class="fw-bold text-secondary">Vehicle Kilometers</h6>
-        <div class="row g-3">
-          <div class="col-12">
-            <label class="form-label">Receiving Kilometer Counter</label>
-            <input type="number" class="form-control" formControlName="receivingKilometerCounter">
-          </div>
-          <div class="col-6">
-            <label class="form-label">Renting Kilometer Counter</label>
-            <input type="text" class="form-control" [value]="contract.kilometerCounter" readonly>
-          </div>
-          <div class="col-6">
-            <label class="form-label">Total Consumption Kilometers</label>
-            <input type="text" class="form-control" [value]="recTotalConsumptionKm" readonly>
-          </div>
-          <div class="col-6">
-            <label class="form-label">AVG Kilometers Per Day</label>
-            <input type="text" class="form-control" [value]="recAvgKmPerDay | number:'1.2-2'" readonly>
-          </div>
-          <div class="col-6">
-            <label class="form-label">Free KM</label>
-            <input type="text" class="form-control" [value]="recFreeKm" readonly>
-          </div>
-          <div class="col-6">
-            <label class="form-label">KM Exceeded the Limit</label>
-            <input type="text" class="form-control" [value]="recKmExceeded" readonly>
-          </div>
-          <div class="col-6">
-            <label class="form-label">Amount of KM Exceeding the Limit</label>
-            <input type="text" class="form-control" [value]="contract.amountOfKmExceedingLimit | number:'1.3-3'" readonly>
-          </div>
-        </div>
-      </div>
-
-      <!-- Penalties -->
-      <div class="col-md-4">
-        <h6 class="fw-bold text-secondary">Penalties</h6>
-        <div class="row g-3">
-          <div class="col-12">
-            <label class="form-label">Total Amount of KM Exceeding the Limit</label>
-            <input type="text" class="form-control bg-light" [value]="recKmExceededAmount | number:'1.3-3'" readonly>
-          </div>
-          <div class="col-12">
-            <label class="form-label">Delay Penalty/Amount</label>
-            <input type="text" class="form-control bg-light" [value]="recDelayPenalty | number:'1.3-3'" readonly>
-          </div>
-          <div class="col-12">
-            <label class="form-label">Maintenance Penalty Amount</label>
-            <input type="number" class="form-control" formControlName="maintenancePenaltyAmount">
-          </div>
-          <div class="col-12">
-            <label class="form-label">Accident Penalty Amount</label>
-            <input type="number" class="form-control" formControlName="accidentPenaltyAmount">
-          </div>
-          <div class="col-12">
-            <label class="form-label">(-) Maintenance Paid by Tenant</label>
-            <input type="number" class="form-control" formControlName="maintenancePaidByTenant">
-          </div>
-        </div>
-      </div>
-
-      <!-- Totals -->
-      <div class="col-md-4">
-        <h6 class="fw-bold text-secondary">Totals</h6>
-        <div class="row g-3">
-          <div class="col-12">
-            <label class="form-label">Total Rental Amount</label>
-            <input type="text" class="form-control bg-light text-end" [value]="recTotalRentalAmount | number:'1.3-3'" readonly>
-          </div>
-          <div class="col-12">
-            <label class="form-label">Total Driver Amount</label>
-            <input type="text" class="form-control bg-light text-end" [value]="recTotalDriverAmount | number:'1.3-3'" readonly>
-          </div>
-          <div class="col-12">
-            <label class="form-label">Total Due Amount</label>
-            <input type="text" class="form-control bg-light text-end fw-bold" [value]="recTotalDueAmount | number:'1.3-3'" readonly>
-          </div>
-          <div class="col-12">
-            <label class="form-label">Discount amount</label>
-            <input type="number" class="form-control text-end" formControlName="receiveDiscountAmount">
-          </div>
-          <div class="col-12">
-            <label class="form-label">Net Due Amount</label>
-            <input type="text" class="form-control bg-light text-end fw-bold text-teal" [value]="recNetDueAmount | number:'1.3-3'" readonly>
-          </div>
-        </div>
-      </div>
-      </div>
-      
       <!-- Save Button -->
       <div class="row mt-4">
         <div class="col-12 text-end">
-          <button class="btn btn-teal px-4 py-2 fw-bold" style="background-color: #176B6B; color: white; border: none; border-radius: 6px;" (click)="onReceiveVehicle()">
+          <button class="btn btn-teal px-4 py-2 fw-bold"
+            style="background-color: #176B6B; color: white; border: none; border-radius: 6px;"
+            (click)="onReceiveVehicle()">
             <i class="fas fa-save me-2"></i> Save
           </button>
         </div>
       </div>
-      
+
     </div>
     }
   </div>

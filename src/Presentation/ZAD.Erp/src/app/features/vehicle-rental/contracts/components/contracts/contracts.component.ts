@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { ContractService } from '../../services/contract.service';
 import { SweetAlertService } from '@app/core/services/sweet-alert.service';
 import { VehicleRentalContextService, VehicleRentalContext } from '../../../shared/services/vehicle-rental-context.service';
+import { DatePipe, DecimalPipe, NgClass } from '@angular/common';
+import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
 
 type SortField = 'id' | 'plateNo' | 'brand' | 'date' | 'toDate' | 'periodInDays' | 'actualPeriodInDays' | 'contractType' | 'tenantName' | 'remainingAmount' | 'deliveryStatus' | 'status';
 type SortDir = 'asc' | 'desc' | null;
@@ -12,7 +14,7 @@ type SortDir = 'asc' | 'desc' | null;
 @Component({
   selector: 'app-contracts',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, DatePipe, DecimalPipe, NgClass, PaginationComponent],
   templateUrl: './contracts.component.html',
   styleUrl: './contracts.component.scss'
 })
@@ -24,7 +26,6 @@ export class ContractsComponent implements OnInit {
 
   context: VehicleRentalContext | null = null;
 
-  allContracts: any[] = [];
   contracts: any[] = [];
   pageNumber = 1;
   pageSize = 10;
@@ -49,52 +50,53 @@ export class ContractsComponent implements OnInit {
   }
 
   loadContracts(): void {
-    this.contractService.getPage({ pageNumber: 1, pageSize: 9999 }).subscribe({
+    const query = {
+      pageNumber: this.pageNumber,
+      pageSize: this.pageSize,
+      searchTerm: this.searchTerm || undefined,
+      sortColumn: this.sortField || undefined,
+      sortDirection: this.sortDir || undefined
+    };
+
+    this.contractService.getPage(query).subscribe({
       next: (result) => {
-        this.allContracts = result.items;
+        this.contracts = result.items;
         this.totalCount = result.totalCount;
-        this.applyFilter();
       },
       error: (err: any) => console.error(err)
     });
   }
 
-  applyFilter(): void {
-    const term = this.searchTerm.toLowerCase().trim();
-    let filtered = this.allContracts;
-
-    if (this.context?.companyId) {
-      filtered = filtered.filter(c => c.companyId == this.context?.companyId);
-    }
-    if (this.context?.branchId) {
-      filtered = filtered.filter(c => c.branchId == this.context?.branchId);
-    }
-
-    if (term) {
-      filtered = filtered.filter(c =>
-        (c.id?.toString() || '').includes(term) ||
-        (c.plateNo?.toLowerCase() || '').includes(term) ||
-        (c.brand?.toLowerCase() || '').includes(term) ||
-        (c.tenantName?.toLowerCase() || '').includes(term) ||
-        (c.status?.toLowerCase() || '').includes(term)
-      );
-    }
-
-    if (this.sortField && this.sortDir) {
-      const field = this.sortField;
-      const dir = this.sortDir === 'asc' ? 1 : -1;
-      filtered = [...filtered].sort((a, b) => {
-        const av = (a[field] || '').toString().toLowerCase();
-        const bv = (b[field] || '').toString().toLowerCase();
-        return av < bv ? -dir : av > bv ? dir : 0;
-      });
-    }
-
-    this.contracts = filtered;
+  onSearch(): void {
+    this.pageNumber = 1;
+    this.loadContracts();
   }
 
-  onSearch(): void {
-    this.applyFilter();
+  onPageSizeChange(size: number): void {
+    this.pageSize = size;
+    this.pageNumber = 1;
+    this.loadContracts();
+  }
+
+  changePage(page: number): void {
+    const totalPages = Math.ceil(this.totalCount / this.pageSize) || 1;
+    if (page >= 1 && page <= totalPages) {
+      this.pageNumber = page;
+      this.loadContracts();
+    }
+  }
+
+  getPages(): number[] {
+    const totalPages = Math.ceil(this.totalCount / this.pageSize) || 1;
+    const pages: number[] = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  min(a: number, b: number): number {
+    return Math.min(a, b);
   }
 
   toggleSort(field: SortField): void {
@@ -105,7 +107,7 @@ export class ContractsComponent implements OnInit {
       this.sortField = field;
       this.sortDir = 'asc';
     }
-    this.applyFilter();
+    this.loadContracts();
   }
 
   getSortIcon(field: SortField): string {

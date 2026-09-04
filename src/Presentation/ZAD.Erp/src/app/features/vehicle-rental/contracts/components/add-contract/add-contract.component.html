@@ -193,7 +193,7 @@
               <div class="d-flex align-items-center">
                 <select class="form-select" formControlName="secondDriverId">
                   <option [value]="null">Select one</option>
-                  <option *ngFor="let sd of secondDrivers" [value]="sd.id">{{ sd.name }}</option>
+                  <option *ngFor="let sd of availableSecondDrivers" [value]="sd.id">{{ sd.name }}</option>
                 </select>
                 <span class="ms-2 fs-5 text-teal" style="cursor: pointer;">+</span>
               </div>

@@ -33,10 +33,10 @@ namespace ZAD.Persistence.Context
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
+            // Settings module 
             modelBuilder.Entity<Company>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Branch>().HasQueryFilter(x => !x.IsDeleted);
-
+           // Vehicle Rental Module
             modelBuilder.Entity<Tenant>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Driver>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Sponsor>().HasQueryFilter(x => !x.IsDeleted);

@@ -27,7 +27,6 @@ namespace ZAD.Persistence.Repositories
         public IDriverRepository Drivers { get; }
         public IRentalVehicleRepository RentalVehicles { get; }
         public IGenericRepository<Sponsor> Sponsors { get; }
-        public IGenericRepository<SecondDriver> SecondDrivers { get; }
 
         public UnitOfWork(ApplicationDbContext context, IMapper mapper)
         {
@@ -42,7 +41,6 @@ namespace ZAD.Persistence.Repositories
             Drivers = new DriverRepository(_context);
             RentalVehicles = new RentalVehicleRepository(_context);
             Sponsors = new GenericRepository<Sponsor>(_context);
-            SecondDrivers = new GenericRepository<SecondDriver>(_context);
         }
 
         public async Task<int> SaveChangesAsync()

@@ -1,12 +1,14 @@
-using System.Linq;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ZAD.Domain.Entities.Branches;
 using ZAD.Domain.Entities.Companies;
 using ZAD.Domain.Entities.Lookups;
 using ZAD.Domain.SeedWork;
+using ZAD.Domain.Entities.VehicleRental.Tenants;
+using ZAD.Domain.Entities.VehicleRental.Drivers;
+using ZAD.Domain.Entities.VehicleRental.Sponsors;
+using ZAD.Domain.Entities.VehicleRental.Vehicles;
+using ZAD.Domain.Entities.VehicleRental.Contracts;
 
 namespace ZAD.Persistence.Context
 {
@@ -15,18 +17,16 @@ namespace ZAD.Persistence.Context
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
-
+        // Settings module 
         public DbSet<Company> Companies { get; set; } = null!;
         public DbSet<Branch> Branches { get; set; } = null!;
         public DbSet<Lookup> Lookups { get; set; } = null!;
-
         // Vehicle Rental Module
-        public DbSet<ZAD.Domain.Entities.VehicleRental.Tenants.Tenant> Tenants { get; set; } = null!;
-        public DbSet<ZAD.Domain.Entities.VehicleRental.Drivers.Driver> Drivers { get; set; } = null!;
-        public DbSet<ZAD.Domain.Entities.VehicleRental.Sponsors.Sponsor> Sponsors { get; set; } = null!;
-        public DbSet<ZAD.Domain.Entities.VehicleRental.Drivers.SecondDriver> SecondDrivers { get; set; } = null!;
-        public DbSet<ZAD.Domain.Entities.VehicleRental.Vehicles.RentalVehicle> RentalVehicles { get; } = null!;
-        public DbSet<ZAD.Domain.Entities.VehicleRental.Contracts.Contract> Contracts { get; set; } = null!;
+        public DbSet<Tenant> Tenants { get; set; } = null!;
+        public DbSet<Driver> Drivers { get; set; } = null!;
+        public DbSet<Sponsor> Sponsors { get; set; } = null!;
+        public DbSet<RentalVehicle> RentalVehicles { get; } = null!;
+        public DbSet<Contract> Contracts { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,12 +37,11 @@ namespace ZAD.Persistence.Context
             modelBuilder.Entity<Company>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Branch>().HasQueryFilter(x => !x.IsDeleted);
 
-            modelBuilder.Entity<ZAD.Domain.Entities.VehicleRental.Tenants.Tenant>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<ZAD.Domain.Entities.VehicleRental.Drivers.Driver>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<ZAD.Domain.Entities.VehicleRental.Sponsors.Sponsor>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<ZAD.Domain.Entities.VehicleRental.Drivers.SecondDriver>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<ZAD.Domain.Entities.VehicleRental.Vehicles.RentalVehicle>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<ZAD.Domain.Entities.VehicleRental.Contracts.Contract>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Tenant>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Driver>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Sponsor>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<RentalVehicle>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Contract>().HasQueryFilter(x => !x.IsDeleted);
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

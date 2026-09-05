@@ -20,7 +20,7 @@
           <div class="col-md-3">
             <label *ngIf="i===0" class="form-label text-muted fw-bold small">Attach File</label>
             <div class="input-group">
-              <input type="text" class="form-control bg-white" [value]="getFileName(i)" readonly placeholder="Choose file" (click)="fileInput.click()" style="cursor: pointer;">
+              <input type="text"  [value]="getFileName(i)" readonly placeholder="Choose file" (click)="fileInput.click()"  class="form-control bg-white extracted-style-135">
               <input type="file" class="d-none" #fileInput (change)="onDocumentFileChange($event, i)">
               <a *ngIf="isExistingFile(i)" class="btn btn-outline-teal" [href]="getFileUrl(i)" target="_blank" title="Download">
                 <i class="fas fa-download"></i>

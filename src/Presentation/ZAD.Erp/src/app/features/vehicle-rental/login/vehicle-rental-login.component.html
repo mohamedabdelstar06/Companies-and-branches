@@ -1,38 +1,38 @@
-<div class="login-bg d-flex flex-column justify-content-center align-items-center" style="min-height: 100vh;">
-      <div class="card shadow-sm border-0" style="width: 420px; padding: 2.5rem; border-radius: 12px;">
+<div   class="login-bg d-flex flex-column justify-content-center align-items-center extracted-style-134">
+      <div   class="card shadow-sm border-0 extracted-style-133">
         
         
         
         <div class="mb-3 text-start">
-          <label class="form-label fw-bold mb-1" style="color: #333; font-size: 0.85rem;">Company</label>
-          <select class="form-select text-secondary border-secondary-subtle" style="border-radius: 4px; padding: 0.5rem 2.25rem 0.5rem 0.75rem;" [(ngModel)]="selectedCompanyId" (change)="onCompanyChange()">
+          <label   class="form-label fw-bold mb-1 extracted-style-132">Company</label>
+          <select   [(ngModel)]="selectedCompanyId" (change)="onCompanyChange()" class="form-select text-secondary border-secondary-subtle extracted-style-131">
             <option [ngValue]="null"></option>
             <option *ngFor="let comp of companies" [value]="comp.id">{{comp.name}}</option>
           </select>
         </div>
 
         <div class="mb-4 text-start">
-          <label class="form-label fw-bold mb-1" style="color: #333; font-size: 0.85rem;">Branch</label>
-          <select class="form-select text-secondary border-secondary-subtle" style="border-radius: 4px; padding: 0.5rem 2.25rem 0.5rem 0.75rem;" [(ngModel)]="selectedBranchId" [disabled]="!selectedCompanyId">
+          <label   class="form-label fw-bold mb-1 extracted-style-130">Branch</label>
+          <select   [(ngModel)]="selectedBranchId" [disabled]="!selectedCompanyId" class="form-select text-secondary border-secondary-subtle extracted-style-129">
             <option [ngValue]="null"></option>
             <option *ngFor="let branch of filteredBranches" [value]="branch.id">{{branch.name}}</option>
           </select>
         </div>
 
-        <button class="btn w-100 mb-2" 
-                style="background-color: #176B6B; color: white; border: none; font-size: 0.95rem; padding: 0.6rem; border-radius: 4px;"
-                (click)="enterModule()">
+        <button  
+                
+                (click)="enterModule()" class="btn w-100 mb-2 extracted-style-128">
           Continue
         </button>
 
-        <button class="btn w-100 bg-white text-secondary" 
-                style="border: 1px solid #ced4da; font-size: 0.95rem; padding: 0.6rem; border-radius: 4px;"
-                (click)="onSkip()">
+        <button  
+                
+                (click)="onSkip()" class="btn w-100 bg-white text-secondary extracted-style-127">
           Skip
         </button>
       </div>
       
       <div class="mt-4 text-center">
-         <small class="text-muted" style="font-size: 0.8rem;">Copy rights reserved to Zad Company</small>
+         <small   class="text-muted extracted-style-126">Mohamed Abdelstar Abdelkader</small>
       </div>
     </div>

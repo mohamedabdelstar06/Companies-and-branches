@@ -1,34 +1,34 @@
-<nav class="navbar navbar-expand-lg" style="background-color: #176B6B;">
+<nav   class="navbar navbar-expand-lg extracted-style-8">
       <div class="container-fluid px-4">
         <!-- Left: Logo & Context -->
         <div class="d-flex align-items-center">
           <ng-container *ngIf="context?.companyLogo">
-            <div class="me-4 bg-white text-dark p-1 rounded cursor-pointer" style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; overflow: hidden;" routerLink="/dashboard">
-              <img [src]="getLogoUrl(context?.companyLogo)" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain;" (error)="onImgError($event)">
+            <div   routerLink="/dashboard" class="me-4 bg-white text-dark p-1 rounded cursor-pointer extracted-style-7">
+              <img [src]="getLogoUrl(context?.companyLogo)" alt="Logo" class="extracted-style-6" (error)="onImgError($event)">
             </div>
           </ng-container>
 
           <div class="d-flex align-items-center gap-4 text-white">
             <div class="d-flex align-items-center position-relative">
-              <select class="form-select form-select-sm fw-bold text-white bg-transparent border-0 cursor-pointer pe-4 shadow-none" 
-                      style="appearance: none;"
+              <select  
+                      
                       [ngModel]="context?.companyId" 
-                      (ngModelChange)="onCompanyChange($event)">
+                      (ngModelChange)="onCompanyChange($event)" class="form-select form-select-sm fw-bold text-white bg-transparent border-0 cursor-pointer pe-4 shadow-none extracted-style-5">
                 <option class="text-dark" [ngValue]="null">Select Company...</option>
                 <option class="text-dark" *ngFor="let comp of companies" [value]="comp.id">{{ comp.name }}</option>
               </select>
-              <i class="fas fa-chevron-down small position-absolute" style="right: 8px; pointer-events: none;"></i>
+              <i   class="fas fa-chevron-down small position-absolute extracted-style-4"></i>
             </div>
             <div class="d-flex align-items-center position-relative">
-              <select class="form-select form-select-sm text-white bg-transparent border-0 cursor-pointer pe-4 shadow-none"
-                      style="appearance: none;"
+              <select 
+                      
                       [ngModel]="context?.branchId" 
                       (ngModelChange)="onBranchChange($event)"
-                      [disabled]="!context?.companyId">
+                      [disabled]="!context?.companyId" class="form-select form-select-sm text-white bg-transparent border-0 cursor-pointer pe-4 shadow-none extracted-style-3">
                 <option class="text-dark" [ngValue]="null">Select Branch...</option>
                 <option class="text-dark" *ngFor="let branch of filteredBranches" [value]="branch.id">{{ branch.name }}</option>
               </select>
-              <i class="fas fa-chevron-down small position-absolute" style="right: 8px; pointer-events: none;"></i>
+              <i   class="fas fa-chevron-down small position-absolute extracted-style-2"></i>
             </div>
             <div class="d-flex align-items-center gap-2 cursor-pointer" routerLink="/vehicle-rental/contracts">
               <span class="fw-bold">Vehicle Rental</span>
@@ -44,7 +44,7 @@
             <i class="fas fa-caret-down small"></i>
           </div>
           <div class="d-flex align-items-center gap-2 cursor-pointer">
-            <div class="bg-white rounded-circle" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+            <div   class="bg-white rounded-circle extracted-style-1">
               <i class="fas fa-user text-secondary"></i>
             </div>
             <span>Admin</span>

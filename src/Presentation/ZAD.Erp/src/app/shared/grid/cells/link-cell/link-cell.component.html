@@ -1,13 +1,13 @@
 @if (customLink != null) 
 {
-<a [routerLink]="customLink" data-toggle="tooltip" [title]="'general.view' | translate" style="text-decoration: none;">
+<a [routerLink]="customLink" data-toggle="tooltip" [title]="'general.view' | translate" class="extracted-style-138">
     {{ context.value }}
     <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i>
 </a>
 }
 @else
 {
-<a [href]="context.value" target="_blank" data-toggle="tooltip" [title]="context.value" style="text-decoration: none;">
+<a [href]="context.value" target="_blank" data-toggle="tooltip" [title]="context.value" class="extracted-style-137">
     <i class="fa-solid fa-arrow-up-right-from-square me-2"></i>
     {{ context.params?.label ?? 'general.open' | translate }}
 </a>

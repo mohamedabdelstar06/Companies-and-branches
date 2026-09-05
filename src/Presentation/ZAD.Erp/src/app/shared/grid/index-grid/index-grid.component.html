@@ -5,7 +5,7 @@
     [responsive]="true" styleClass="p-datatable-sm">
     <ng-template pTemplate="header">
         <tr>
-            <th style="width: 2rem"><p-tableHeaderCheckbox /></th>
+            <th class="extracted-style-139"><p-tableHeaderCheckbox /></th>
             <th *ngFor="let column of columns"
                 [pSortableColumn]="(column.sortable !== false) ? (column.sortField || column.field) : undefined">
                 {{ column.header | translate }}

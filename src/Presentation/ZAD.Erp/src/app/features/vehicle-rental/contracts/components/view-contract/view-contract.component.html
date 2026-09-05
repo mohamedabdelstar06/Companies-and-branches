@@ -1,6 +1,6 @@
 <!-- Loading spinner -->
 @if (loading) {
-<div class="d-flex justify-content-center align-items-center" style="min-height: 300px;">
+<div   class="d-flex justify-content-center align-items-center extracted-style-125">
   <div class="spinner-border text-teal" role="status">
     <span class="visually-hidden">Loading...</span>
   </div>
@@ -30,7 +30,7 @@
     @if (isDraft || isDeleted) {
     <button class="btn-action-icon" title="Edit Contract"
       [routerLink]="['/vehicle-rental/contracts/edit', contract.id]">
-      <i class="fa-solid fa-file-pen" style="color: #176B6B;"></i>
+      <i   class="fa-solid fa-file-pen extracted-style-124"></i>
     </button>
     }
 
@@ -52,7 +52,7 @@
     <!-- Confirm (Draft only) -->
     @if (isDraft) {
     <button class="btn-action-icon" title="Confirm" (click)="onConfirm()">
-      <i class="fa-regular fa-thumbs-up" style="color: #176B6B;"></i>
+      <i   class="fa-regular fa-thumbs-up extracted-style-123"></i>
     </button>
     }
 
@@ -177,8 +177,8 @@
 
   <!-- Tabs Box -->
   <div class="page-content bg-white rounded shadow-sm p-4 mb-4">
-    <ul class="nav nav-pills nav-justified mb-4" style="border: 1px solid #176B6B; border-radius: 0;">
-      <li class="nav-item" style="border-right: 1px solid #176B6B;">
+    <ul   class="nav nav-pills nav-justified mb-4 extracted-style-122">
+      <li   class="nav-item extracted-style-121">
         <a class="nav-link fw-bold rounded-0" [class.active]="activeTab === 'tenant'" (click)="switchTab('tenant')"
           role="button" [style.background-color]="activeTab === 'tenant' ? '#176B6B' : 'white'"
           [style.color]="activeTab === 'tenant' ? 'white' : '#176B6B'">Tenant</a>
@@ -189,7 +189,7 @@
           [style.color]="activeTab === 'vehicle' ? 'white' : '#176B6B'">Vehicle info</a>
       </li>
       @if (isConfirmed) {
-      <li class="nav-item" style="border-left: 1px solid #176B6B;">
+      <li   class="nav-item extracted-style-120">
         <a class="nav-link fw-bold rounded-0" [class.active]="activeTab === 'receive'" (click)="switchTab('receive')"
           role="button" [style.background-color]="activeTab === 'receive' ? '#176B6B' : 'white'"
           [style.color]="activeTab === 'receive' ? 'white' : '#176B6B'">Receiving Vehicle from Tenant</a>
@@ -538,9 +538,9 @@
       <!-- Save Button -->
       <div class="row mt-4">
         <div class="col-12 text-end">
-          <button class="btn btn-teal px-4 py-2 fw-bold"
-            style="background-color: #176B6B; color: white; border: none; border-radius: 6px;"
-            (click)="onReceiveVehicle()">
+          <button 
+            
+            (click)="onReceiveVehicle()" class="btn btn-teal px-4 py-2 fw-bold extracted-style-119">
             <i class="fas fa-save me-2"></i> Save
           </button>
         </div>

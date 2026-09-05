@@ -78,8 +78,8 @@
 
   <!-- Tabs Box -->
   <div class="page-content bg-white rounded shadow-sm p-4">
-    <ul class="nav nav-pills nav-justified mb-4" style="border: 1px solid #176B6B; border-radius: 0;">
-      <li class="nav-item" style="border-right: 1px solid #176B6B;">
+    <ul   class="nav nav-pills nav-justified mb-4 extracted-style-73">
+      <li   class="nav-item extracted-style-72">
         <a class="nav-link fw-bold rounded-0" [class.active]="activeTab === 'tenant'" (click)="switchTab('tenant')" role="button" [style.background-color]="activeTab === 'tenant' ? '#176B6B' : 'white'" [style.color]="activeTab === 'tenant' ? 'white' : '#176B6B'">Tenant</a>
       </li>
       <li class="nav-item">
@@ -92,134 +92,134 @@
       <div [class.d-none]="activeTab !== 'tenant'">
         
         <!-- Vehicle Tenant Box -->
-        <fieldset class="border rounded p-3 mb-4" style="border-color: #dee2e6 !important;">
-          <legend class="float-none w-auto px-2 fs-6 text-secondary fw-bold mb-0" style="font-size: 0.9rem !important;">Vehicle Tenant</legend>
+        <fieldset   class="border rounded p-3 mb-4 extracted-style-71">
+          <legend   class="float-none w-auto px-2 fs-6 text-secondary fw-bold mb-0 extracted-style-70">Vehicle Tenant</legend>
           <div class="row g-3">
             <div class="col-md-3 mb-3">
-              <label class="form-label text-secondary" style="font-size: 0.85rem;">Tenant Name</label>
+              <label   class="form-label text-secondary extracted-style-69">Tenant Name</label>
               <div class="d-flex align-items-center">
                 <select class="form-select border-primary text-primary" formControlName="tenantId">
                   <option [value]="null">Select one</option>
                   <option *ngFor="let tenant of tenants" [value]="tenant.id">{{ tenant.name }}</option>
                 </select>
-                <span class="ms-2 fs-5 text-teal" style="cursor: pointer;" (click)="form.get('tenantId')?.setValue(null)">✕</span>
-                <span class="ms-2 ms-1 text-teal" style="cursor: pointer;"><i class="bi bi-eye"></i></span>
+                <span   (click)="form.get('tenantId')?.setValue(null)" class="ms-2 fs-5 text-teal extracted-style-68">✕</span>
+                <span   class="ms-2 ms-1 text-teal extracted-style-67"><i class="bi bi-eye"></i></span>
               </div>
             </div>
             <div class="col-md-3 mb-3">
-              <label class="form-label text-secondary" style="font-size: 0.85rem;">License number</label>
+              <label   class="form-label text-secondary extracted-style-66">License number</label>
               <input type="text" class="form-control bg-white" [value]="selectedTenantLicense()" readonly>
             </div>
             <div class="col-md-3 mb-3">
-              <label class="form-label text-secondary" style="font-size: 0.85rem;">Passport Number</label>
+              <label   class="form-label text-secondary extracted-style-65">Passport Number</label>
               <input type="text" class="form-control bg-white" [value]="selectedTenantPassport()" readonly>
             </div>
             <div class="col-md-3 mb-3">
-              <label class="form-label text-secondary" style="font-size: 0.85rem;">Unified number</label>
+              <label   class="form-label text-secondary extracted-style-64">Unified number</label>
               <input type="text" class="form-control bg-white" [value]="selectedTenantUnified()" readonly>
             </div>
             
             <div class="col-md-3 mb-3">
-              <label class="form-label text-secondary" style="font-size: 0.85rem;">ID Number</label>
+              <label   class="form-label text-secondary extracted-style-63">ID Number</label>
               <input type="text" class="form-control bg-white" [value]="selectedTenantId()" readonly>
             </div>
             <div class="col-md-3 mb-3">
-              <label class="form-label text-secondary" style="font-size: 0.85rem;">Mobile</label>
+              <label   class="form-label text-secondary extracted-style-62">Mobile</label>
               <input type="text" class="form-control bg-white" [value]="selectedTenantMobile()" readonly>
             </div>
             <div class="col-md-4 mb-3 d-flex align-items-end">
                <div class="flex-grow-1 me-2">
-                 <label class="form-label text-secondary" style="font-size: 0.85rem;">Tenant Birthday</label>
+                 <label   class="form-label text-secondary extracted-style-61">Tenant Birthday</label>
                  <div class="input-group">
                    <input type="text" class="form-control bg-white border-end-0" [value]="selectedTenantBirthday()" readonly>
                    <span class="input-group-text bg-white"><i class="bi bi-calendar"></i></span>
                  </div>
                </div>
-               <div class="text-center" style="min-width: 60px; line-height: 1.2;">
-                 <small class="d-block text-secondary" style="font-size: 0.75rem;">Age: {{ selectedTenantAge() }}</small>
-                 <small class="d-block text-secondary" style="font-size: 0.75rem;">Years</small>
+               <div   class="text-center extracted-style-60">
+                 <small   class="d-block text-secondary extracted-style-59">Age: {{ selectedTenantAge() }}</small>
+                 <small   class="d-block text-secondary extracted-style-58">Years</small>
                </div>
             </div>
           </div>
         </fieldset>
 
         <!-- Sponsor Box -->
-        <fieldset class="border rounded p-3 mb-4" style="border-color: #dee2e6 !important;">
-          <legend class="float-none w-auto px-2 fs-6 text-secondary fw-bold mb-0" style="font-size: 0.9rem !important;">Sponsor</legend>
+        <fieldset   class="border rounded p-3 mb-4 extracted-style-57">
+          <legend   class="float-none w-auto px-2 fs-6 text-secondary fw-bold mb-0 extracted-style-56">Sponsor</legend>
           <div class="row g-3">
             <div class="col-md-3 mb-3">
-              <label class="form-label text-secondary" style="font-size: 0.85rem;">Sponsor name</label>
+              <label   class="form-label text-secondary extracted-style-55">Sponsor name</label>
               <div class="d-flex align-items-center">
                 <select class="form-select" formControlName="sponsorId">
                   <option [value]="null">Select one</option>
                   <option *ngFor="let s of sponsors" [value]="s.id">{{ s.name }}</option>
                 </select>
-                <span class="ms-2 fs-5 text-teal" style="cursor: pointer;">+</span>
+                <span   class="ms-2 fs-5 text-teal extracted-style-54">+</span>
               </div>
             </div>
             <div class="col-md-3 mb-3">
-              <label class="form-label text-secondary" style="font-size: 0.85rem;">Nationality</label>
+              <label   class="form-label text-secondary extracted-style-53">Nationality</label>
               <div class="d-flex align-items-center">
                 <input type="text" class="form-control" formControlName="sponsorNationality" placeholder="Select Nationality">
-                <span class="ms-2 fs-5 text-teal" style="cursor: pointer;">+</span>
+                <span   class="ms-2 fs-5 text-teal extracted-style-52">+</span>
               </div>
             </div>
             <div class="col-md-3 mb-3">
-              <label class="form-label text-secondary" style="font-size: 0.85rem;">License number</label>
+              <label   class="form-label text-secondary extracted-style-51">License number</label>
               <input type="text" class="form-control" formControlName="sponsorLicenseNumber">
             </div>
             <div class="col-md-3 mb-3">
-              <label class="form-label text-secondary" style="font-size: 0.85rem;">License expire date</label>
+              <label   class="form-label text-secondary extracted-style-50">License expire date</label>
               <input type="date" class="form-control" formControlName="sponsorLicenseExpireDate">
             </div>
             
             <div class="col-md-3 mb-3">
-              <label class="form-label text-secondary" style="font-size: 0.85rem;">ID Number</label>
+              <label   class="form-label text-secondary extracted-style-49">ID Number</label>
               <input type="text" class="form-control" formControlName="sponsorIdNumber">
             </div>
             <div class="col-md-3 mb-3">
-              <label class="form-label text-secondary" style="font-size: 0.85rem;">ID expire date</label>
+              <label   class="form-label text-secondary extracted-style-48">ID expire date</label>
               <input type="date" class="form-control" formControlName="sponsorIdExpireDate">
             </div>
           </div>
         </fieldset>
 
         <!-- Second Driver Box -->
-        <fieldset class="border rounded p-3 mb-4" style="border-color: #dee2e6 !important;">
-          <legend class="float-none w-auto px-2 fs-6 text-secondary fw-bold mb-0" style="font-size: 0.9rem !important;">Second Driver</legend>
+        <fieldset   class="border rounded p-3 mb-4 extracted-style-47">
+          <legend   class="float-none w-auto px-2 fs-6 text-secondary fw-bold mb-0 extracted-style-46">Second Driver</legend>
           <div class="row g-3">
             <div class="col-md-3 mb-3">
-              <label class="form-label text-secondary" style="font-size: 0.85rem;">Second Driver name</label>
+              <label   class="form-label text-secondary extracted-style-45">Second Driver name</label>
               <div class="d-flex align-items-center">
                 <select class="form-select" formControlName="secondDriverId">
                   <option [value]="null">Select one</option>
                   <option *ngFor="let sd of availableSecondDrivers" [value]="sd.id">{{ sd.name }}</option>
                 </select>
-                <span class="ms-2 fs-5 text-teal" style="cursor: pointer;">+</span>
+                <span   class="ms-2 fs-5 text-teal extracted-style-44">+</span>
               </div>
             </div>
             <div class="col-md-3 mb-3">
-              <label class="form-label text-secondary" style="font-size: 0.85rem;">Nationality</label>
+              <label   class="form-label text-secondary extracted-style-43">Nationality</label>
               <div class="d-flex align-items-center">
                 <input type="text" class="form-control" formControlName="secondDriverNationality" placeholder="Select Nationality">
-                <span class="ms-2 fs-5 text-teal" style="cursor: pointer;">+</span>
+                <span   class="ms-2 fs-5 text-teal extracted-style-42">+</span>
               </div>
             </div>
             <div class="col-md-3 mb-3">
-              <label class="form-label text-secondary" style="font-size: 0.85rem;">License number</label>
+              <label   class="form-label text-secondary extracted-style-41">License number</label>
               <input type="text" class="form-control" formControlName="secondDriverLicenseNumber">
             </div>
             <div class="col-md-3 mb-3">
-              <label class="form-label text-secondary" style="font-size: 0.85rem;">License expire date</label>
+              <label   class="form-label text-secondary extracted-style-40">License expire date</label>
               <input type="date" class="form-control" formControlName="secondDriverLicenseExpireDate">
             </div>
             
             <div class="col-md-3 mb-3">
-              <label class="form-label text-secondary" style="font-size: 0.85rem;">ID Number</label>
+              <label   class="form-label text-secondary extracted-style-39">ID Number</label>
               <input type="text" class="form-control" formControlName="secondDriverIdNumber">
             </div>
             <div class="col-md-3 mb-3">
-              <label class="form-label text-secondary" style="font-size: 0.85rem;">ID expire date</label>
+              <label   class="form-label text-secondary extracted-style-38">ID expire date</label>
               <input type="date" class="form-control" formControlName="secondDriverIdExpireDate">
             </div>
           </div>
@@ -303,8 +303,8 @@
         </div>
         
         <!-- Private Driver Section -->
-        <fieldset class="border rounded p-3 mt-4 mb-4" style="border-color: #dee2e6 !important;">
-          <legend class="float-none w-auto px-2 fs-6 text-secondary fw-bold mb-0" style="font-size: 0.9rem !important;">Private Driver</legend>
+        <fieldset   class="border rounded p-3 mt-4 mb-4 extracted-style-37">
+          <legend   class="float-none w-auto px-2 fs-6 text-secondary fw-bold mb-0 extracted-style-36">Private Driver</legend>
           <div class="row g-3">
             <div class="col-md-3 mb-3">
               <label class="form-label">Driver Fare</label>
@@ -326,8 +326,8 @@
         </fieldset>
 
         <!-- Kilometer Per Day Section -->
-        <fieldset class="border rounded p-3 mb-4" style="border-color: #dee2e6 !important;">
-          <legend class="float-none w-auto px-2 fs-6 text-secondary fw-bold mb-0" style="font-size: 0.9rem !important;">Kilometer Per Day</legend>
+        <fieldset   class="border rounded p-3 mb-4 extracted-style-35">
+          <legend   class="float-none w-auto px-2 fs-6 text-secondary fw-bold mb-0 extracted-style-34">Kilometer Per Day</legend>
           <div class="row g-3">
             <div class="col-md-4 mb-3">
               <label class="form-label">Kilometer Per Day</label>

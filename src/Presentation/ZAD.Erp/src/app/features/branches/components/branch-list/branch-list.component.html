@@ -4,7 +4,7 @@
       <i class="fas fa-chevron-left me-2"></i>
       <span>Settings / Branches</span>
     </div>
-    <div style="width: 280px;">
+    <div class="extracted-style-16">
       <div class="input-group">
         <input type="text" class="form-control" placeholder="Search by name, code, address, phone..."
           [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" id="branchSearch">
@@ -29,7 +29,7 @@
       <table class="table table-hover mb-0">
         <thead>
           <tr>
-            <th class="ps-3" style="width: 40px;">
+            <th   class="ps-3 extracted-style-15">
               <input type="checkbox" class="form-check-input">
             </th>
             <th class="sortable-th" [class.sort-active]="sortField === 'code'" (click)="toggleSort('code')">
@@ -57,7 +57,7 @@
               <td class="ps-3"><input type="checkbox" class="form-check-input"></td>
               <td>{{ branch.code }}</td>
               <td>
-                <div class="border rounded d-flex align-items-center justify-content-center overflow-hidden bg-white" style="width: 35px; height: 35px;">
+                <div   class="border rounded d-flex align-items-center justify-content-center overflow-hidden bg-white extracted-style-14">
                   <img [src]="getLogoUrl(branch.logo)" alt="logo" class="w-100 h-100 object-fit-contain" (error)="onImgError($event)">
                 </div>
               </td>

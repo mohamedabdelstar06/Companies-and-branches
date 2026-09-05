@@ -35,7 +35,7 @@
     }
 
 
-    <!-- Delete (Draft or Confirmed) -->
+    <!-- Delete (Draft only) -->
     @if (!isDeleted && isDraft) {
     <button class="btn-action-icon" title="Delete" (click)="onDelete()">
       <i class="fa-regular fa-trash-can text-danger"></i>
@@ -56,7 +56,7 @@
     </button>
     }
 
-    <!-- Unconfirm (Confirmed only) -->
+    <!-- Unconfirm (Dislike) - Always visible if Confirmed -->
     @if (isConfirmed) {
     <button class="btn-action-icon" title="Unconfirm Contract" (click)="onUnconfirm()">
       <i class="fa-regular fa-thumbs-down text-danger"></i>
@@ -64,13 +64,21 @@
     }
 
 
-    <!-- Receive Vehicle -->
+    <!-- Receive Vehicle (Confirmed + not yet received) → switches to receive tab -->
     @if (isConfirmed && !isVehicleReceived) {
-    <button class="btn-action-text text-teal" title="Receive Vehicle" (click)="onReceiveVehicle()">
+    <button class="btn-action-text text-teal" title="Receive Vehicle" (click)="goToReceiveTab()">
       Receive Vehicle
     </button>
     }
-    <!-- Confirm Receive Vehicle -->
+
+    <!-- Confirm Receive Vehicle (Confirmed + not yet received + receive form saved) -->
+    @if (isConfirmed && !isVehicleReceived && contract?.receivingDate) {
+    <button class="btn-action-text text-teal" title="Confirm Receive Vehicle" (click)="onConfirmReceiveVehicle()">
+      Confirm Receive Vehicle
+    </button>
+    }
+
+    <!-- Unconfirm Receive Vehicle (vehicle already received / Delivered) -->
     @if (isVehicleReceived) {
     <button class="btn-action-text text-teal" title="Unconfirm Receive Vehicle" (click)="onUnreceiveVehicle()">
       Unconfirm Receive Vehicle
@@ -376,60 +384,6 @@
           </div>
         </div>
 
-        <!-- New Status and Damage Details -->
-        <div class="col-12 mt-2">
-          <div class="form-check mb-3">
-            <input class="form-check-input" type="checkbox" id="maintenanceDoneByTenant"
-              formControlName="isMaintenanceDoneByTenant">
-            <label class="form-check-label fw-bold text-secondary" for="maintenanceDoneByTenant">
-              Maintenance Done by Tenant
-            </label>
-          </div>
-
-          <div class="row g-4">
-            <!-- Vehicle Receiving Status -->
-            <div class="col-md-6">
-              <fieldset class="border p-3 rounded h-100">
-                <legend class="float-none w-auto px-2 fs-6 fw-bold text-secondary mb-0">Vehicle Receiving Status
-                </legend>
-                <div class="mb-3">
-                  <label class="form-label">Vehicle Receiving Status</label>
-                  <select class="form-select" formControlName="vehicleReceivingStatus"
-                    [ngClass]="{'is-invalid': receiveForm.get('vehicleReceivingStatus')?.invalid && receiveForm.get('vehicleReceivingStatus')?.touched}">
-                    <option [ngValue]="null" disabled>Select one</option>
-                    @for (status of vehicleReceivingStatuses; track status.value) {
-                    <option [value]="status.value">{{ status.label }}</option>
-                    }
-                  </select>
-                  <div class="invalid-feedback">Required</div>
-                </div>
-                <div class="mb-0">
-                  <label class="form-label">Receiving Note</label>
-                  <textarea class="form-control" rows="3" formControlName="receiveNotes"></textarea>
-                </div>
-              </fieldset>
-            </div>
-
-            <!-- Vehicle Damage Details -->
-            <div class="col-md-6">
-              <fieldset class="border p-3 rounded h-100">
-                <legend class="float-none w-auto px-2 fs-6 fw-bold text-secondary mb-0">Vehicle Damage Details</legend>
-                <div class="form-check mb-3">
-                  <input class="form-check-input" type="checkbox" id="stopVehicle"
-                    formControlName="isVehicleStoppedUntilMaintenanceOrRepair">
-                  <label class="form-check-label" for="stopVehicle">
-                    Stop Vehicle until maintenance or repair done
-                  </label>
-                </div>
-                <div class="mb-0">
-                  <label class="form-label">Damage Note</label>
-                  <textarea class="form-control" rows="3" formControlName="damageNote"></textarea>
-                </div>
-              </fieldset>
-            </div>
-          </div>
-        </div>
-
         <!-- Vehicle Kilometers -->
         <div class="col-md-4">
           <h6 class="fw-bold text-secondary">Vehicle Kilometers</h6>
@@ -522,6 +476,60 @@
               <label class="form-label">Net Due Amount</label>
               <input type="text" class="form-control bg-light text-end fw-bold text-teal"
                 [value]="recNetDueAmount | number:'1.3-3'" readonly>
+            </div>
+          </div>
+        </div>
+
+        <!-- New Status and Damage Details -->
+        <div class="col-12 mt-2">
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="maintenanceDoneByTenant"
+              formControlName="isMaintenanceDoneByTenant">
+            <label class="form-check-label fw-bold text-secondary" for="maintenanceDoneByTenant">
+              Maintenance Done by Tenant
+            </label>
+          </div>
+
+          <div class="row g-4">
+            <!-- Vehicle Receiving Status -->
+            <div class="col-md-6">
+              <fieldset class="border p-3 rounded h-100">
+                <legend class="float-none w-auto px-2 fs-6 fw-bold text-secondary mb-0">Vehicle Receiving Status
+                </legend>
+                <div class="mb-3">
+                  <label class="form-label">Vehicle Receiving Status</label>
+                  <select class="form-select" formControlName="vehicleReceivingStatus"
+                    [ngClass]="{'is-invalid': receiveForm.get('vehicleReceivingStatus')?.invalid && receiveForm.get('vehicleReceivingStatus')?.touched}">
+                    <option [ngValue]="null" disabled>Select one</option>
+                    @for (status of vehicleReceivingStatuses; track status.value) {
+                    <option [value]="status.value">{{ status.label }}</option>
+                    }
+                  </select>
+                  <div class="invalid-feedback">Required</div>
+                </div>
+                <div class="mb-0">
+                  <label class="form-label">Receiving Note</label>
+                  <textarea class="form-control" rows="3" formControlName="receiveNotes"></textarea>
+                </div>
+              </fieldset>
+            </div>
+
+            <!-- Vehicle Damage Details -->
+            <div class="col-md-6">
+              <fieldset class="border p-3 rounded h-100">
+                <legend class="float-none w-auto px-2 fs-6 fw-bold text-secondary mb-0">Vehicle Damage Details</legend>
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="checkbox" id="stopVehicle"
+                    formControlName="isVehicleStoppedUntilMaintenanceOrRepair">
+                  <label class="form-check-label" for="stopVehicle">
+                    Stop Vehicle until maintenance or repair done
+                  </label>
+                </div>
+                <div class="mb-0">
+                  <label class="form-label">Damage Note</label>
+                  <textarea class="form-control" rows="3" formControlName="damageNote"></textarea>
+                </div>
+              </fieldset>
             </div>
           </div>
         </div>

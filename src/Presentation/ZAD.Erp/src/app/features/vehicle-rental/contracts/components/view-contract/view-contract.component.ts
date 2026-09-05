@@ -189,7 +189,7 @@ export class ViewContractComponent implements OnInit {
   get isConfirmed(): boolean { return this.contract?.status === 'Confirmed'; }
   get isDraft(): boolean { return this.contract?.status === 'Draft'; }
   get isDeleted(): boolean { return this.contract?.status === 'Deleted'; }
-  get isVehicleReceived(): boolean { return this.contract?.deliveryStatus === 'Delivered' || this.contract?.deliveryStatus === 'Late'; }
+  get isVehicleReceived(): boolean { return this.contract?.deliveryStatus === 'Delivered'; }
 
   get statusClass(): string {
     switch (this.contract?.status) {
@@ -221,6 +221,11 @@ export class ViewContractComponent implements OnInit {
     });
   }
 
+  goToReceiveTab(): void {
+    this.activeTab = 'receive';
+  }
+
+  // Called from the Save button inside the receive tab
   async onReceiveVehicle(): Promise<void> {
     if (!this.contractId) return;
     if (this.receiveForm.invalid) {
@@ -238,7 +243,23 @@ export class ViewContractComponent implements OnInit {
     const ok = await this.sweetAlert.confirm('Receive Vehicle', 'Confirm vehicle receipt and close contract?');
     if (!ok) return;
     this.contractService.receiveVehicle(this.contractId, this.receiveForm.value).subscribe({
-      next: () => { this.sweetAlert.success('Vehicle Received!'); this.loadContract(this.contractId!); },
+      next: () => {
+        this.sweetAlert.success('Receive details saved!');
+        this.loadContract(this.contractId!); // Reload view, status remains Rented/Late
+      },
+      error: (err) => this.sweetAlert.error('Error', this.getErrorMessage(err))
+    });
+  }
+
+  async onConfirmReceiveVehicle(): Promise<void> {
+    if (!this.contractId) return;
+    const ok = await this.sweetAlert.confirm('Confirm Receive Vehicle', 'Are you sure you want to finalize and receive the vehicle?');
+    if (!ok) return;
+    this.contractService.confirmReceiveVehicle(this.contractId).subscribe({
+      next: () => { 
+        this.sweetAlert.success('Vehicle Received Successfully!');
+        this.router.navigate(['/vehicle-rental/contracts']);
+      },
       error: (err) => this.sweetAlert.error('Error', this.getErrorMessage(err))
     });
   }

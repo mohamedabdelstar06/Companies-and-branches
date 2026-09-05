@@ -1,18 +1,7 @@
-<!-- Secondary Navbar for Dashboard -->
-    <div class="bg-white border-bottom shadow-sm py-2 px-4 d-flex justify-content-between align-items-center">
-      <div class="d-flex align-items-center">
-        <h3 class="mb-0 fw-bold" style="color: #176B6B; letter-spacing: -1px;">Z<span style="font-style: italic;">A</span>D</h3>
-      </div>
-      <div>
-        <i class="fas fa-plus fs-5 cursor-pointer"></i>
-      </div>
-    </div>
 
-    <!-- Dashboard Content -->
     <div class="dashboard-bg">
       <div class="container py-5">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 justify-content-center">
-          
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 justify-content-center">   
           <div class="col" *ngFor="let item of modules">
             <div class="card h-100 border-0 shadow-sm rounded-4 text-center cursor-pointer module-card" [routerLink]="item.route">
               <div class="card-body py-4 d-flex flex-column align-items-center justify-content-center">
@@ -21,7 +10,6 @@
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>

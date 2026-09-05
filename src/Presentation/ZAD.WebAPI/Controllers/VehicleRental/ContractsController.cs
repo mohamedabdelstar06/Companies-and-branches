@@ -83,6 +83,12 @@ namespace ZAD.WebAPI.Controllers.VehicleRental
             return Ok(await _contractService.ReceiveVehicleAsync(id, dto));
         }
 
+        [HttpPost("{id}/confirm-receive-vehicle")]
+        public async Task<ActionResult<ContractDetailDto>> ConfirmReceiveVehicle(int id)
+        {
+            return Ok(await _contractService.ConfirmReceiveVehicleAsync(id));
+        }
+
         [HttpPost("{id}/unreceive-vehicle")]
         public async Task<ActionResult<ContractDetailDto>> UnreceiveVehicle(int id)
         {

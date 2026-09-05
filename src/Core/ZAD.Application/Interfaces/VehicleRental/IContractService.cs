@@ -14,6 +14,7 @@ namespace ZAD.Application.Interfaces.VehicleRental
         Task<ContractDetailDto> ConfirmAsync(int id);
         Task<ContractDetailDto> UnconfirmAsync(int id);
         Task<ContractDetailDto> ReceiveVehicleAsync(int id, ReceiveVehicleDto dto);
+        Task<ContractDetailDto> ConfirmReceiveVehicleAsync(int id);
         Task<ContractDetailDto> UnreceiveVehicleAsync(int id);
         Task<ContractDetailDto> GetAsync(int id);
         Task<PageResult<ContractListDto>> GetPageAsync(PageQuery query);

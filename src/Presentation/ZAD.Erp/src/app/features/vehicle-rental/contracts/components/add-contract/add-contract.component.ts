@@ -603,9 +603,9 @@ export class AddContractComponent implements OnInit {
     if (dto.secondDriverIdExpireDate === '') dto.secondDriverIdExpireDate = null;
 
     this.contractService.create(dto).subscribe({
-      next: () => {
+      next: (createdContract) => {
         this.sweetAlert.success('Success', 'Contract created successfully');
-        this.router.navigate(['/vehicle-rental/contracts']);
+        this.router.navigate(['/vehicle-rental/contracts/view', createdContract.id]);
       },
       error: (err) => this.handleError(err, 'Error creating contract')
     });

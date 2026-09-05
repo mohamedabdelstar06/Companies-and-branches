@@ -1,5 +1,5 @@
 import { ApplicationConfig, importProvidersFrom } from '@angular/core';
-import { provideRouter, withHashLocation } from '@angular/router';
+import { provideRouter, withHashLocation, withRouterConfig } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -9,7 +9,7 @@ import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes, withHashLocation()), 
+    provideRouter(routes, withHashLocation(), withRouterConfig({ onSameUrlNavigation: 'reload' })), 
     provideHttpClient(), 
     provideAnimations(),
     DialogService,

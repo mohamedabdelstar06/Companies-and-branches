@@ -143,7 +143,14 @@
                 <button class="btn btn-icon" title="Edit" [routerLink]="['edit', contract.id]">
                   <i class="fas fa-edit text-teal"></i>
                 </button>
+                }
 
+                <!-- Copy (Placeholder for match with image) -->
+                <button class="btn btn-icon" title="Copy">
+                  <i class="far fa-copy text-teal"></i>
+                </button>
+
+                @if (isDraft(contract)) {
                 <!-- Confirm -->
                 <button class="btn btn-icon" title="Confirm Contract" (click)="confirmContract(contract.id)">
                   <i class="fas fa-thumbs-up text-success"></i>
@@ -155,20 +162,13 @@
                 }
 
                 @if (isConfirmed(contract)) {
-
-                <!-- Unconfirm -->
+                <!-- Unconfirm Contract -->
                 <button class="btn btn-icon" title="Unconfirm Contract" (click)="unconfirmContract(contract.id)">
                   <i class="fas fa-thumbs-down text-danger"></i>
                 </button>
                 }
 
                 @if (isDeleted(contract)) {
-                <!-- View is already outside this block, we need to add Copy and Restore -->
-                <!-- Edit -->
-                <button class="btn btn-icon" title="Edit" [routerLink]="['edit', contract.id]">
-                  <i class="fas fa-edit text-teal"></i>
-                </button>
-
                 <!-- Restore (Undelete) -->
                 <button class="btn btn-icon" title="Restore Contract" (click)="restoreContract(contract.id)">
                   <i class="fas fa-trash-restore text-success"></i>

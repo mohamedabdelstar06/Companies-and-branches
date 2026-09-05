@@ -609,7 +609,7 @@ export class UpdateContractComponent implements OnInit {
       this.contractService.update(this.contractId, dto).subscribe({
         next: () => {
           this.sweetAlert.success('Success', 'Contract updated successfully');
-          this.router.navigate(['/vehicle-rental/contracts']);
+          this.router.navigate(['/vehicle-rental/contracts/view', this.contractId]);
         },
         error: (err) => this.handleError(err, 'Error updating contract')
       });

@@ -66,7 +66,7 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
         }
 
         public void Update(
-            int? companyId, int? branchId, TimeSpan time, DateTime date, ContractType contractType, PaymentType paymentType, int periodInDays,
+            TimeSpan time, DateTime date, ContractType contractType, PaymentType paymentType, int periodInDays,
             TimeSpan expectedReceivingTime, DateTime expectedReceivingDate, bool withDriver, int? driverId,
             int tenantId, string? sponsorName, string? sponsorNationality, string? sponsorLicenseNumber, 
             DateTime? sponsorLicenseExpireDate, string? sponsorIdNumber, DateTime? sponsorIdExpireDate,
@@ -78,8 +78,6 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
             int kilometerPerDay, int maximumKilometerPerDay, decimal amountOfKmExceedingLimit,
             DeliveryStatus deliveryStatus, ContractStatus status)
         {
-            CompanyId = companyId;
-            BranchId = branchId;
             Time = time;
             Date = date;
             ContractType = contractType;
@@ -216,6 +214,20 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
                              
             FinalNetDueAmount = TotalDueAmount - ReceiveDiscountAmount;
             
+            //DeliveryStatus remains unchanged here (usually Rented/Late).
+        }
+
+        public void ConfirmReceiveVehicle()
+        {
+            if (DeliveryStatus != DeliveryStatus.Rented && DeliveryStatus != DeliveryStatus.LateThanExpected)
+            {
+                throw new InvalidOperationException("Contract must be in Rented or Late state to confirm vehicle receipt.");
+            }
+            if (!ReceivingDate.HasValue)
+            {
+                throw new InvalidOperationException("Vehicle receive details must be filled before confirming receipt.");
+            }
+
             DeliveryStatus = DeliveryStatus.Delivered;
         }
 

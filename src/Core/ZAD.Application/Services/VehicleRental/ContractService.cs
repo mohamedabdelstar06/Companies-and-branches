@@ -153,8 +153,9 @@ namespace ZAD.Application.Services.VehicleRental
             dto.ExpectedReceivingDate = expectedDateTime.Date;
             dto.ExpectedReceivingTime = expectedDateTime.TimeOfDay;
 
+
             contract.Update(
-                dto.CompanyId, dto.BranchId, dto.Time, dto.Date, dto.ContractType, dto.PaymentType, dto.PeriodInDays,
+                dto.Time, dto.Date, dto.ContractType, dto.PaymentType, dto.PeriodInDays,
                 dto.ExpectedReceivingTime, dto.ExpectedReceivingDate, dto.WithDriver, dto.DriverId,
                 dto.TenantId, dto.SponsorName, dto.SponsorNationality, dto.SponsorLicenseNumber, 
                 dto.SponsorLicenseExpireDate, dto.SponsorIdNumber, dto.SponsorIdExpireDate,
@@ -256,20 +257,27 @@ namespace ZAD.Application.Services.VehicleRental
             }
             
             contract.ReceiveVehicle(
-                dto.ReceivingDate,
-                dto.ReceivingTime,
-                dto.ReceivingKilometerCounter,
-                dto.ReceiveProofDocuments,
-                dto.ReceiveNotes,
-                dto.MaintenancePenaltyAmount,
-                dto.AccidentPenaltyAmount,
-                dto.MaintenancePaidByTenant,
-                dto.ReceiveDiscountAmount,
-                dto.IsMaintenanceDoneByTenant,
-                dto.VehicleReceivingStatus,
-                dto.IsVehicleStoppedUntilMaintenanceOrRepair,
-                dto.DamageNote
+                dto.ReceivingDate, dto.ReceivingTime, dto.ReceivingKilometerCounter,
+                dto.ReceiveProofDocuments, dto.ReceiveNotes, dto.MaintenancePenaltyAmount,
+                dto.AccidentPenaltyAmount, dto.MaintenancePaidByTenant, dto.ReceiveDiscountAmount,
+                dto.IsMaintenanceDoneByTenant, dto.VehicleReceivingStatus,
+                dto.IsVehicleStoppedUntilMaintenanceOrRepair, dto.DamageNote
             );
+            
+            _unitOfWork.Contracts.Update(contract);
+            await _unitOfWork.SaveChangesAsync();
+            return _mapper.Map<ContractDetailDto>(contract);
+        }
+
+        public async Task<ContractDetailDto> ConfirmReceiveVehicleAsync(int id)
+        {
+            var contract = await _unitOfWork.Contracts.GetByIdAsync(id);
+            if (contract == null)
+            {
+                throw new NotFoundException($"Contract {id} not found.");
+            }
+            
+            contract.ConfirmReceiveVehicle();
             
             _unitOfWork.Contracts.Update(contract);
             await _unitOfWork.SaveChangesAsync();

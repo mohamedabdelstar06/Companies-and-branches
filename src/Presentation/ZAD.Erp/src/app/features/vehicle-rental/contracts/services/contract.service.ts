@@ -92,8 +92,12 @@ export class ContractService {
     return this.http.post(`${this.apiUrl}/${id}/unconfirm`, {});
   }
 
-  receiveVehicle(id: number, payload: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/${id}/receive-vehicle`, payload);
+  receiveVehicle(id: number, data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${id}/receive-vehicle`, data);
+  }
+
+  confirmReceiveVehicle(id: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${id}/confirm-receive-vehicle`, {});
   }
 
   unreceiveVehicle(id: number): Observable<any> {

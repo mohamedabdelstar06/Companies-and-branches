@@ -18,6 +18,8 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
             decimal delayPenaltyPerHour, int allowedDelayHours, decimal maintenancePenalty, decimal accidentPenalty,
             decimal driverFare, int driverWorkingHoursPerDay, decimal driverOvertimeAmountPerHour,
             int kilometerPerDay, int maximumKilometerPerDay, decimal amountOfKmExceedingLimit,
+            decimal vehicleDailyRentPrice,
+            DateTime? contractNextMaintenanceDate, int? contractNextMaintenanceKM,
             DeliveryStatus deliveryStatus = DeliveryStatus.Rented, ContractStatus status = ContractStatus.Draft)
         {
             CompanyId = companyId;
@@ -58,6 +60,9 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
             KilometerPerDay = kilometerPerDay;
             MaximumKilometerPerDay = maximumKilometerPerDay;
             AmountOfKmExceedingLimit = amountOfKmExceedingLimit;
+            VehicleDailyRentPrice = vehicleDailyRentPrice;
+            ContractNextMaintenanceDate = contractNextMaintenanceDate;
+            ContractNextMaintenanceKM = contractNextMaintenanceKM;
             DeliveryStatus = deliveryStatus;
             Status = status;
 
@@ -76,6 +81,8 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
             decimal delayPenaltyPerHour, int allowedDelayHours, decimal maintenancePenalty, decimal accidentPenalty,
             decimal driverFare, int driverWorkingHoursPerDay, decimal driverOvertimeAmountPerHour,
             int kilometerPerDay, int maximumKilometerPerDay, decimal amountOfKmExceedingLimit,
+            decimal vehicleDailyRentPrice,
+            DateTime? contractNextMaintenanceDate, int? contractNextMaintenanceKM,
             DeliveryStatus deliveryStatus, ContractStatus status)
         {
             Time = time;
@@ -114,6 +121,9 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
             KilometerPerDay = kilometerPerDay;
             MaximumKilometerPerDay = maximumKilometerPerDay;
             AmountOfKmExceedingLimit = amountOfKmExceedingLimit;
+            VehicleDailyRentPrice = vehicleDailyRentPrice;
+            ContractNextMaintenanceDate = contractNextMaintenanceDate;
+            ContractNextMaintenanceKM = contractNextMaintenanceKM;
             DeliveryStatus = deliveryStatus;
             Status = status;
 
@@ -166,11 +176,16 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
             int receivingKilometerCounter,
             bool receiveProofDocuments,
             string? receiveNotes,
-            decimal maintenancePenaltyAmount,
             decimal accidentPenaltyAmount,
             decimal maintenancePaidByTenant,
             decimal receiveDiscountAmount,
             bool isMaintenanceDoneByTenant,
+            MaintenanceType? currentMaintenanceType,
+            DateTime? currentMaintenanceDate,
+            int? currentMaintenanceKM,
+            string? currentMaintenanceNote,
+            DateTime? newNextMaintenanceDate,
+            int? newNextMaintenanceKM,
             VehicleReceivingStatus? vehicleReceivingStatus,
             bool isVehicleStoppedUntilMaintenanceOrRepair,
             string? damageNote)
@@ -180,42 +195,96 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
             ReceivingKilometerCounter = receivingKilometerCounter;
             ReceiveProofDocuments = receiveProofDocuments;
             ReceiveNotes = receiveNotes;
-            MaintenancePenalty = maintenancePenaltyAmount;
             AccidentPenalty = accidentPenaltyAmount;
             MaintenancePaidByTenant = maintenancePaidByTenant;
             ReceiveDiscountAmount = receiveDiscountAmount;
-            
             IsMaintenanceDoneByTenant = isMaintenanceDoneByTenant;
+            CurrentMaintenanceType = currentMaintenanceType;
+            CurrentMaintenanceDate = currentMaintenanceDate;
+            CurrentMaintenanceKM = currentMaintenanceKM;
+            CurrentMaintenanceNote = currentMaintenanceNote;
+            NewNextMaintenanceDate = newNextMaintenanceDate;
+            NewNextMaintenanceKM = newNextMaintenanceKM;
             VehicleReceivingStatus = vehicleReceivingStatus;
             IsVehicleStoppedUntilMaintenanceOrRepair = isVehicleStoppedUntilMaintenanceOrRepair;
             DamageNote = damageNote;
-            var actualPeriod = Math.Max(0, (receivingDate.Date - Date.Date).Days);  
-            var expectedEnd = Date.Date.AddDays(PeriodInDays).Add(ExpectedReceivingTime);
-            var actualEnd = receivingDate.Date.Add(receivingTime);
-            var diffHours = (int)(actualEnd - expectedEnd).TotalHours;
-            DelayHours = diffHours > AllowedDelayHours ? diffHours - AllowedDelayHours : 0;
-            if (DelayHours < 0) DelayHours = 0;
-            TotalConsumptionKilometers = receivingKilometerCounter - KilometerCounter;
-            
-            var avgKmPerDay = actualPeriod > 0 ? TotalConsumptionKilometers.Value / actualPeriod : 0;
-            
-            FreeKM = actualPeriod * KilometerPerDay;
-            KMExceededTheLimit = Math.Max(0, TotalConsumptionKilometers.Value - FreeKM.Value);
-            TotalAmountOfKMExceedingTheLimit = KMExceededTheLimit.Value * AmountOfKmExceedingLimit;
-            
-            DelayPenaltyAmount = DelayHours.Value * DelayPenaltyPerHour;
-            
-            TotalRentalAmount = actualPeriod * NetRentPrice;
-            TotalDriverAmount = actualPeriod * DriverFare; // Assuming fixed driver fare per day for simplicity
 
-            TotalDueAmount = TotalRentalAmount + TotalDriverAmount + 
-                             TotalAmountOfKMExceedingTheLimit + DelayPenaltyAmount + 
+            var expectedEnd = ExpectedReceivingDate.Date.Add(ExpectedReceivingTime);
+            var actualEnd   = receivingDate.Date.Add(receivingTime);
+            var rawDiffHours = (actualEnd - expectedEnd).TotalHours;
+            int actualPeriodHours = (int)Math.Max(0, Math.Floor(rawDiffHours));
+            int actualPeriodDays  = (int)Math.Max(0, Math.Floor(rawDiffHours / 24.0));
+            int actualPeriod      = ContractType == ContractType.Hourly ? actualPeriodHours : actualPeriodDays;
+         if (ContractType == ContractType.Hourly)
+            {
+                DelayHours = 0;
+            }
+            else
+            {
+                int totalLateHours = (int)Math.Ceiling(Math.Max(0, rawDiffHours));
+                int totalLateAfterAllowed = Math.Max(0, totalLateHours - AllowedDelayHours);
+                DelayHours = totalLateAfterAllowed > 0 ? totalLateAfterAllowed % 24 : 0;
+            }
+
+           TotalConsumptionKilometers = receivingKilometerCounter - KilometerCounter;
+
+           AVGKilometersPerDay = ContractType == ContractType.Hourly
+                ? (actualPeriodHours > 0 ? (decimal)TotalConsumptionKilometers.Value / actualPeriodHours * 24m : 0m)
+                : (actualPeriodDays  > 0 ? (decimal)TotalConsumptionKilometers.Value / actualPeriodDays        : 0m);
+
+           FreeKM = ContractType == ContractType.Hourly
+                ? (int)(MaximumKilometerPerDay / 24.0 * actualPeriodHours)
+                : MaximumKilometerPerDay * actualPeriodDays;
+
+           KMExceededTheLimit = Math.Max(0, TotalConsumptionKilometers.Value - FreeKM.Value);
+
+            TotalAmountOfKMExceedingTheLimit = KMExceededTheLimit.Value * AmountOfKmExceedingLimit;
+           DelayPenaltyAmount = DelayHours.Value * DelayPenaltyPerHour;
+     if (isMaintenanceDoneByTenant)
+            {
+                MaintenancePenalty = 0m;
+            }
+            else
+            {
+                bool maintenanceDue =
+                    (ContractNextMaintenanceDate.HasValue && ContractNextMaintenanceDate.Value.Date < receivingDate.Date) ||
+                    (ContractNextMaintenanceKM.HasValue   && ContractNextMaintenanceKM.Value < receivingKilometerCounter);
+                MaintenancePenalty = maintenanceDue ? MaintenancePenalty : 0m;
+            }
+
+           TotalRentalAmount = ContractType switch
+            {
+                ContractType.Hourly   => actualPeriodHours * NetRentPrice,
+                ContractType.Daily    => actualPeriodDays  * NetRentPrice,
+                ContractType.Weekly   => (actualPeriodDays / 7)   * NetRentPrice + (actualPeriodDays % 7)   * VehicleDailyRentPrice,
+                ContractType.Monthly  => (actualPeriodDays / 30)  * NetRentPrice + (actualPeriodDays % 30)  * VehicleDailyRentPrice,
+                ContractType.LongTerm => (actualPeriodDays / 360) * NetRentPrice + (actualPeriodDays % 360) * VehicleDailyRentPrice,
+                _                     => actualPeriodDays  * NetRentPrice
+            };
+
+           if (!WithDriver)
+            {
+                TotalDriverAmount = 0m;
+            }
+            else
+            {
+                TotalDriverAmount = ContractType switch
+                {
+                    ContractType.Hourly   => actualPeriodHours * DriverFare,
+                    ContractType.Daily    => (actualPeriodDays + 1) * DriverFare,
+                    ContractType.Weekly   => (actualPeriodDays / 7)   * DriverFare + ((actualPeriodDays % 7)   + 1) * DailyRate,
+                    ContractType.Monthly  => (actualPeriodDays / 30)  * DriverFare + ((actualPeriodDays % 30)  + 1) * DailyRate,
+                    ContractType.LongTerm => (actualPeriodDays / 360) * DriverFare + ((actualPeriodDays % 360) + 1) * DailyRate,
+                    _                     => (actualPeriodDays + 1) * DriverFare
+                };
+            }
+
+            TotalDueAmount = TotalRentalAmount + TotalDriverAmount +
+                             TotalAmountOfKMExceedingTheLimit + DelayPenaltyAmount +
                              MaintenancePenalty + AccidentPenalty - MaintenancePaidByTenant;
-                             
-            FinalNetDueAmount = TotalDueAmount - ReceiveDiscountAmount;
-            
-            //DeliveryStatus remains unchanged here (usually Rented/Late).
-        }
+
+           FinalNetDueAmount = TotalDueAmount - ReceiveDiscountAmount;
+   }
 
         public void ConfirmReceiveVehicle()
         {

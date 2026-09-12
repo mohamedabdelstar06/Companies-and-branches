@@ -22,7 +22,8 @@ namespace ZAD.Domain.Entities.VehicleRental.Vehicles
         
         public bool IsRented { get; private set; }
 
-
+        public DateTime? NextMaintenanceDate { get; private set; }
+        public int? NextMaintenanceKM { get; private set; }
 
         private RentalVehicle() { } // EF Core
 
@@ -40,6 +41,8 @@ namespace ZAD.Domain.Entities.VehicleRental.Vehicles
             MonthlyRentPrice = monthlyRentPrice;
             YearlyRentPrice = yearlyRentPrice;
             IsRented = isRented;
+            NextMaintenanceDate = null;
+            NextMaintenanceKM = null;
         }
 
         public void Update(string brand, string plateNo, int modelYear, string fileNo, int kilometerCounter, 
@@ -62,6 +65,12 @@ namespace ZAD.Domain.Entities.VehicleRental.Vehicles
         public void SetRentedStatus(bool isRented)
         {
             IsRented = isRented;
+        }
+
+        public void SetNextMaintenance(DateTime? nextMaintenanceDate, int? nextMaintenanceKM)
+        {
+            NextMaintenanceDate = nextMaintenanceDate;
+            NextMaintenanceKM = nextMaintenanceKM;
         }
     }
 }

@@ -22,6 +22,9 @@ namespace ZAD.Application.Mapping
             // Driver
             CreateMap<Driver, DriverDropdownDto>();
 
+
+
+
           
             CreateMap<RentalVehicle, RentalVehicleDropdownDto>()
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => (int)src.Type))
@@ -45,14 +48,18 @@ namespace ZAD.Application.Mapping
                 .ForMember(dest => dest.Day,            opt => opt.MapFrom(src => src.Date.DayOfWeek.ToString()))
                 .ForMember(dest => dest.ExpectedReceivingDay, opt => opt.MapFrom(src => src.ExpectedReceivingDate.DayOfWeek.ToString()))
                 .ForMember(dest => dest.ReferenceNo,    opt => opt.MapFrom(src => $"{src.Date:dd/MM/yyyy}-{src.Id}"))
-                .ForMember(dest => dest.ActualPeriodInDays, opt => opt.MapFrom(src => 
-                    src.DeliveryStatus == DeliveryStatus.Delivered && src.ReceivingDate.HasValue 
-                    ? Math.Max(0, src.ReceivingDate.Value.Subtract(src.Date).Days) 
-                    : Math.Max(0, DateTime.Now.Subtract(src.Date).Days)))
+                .ForMember(dest => dest.ActualPeriodInDays, opt => opt.MapFrom(src =>
+                    src.DeliveryStatus == DeliveryStatus.Delivered && src.ReceivingDate.HasValue && src.ReceivingTime.HasValue
+                        ? src.ContractType == ContractType.Hourly
+                            ? (int)Math.Max(0, Math.Floor((src.ReceivingDate.Value.Date.Add(src.ReceivingTime.Value)
+                                - src.ExpectedReceivingDate.Date.Add(src.ExpectedReceivingTime)).TotalHours))
+                            : (int)Math.Max(0, Math.Floor((src.ReceivingDate.Value.Date.Add(src.ReceivingTime.Value)
+                                - src.ExpectedReceivingDate.Date.Add(src.ExpectedReceivingTime)).TotalHours / 24.0))
+                        : 0))
                 .ForMember(dest => dest.CreatedAt,      opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.UpdatedAt,      opt => opt.MapFrom(src => src.UpdatedAt));
 
-            // Contract -> ContractListDto
+            // Contract ========> ContractListDto
             CreateMap<Contract, ContractListDto>()
                 .ForMember(dest => dest.TenantName,     opt => opt.MapFrom(src => src.Tenant != null ? src.Tenant.Name : string.Empty))
                 .ForMember(dest => dest.PlateNo,        opt => opt.MapFrom(src => src.RentalVehicle != null ? src.RentalVehicle.PlateNo : string.Empty))

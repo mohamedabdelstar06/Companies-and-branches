@@ -130,8 +130,15 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
         
         public decimal MaintenancePaidByTenant { get; private set; }
         
-        public bool IsMaintenanceDoneByTenant { get; private set; }
+        public bool IsMaintenanceDoneByTenant { get; set; }
         
+        public MaintenanceType? CurrentMaintenanceType { get; private set; }
+        public DateTime? CurrentMaintenanceDate { get; private set; }
+        public int? CurrentMaintenanceKM { get; private set; }
+        public string? CurrentMaintenanceNote { get; private set; }
+        public DateTime? NewNextMaintenanceDate { get; private set; }
+        public int? NewNextMaintenanceKM { get; private set; }
+
         public VehicleReceivingStatus? VehicleReceivingStatus { get; private set; }
         
         public bool IsVehicleStoppedUntilMaintenanceOrRepair { get; private set; }
@@ -139,7 +146,15 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
         public string? DamageNote { get; private set; }
         
         public decimal ReceiveDiscountAmount { get; private set; }
+        // Vehicle snapshot at contract creation — needed for Weekly/Monthly/Yearly remainder calc
+        public decimal VehicleDailyRentPrice { get; private set; }
+
+        // Maintenance snapshot from contract config
+        public DateTime? ContractNextMaintenanceDate { get; private set; }
+        public int? ContractNextMaintenanceKM { get; private set; }
+
         // Computed Receiving Totals
+        public decimal? AVGKilometersPerDay { get; private set; }
         public int? DelayHours { get; private set; }
         
         public int? TotalConsumptionKilometers { get; private set; }

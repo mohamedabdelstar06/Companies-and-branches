@@ -37,30 +37,21 @@ namespace ZAD.Application.DTOs.VehicleRental.Contract
         public DateTime? SecondDriverLicenseExpireDate { get; set; }
         public string? SecondDriverIdNumber { get; set; }
         public DateTime? SecondDriverIdExpireDate { get; set; }
-
-        // Vehicle Info
-        public int RentalVehicleId { get; set; }
+public int RentalVehicleId { get; set; }
         public int KilometerCounter { get; set; }
         public decimal RentPrice { get; set; }
         public decimal DiscountPercent { get; set; }
-
-        // Penalties
         public decimal DelayPenaltyPerHour { get; set; }
         public int AllowedDelayHours { get; set; }
         public decimal MaintenancePenalty { get; set; }
         public decimal AccidentPenalty { get; set; }
-
-        // Private Driver
         public decimal DriverFare { get; set; }
         public int DriverWorkingHoursPerDay { get; set; }
         public decimal DriverOvertimeAmountPerHour { get; set; }
 
-        // KM / Day
         public int KilometerPerDay { get; set; }
         public int MaximumKilometerPerDay { get; set; }
         public decimal AmountOfKmExceedingLimit { get; set; }
-
-
+        public decimal VehicleDailyRentPrice { get; set; }
     }
 }
-

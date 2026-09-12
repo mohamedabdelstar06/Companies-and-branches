@@ -1,4 +1,5 @@
 using System;
+using ZAD.Domain.Enums.VehicleRental;
 
 namespace ZAD.Application.DTOs.VehicleRental.Contract
 {
@@ -90,11 +91,11 @@ namespace ZAD.Application.DTOs.VehicleRental.Contract
         public int MaximumKilometerPerDay { get; set; }
         public decimal AmountOfKmExceedingLimit { get; set; }
 
-        // Metadata
+      public decimal VehicleDailyRentPrice { get; set; }
+   public DateTime? ContractNextMaintenanceDate { get; set; }
+        public int? ContractNextMaintenanceKM { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-
-        // Receiving Fields
         public DateTime? ReceivingDate { get; set; }
         public TimeSpan? ReceivingTime { get; set; }
         public int? ReceivingKilometerCounter { get; set; }
@@ -104,7 +105,7 @@ namespace ZAD.Application.DTOs.VehicleRental.Contract
         public decimal ReceiveDiscountAmount { get; set; }
         
         public bool IsMaintenanceDoneByTenant { get; set; }
-        public ZAD.Domain.Enums.VehicleRental.VehicleReceivingStatus? VehicleReceivingStatus { get; set; }
+        public VehicleReceivingStatus? VehicleReceivingStatus { get; set; }
         public bool IsVehicleStoppedUntilMaintenanceOrRepair { get; set; }
         public string? DamageNote { get; set; }
 
@@ -113,6 +114,7 @@ namespace ZAD.Application.DTOs.VehicleRental.Contract
         public int? FreeKM { get; set; }
         public int? KMExceededTheLimit { get; set; }
 
+        public decimal? AVGKilometersPerDay { get; set; }
         public decimal? TotalAmountOfKMExceedingTheLimit { get; set; }
         public decimal? DelayPenaltyAmount { get; set; }
         public decimal? TotalRentalAmount { get; set; }

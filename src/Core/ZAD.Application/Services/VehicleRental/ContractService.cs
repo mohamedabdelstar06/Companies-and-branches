@@ -91,6 +91,8 @@ namespace ZAD.Application.Services.VehicleRental
                 dto.DelayPenaltyPerHour, dto.AllowedDelayHours, dto.MaintenancePenalty, dto.AccidentPenalty,
                 dto.DriverFare, dto.DriverWorkingHoursPerDay, dto.DriverOvertimeAmountPerHour,
                 dto.KilometerPerDay, dto.MaximumKilometerPerDay, dto.AmountOfKmExceedingLimit,
+                vehicle.DailyRentPrice,          // snapshot for remainder calc in Weekly/Monthly/Yearly
+                vehicle.NextMaintenanceDate, vehicle.NextMaintenanceKM,
                 DeliveryStatus.Rented, ContractStatus.Draft
             );
 
@@ -165,6 +167,8 @@ namespace ZAD.Application.Services.VehicleRental
                 dto.DelayPenaltyPerHour, dto.AllowedDelayHours, dto.MaintenancePenalty, dto.AccidentPenalty,
                 dto.DriverFare, dto.DriverWorkingHoursPerDay, dto.DriverOvertimeAmountPerHour,
                 dto.KilometerPerDay, dto.MaximumKilometerPerDay, dto.AmountOfKmExceedingLimit,
+                vehicle.DailyRentPrice,          // snapshot for remainder calc in Weekly/Monthly/Yearly
+                vehicle.NextMaintenanceDate, vehicle.NextMaintenanceKM,
                 contract.DeliveryStatus, contract.Status
             );
 
@@ -258,11 +262,24 @@ namespace ZAD.Application.Services.VehicleRental
             
             contract.ReceiveVehicle(
                 dto.ReceivingDate, dto.ReceivingTime, dto.ReceivingKilometerCounter,
-                dto.ReceiveProofDocuments, dto.ReceiveNotes, dto.MaintenancePenaltyAmount,
+                dto.ReceiveProofDocuments, dto.ReceiveNotes,
                 dto.AccidentPenaltyAmount, dto.MaintenancePaidByTenant, dto.ReceiveDiscountAmount,
-                dto.IsMaintenanceDoneByTenant, dto.VehicleReceivingStatus,
+                dto.IsMaintenanceDoneByTenant, 
+                dto.MaintenanceType, dto.MaintenanceDate, dto.MaintenanceKM, dto.MaintenanceNote,
+                dto.NextMaintenanceDate, dto.NextMaintenanceKM,
+                dto.VehicleReceivingStatus,
                 dto.IsVehicleStoppedUntilMaintenanceOrRepair, dto.DamageNote
             );
+
+            if (dto.IsMaintenanceDoneByTenant)
+            {
+                var vehicle = await _unitOfWork.RentalVehicles.GetByIdAsync(contract.RentalVehicleId);
+                if (vehicle != null)
+                {
+                    vehicle.SetNextMaintenance(dto.NextMaintenanceDate, dto.NextMaintenanceKM);
+                    _unitOfWork.RentalVehicles.Update(vehicle);
+                }
+            }
             
             _unitOfWork.Contracts.Update(contract);
             await _unitOfWork.SaveChangesAsync();

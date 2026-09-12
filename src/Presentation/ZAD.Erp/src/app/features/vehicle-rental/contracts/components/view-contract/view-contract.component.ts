@@ -20,10 +20,33 @@ export class ViewContractComponent implements OnInit {
   private contractService = inject(ContractService);
   private sweetAlert = inject(SweetAlertService);
 
+  MaintenanceTypes = [
+    { value: 1, label: 'Oil Change' },
+    { value: 2, label: 'Tire Rotation' },
+    { value: 3, label: 'Brake Inspection' },
+    { value: 4, label: 'Fluid Check' },
+    { value: 5, label: 'Battery Maintenance' },
+    { value: 6, label: 'Air Filter Replacement' },
+    { value: 7, label: 'Cabin Air Filter Replacement' },
+    { value: 8, label: 'Wiper Blade Replacement' },
+    { value: 9, label: 'Alignment Check' },
+    { value: 10, label: 'Suspension Inspection' },
+    { value: 11, label: 'Transmission Service' },
+    { value: 12, label: 'Timing Belt Replacement' },
+    { value: 13, label: 'Fuel System Cleaning' },
+    { value: 14, label: 'Exhaust System Inspection' },
+    { value: 15, label: 'Engine Diagnostic' },
+    { value: 16, label: 'Cooling System Flush' },
+    { value: 17, label: 'Drive Belt Replacement' },
+    { value: 18, label: 'Light Bulb Replacement' },
+    { value: 19, label: 'Safety Inspection' },
+    { value: 20, label: 'Regular Wash & Wax' }
+  ];
   contract: ContractDetailDto | null = null;
   activeTab = 'tenant';
   loading = true;
   contractId: number | null = null;
+  tenants: any[] = [];
 
   receiveForm!: FormGroup;
   vehicleReceivingStatuses = [
@@ -42,11 +65,15 @@ export class ViewContractComponent implements OnInit {
   ngOnInit(): void {
     this.initReceiveForm();
     this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
-      if (id) {
-        this.contractId = +id;
+      const idStr = params.get('id');
+      if (idStr) {
+        this.contractId = +idStr;
         this.loadContract(this.contractId);
       }
+    });
+
+    this.contractService.getDropdowns().subscribe(res => {
+      this.tenants = res.tenants;
     });
   }
 
@@ -58,14 +85,29 @@ export class ViewContractComponent implements OnInit {
       receivingKilometerCounter: [0, [Validators.required, Validators.min(0)]],
       receiveProofDocuments: [true],
       receiveNotes: [''],
-      maintenancePenaltyAmount: [0, Validators.min(0)],
       accidentPenaltyAmount: [0, Validators.min(0)],
       maintenancePaidByTenant: [0, Validators.min(0)],
       receiveDiscountAmount: [0, Validators.min(0)],
       isMaintenanceDoneByTenant: [false],
+      maintenanceType: [null],
+      maintenanceDate: [''],
+      maintenanceKM: [null, Validators.min(0)],
+      maintenanceNote: [''],
+      nextMaintenanceDate: [''],
+      nextMaintenanceKM: [null, Validators.min(0)],
       vehicleReceivingStatus: [null, Validators.required],
       isVehicleStoppedUntilMaintenanceOrRepair: [false],
       damageNote: ['']
+    });
+
+    this.receiveForm.get('isMaintenanceDoneByTenant')?.valueChanges.subscribe(val => {
+      const typeCtrl = this.receiveForm.get('maintenanceType');
+      if (val) {
+        typeCtrl?.setValidators([Validators.required]);
+      } else {
+        typeCtrl?.clearValidators();
+      }
+      typeCtrl?.updateValueAndValidity();
     });
   }
 
@@ -163,6 +205,26 @@ export class ViewContractComponent implements OnInit {
     return this.recActualPeriodInDays * (this.contract.netRentPrice || 0);
   }
 
+  get recMaintenancePenalty(): number {
+    if (!this.contract) return 0;
+    const recDate = new Date(this.receiveForm.value.receivingDate);
+    const recKM = this.receiveForm.value.receivingKilometerCounter || 0;
+    
+    let isPenalty = false;
+    if (this.contract.contractNextMaintenanceDate) {
+       if (recDate > new Date(this.contract.contractNextMaintenanceDate)) {
+           isPenalty = true;
+       }
+    }
+    if (this.contract.contractNextMaintenanceKM && this.contract.contractNextMaintenanceKM > 0) {
+       if (recKM >= this.contract.contractNextMaintenanceKM) {
+           isPenalty = true;
+       }
+    }
+    
+    return isPenalty ? (this.contract.maintenancePenalty || 0) : 0;
+  }
+
   get recTotalDriverAmount(): number {
     if (!this.contract || !this.contract.withDriver) return 0;
     return this.recActualPeriodInDays * (this.contract.driverFare || 0);
@@ -173,7 +235,7 @@ export class ViewContractComponent implements OnInit {
     const driver = this.recTotalDriverAmount;
     const kmPenalty = this.recKmExceededAmount;
     const delayPenalty = this.recDelayPenalty;
-    const maintPenalty = this.receiveForm.value.maintenancePenaltyAmount || 0;
+    const maintPenalty = this.recMaintenancePenalty;
     const accPenalty = this.receiveForm.value.accidentPenaltyAmount || 0;
     const maintPaid = this.receiveForm.value.maintenancePaidByTenant || 0;
     
@@ -185,7 +247,7 @@ export class ViewContractComponent implements OnInit {
     return this.recTotalDueAmount - discount;
   }
 
-  //   ─ Status helpers    ─
+  //   ─ Status helpers
   get isConfirmed(): boolean { return this.contract?.status === 'Confirmed'; }
   get isDraft(): boolean { return this.contract?.status === 'Draft'; }
   get isDeleted(): boolean { return this.contract?.status === 'Deleted'; }
@@ -195,10 +257,23 @@ export class ViewContractComponent implements OnInit {
     switch (this.contract?.status) {
       case 'Confirmed': return 'text-success';
       case 'Draft': return 'text-secondary';
-      case 'Deleted': return 'text-danger';
-      default: return '';
+      case 'Canceled': return 'text-danger';
+      case 'Deleted': return 'text-dark';
+      case 'Closed': return 'text-info';
+      default: return 'text-secondary';
     }
   }
+
+  get selectedTenant(): any {
+    return this.contract?.tenantId ? this.tenants.find(t => t.id == this.contract?.tenantId) : null;
+  }
+  selectedTenantLicense(): string { return this.selectedTenant?.licenseNumber || ''; }
+  selectedTenantPassport(): string { return this.selectedTenant?.passportNumber || ''; }
+  selectedTenantUnified(): string { return this.selectedTenant?.unifiedNumber || ''; }
+  selectedTenantId(): string { return this.selectedTenant?.idNumber || ''; }
+  selectedTenantMobile(): string { return this.selectedTenant?.mobile || ''; }
+  selectedTenantBirthday(): string { return this.selectedTenant?.birthday ? this.selectedTenant.birthday.substring(0, 10) : ''; }
+  selectedTenantAge(): string { return this.selectedTenant?.age ? this.selectedTenant.age.toString() : ''; }
 
   //   ─ Actions          ─
   async onConfirm(): Promise<void> {
@@ -225,7 +300,6 @@ export class ViewContractComponent implements OnInit {
     this.activeTab = 'receive';
   }
 
-  // Called from the Save button inside the receive tab
   async onReceiveVehicle(): Promise<void> {
     if (!this.contractId) return;
     if (this.receiveForm.invalid) {
@@ -234,15 +308,22 @@ export class ViewContractComponent implements OnInit {
       return;
     }
     
-    // Custom Validation as per requirements
     if (this.recTotalConsumptionKm < 0) {
       this.sweetAlert.error('Validation Error', "'Total Kilo Meters Consumption' must be greater than or equal to '0'.\n'Average Kilo Meters Per Day' must be greater than or equal to '0'.");
       return;
     }
     
+    const payload = { ...this.receiveForm.value };
+    payload.receiveDiscountAmount = Number(payload.receiveDiscountAmount) || 0;
+    payload.accidentPenaltyAmount = Number(payload.accidentPenaltyAmount) || 0;
+    payload.maintenancePaidByTenant = Number(payload.maintenancePaidByTenant) || 0;
+    payload.receivingKilometerCounter = Number(payload.receivingKilometerCounter) || 0;
+    payload.maintenanceDate = payload.maintenanceDate || null;
+    payload.nextMaintenanceDate = payload.nextMaintenanceDate || null;
+    
     const ok = await this.sweetAlert.confirm('Receive Vehicle', 'Confirm vehicle receipt and close contract?');
     if (!ok) return;
-    this.contractService.receiveVehicle(this.contractId, this.receiveForm.value).subscribe({
+    this.contractService.receiveVehicle(this.contractId, payload).subscribe({
       next: () => {
         this.sweetAlert.success('Receive details saved!');
         this.loadContract(this.contractId!); // Reload view, status remains Rented/Late
@@ -295,10 +376,8 @@ export class ViewContractComponent implements OnInit {
   }
 
 
-  //   ─ Helpers          ─
   formatTime(ts: string): string {
     if (!ts) return '';
-    // ts is like "14:30:00" or "HH:MM:SS"
     const parts = ts.split(':');
     if (parts.length < 2) return ts;
     const h = +parts[0];

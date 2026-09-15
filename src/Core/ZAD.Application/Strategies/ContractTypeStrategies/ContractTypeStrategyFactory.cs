@@ -4,24 +4,25 @@ using ZAD.Domain.Enums.VehicleRental;
 
 namespace ZAD.Application.Strategies.ContractTypeStrategies
 {
-    public static class ContractTypeStrategyFactory
+    public class ContractTypeStrategyFactory
     {
         private static readonly Dictionary<ContractType, IContractTypeStrategy> _strategies = new()
         {
+            { ContractType.Hourly, new HourlyContractStrategy() },
             { ContractType.Daily, new DailyContractStrategy() },
             { ContractType.Weekly, new WeeklyContractStrategy() },
             { ContractType.Monthly, new MonthlyContractStrategy() },
-            { ContractType.LongTerm, new LongTermContractStrategy() },
-            { ContractType.Hourly, new HourlyContractStrategy() }
+            { ContractType.LongTerm, new LongTermContractStrategy() }
         };
 
-        public static IContractTypeStrategy GetStrategy(ContractType type)
+        public static IContractTypeStrategy GetStrategy(ContractType contractType)
         {
-            if (_strategies.TryGetValue(type, out var strategy))
+            if (_strategies.TryGetValue(contractType, out var strategy))
             {
                 return strategy;
             }
-            throw new ArgumentException("Unknown contract type");
+            
+            return new DailyContractStrategy(); 
         }
     }
 }

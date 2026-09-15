@@ -188,7 +188,9 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
             int? newNextMaintenanceKM,
             VehicleReceivingStatus? vehicleReceivingStatus,
             bool isVehicleStoppedUntilMaintenanceOrRepair,
-            string? damageNote)
+            string? damageNote,
+            decimal calculatedTotalRentalAmount,
+            decimal calculatedTotalDriverAmount)
         {
             ReceivingDate = receivingDate;
             ReceivingTime = receivingTime;
@@ -252,32 +254,9 @@ namespace ZAD.Domain.Entities.VehicleRental.Contracts
                 MaintenancePenalty = maintenanceDue ? MaintenancePenalty : 0m;
             }
 
-           TotalRentalAmount = ContractType switch
-            {
-                ContractType.Hourly   => actualPeriodHours * NetRentPrice,
-                ContractType.Daily    => actualPeriodDays  * NetRentPrice,
-                ContractType.Weekly   => (actualPeriodDays / 7)   * NetRentPrice + (actualPeriodDays % 7)   * VehicleDailyRentPrice,
-                ContractType.Monthly  => (actualPeriodDays / 30)  * NetRentPrice + (actualPeriodDays % 30)  * VehicleDailyRentPrice,
-                ContractType.LongTerm => (actualPeriodDays / 360) * NetRentPrice + (actualPeriodDays % 360) * VehicleDailyRentPrice,
-                _                     => actualPeriodDays  * NetRentPrice
-            };
+           TotalRentalAmount = calculatedTotalRentalAmount;
+           TotalDriverAmount = calculatedTotalDriverAmount;
 
-           if (!WithDriver)
-            {
-                TotalDriverAmount = 0m;
-            }
-            else
-            {
-                TotalDriverAmount = ContractType switch
-                {
-                    ContractType.Hourly   => actualPeriodHours * DriverFare,
-                    ContractType.Daily    => (actualPeriodDays + 1) * DriverFare,
-                    ContractType.Weekly   => (actualPeriodDays / 7)   * DriverFare + ((actualPeriodDays % 7)   + 1) * DailyRate,
-                    ContractType.Monthly  => (actualPeriodDays / 30)  * DriverFare + ((actualPeriodDays % 30)  + 1) * DailyRate,
-                    ContractType.LongTerm => (actualPeriodDays / 360) * DriverFare + ((actualPeriodDays % 360) + 1) * DailyRate,
-                    _                     => (actualPeriodDays + 1) * DriverFare
-                };
-            }
 
             TotalDueAmount = TotalRentalAmount + TotalDriverAmount +
                              TotalAmountOfKMExceedingTheLimit + DelayPenaltyAmount +
